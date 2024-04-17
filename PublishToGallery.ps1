@@ -1,5 +1,5 @@
 $p = @{
-    Name        = "PowerShellAIAssistant"
+    Name        = "PSAI"
     NuGetApiKey = $NuGetApiKey
 }
 
