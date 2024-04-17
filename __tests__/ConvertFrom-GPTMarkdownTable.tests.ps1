@@ -1,6 +1,10 @@
-Import-Module "$PSScriptRoot\..\PowerShellAIAssistant.psd1" -Force
+Import-Module "$PSScriptRoot\..\PSAI.psd1" -Force
 
 Describe "ConvertFrom-GPTMarkdownTable" -Tag GPTMarkdownTable {
+    BeforeAll {
+        Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
+    }
+    
     It "ConvertFrom-GPTMarkdownTable" {
         $markdown = @"
 | p1 | p2 | p3 |
