@@ -16,4 +16,4 @@ I believe this new module will be a valuable asset to the community, and encoura
 
 ---
 
-The `PowerShellAI` module will continue to be supported while also nurturing the growth of `PSAI`. Thank you for your continued support and enthusiasm!
+The `PSAI` module will continue to be supported while also nurturing the growth of `PSAI`. Thank you for your continued support and enthusiasm!
