@@ -45,7 +45,7 @@ function Invoke-OAIChat {
 
         $ts = Get-Date -Format "yyyyMMddHHmmss"
 
-        $assistantParams["name"] = "PowerShellAIAssistant-$ts"
+        $assistantParams["name"] = "PSAI-$ts"
 
         if (!$Instructions) {
             $Instructions = 'You are a helpful assistant. Please answer questions concisely.'
