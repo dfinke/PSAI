@@ -1,0 +1,28 @@
+on:
+  push:
+    paths-ignore:
+      - "README.md"
+      - "changelog.md"
+      - ".github/workflows/docs.yml"
+      - "docs/**"
+      - "mkdocs.yml"
+      - "examples/**"
+
+    branches:
+      - main
+
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Continuous Integration
+        shell: pwsh
+        run: |
+          cd ./__tests__
+          Invoke-Pester -Output Detailed
