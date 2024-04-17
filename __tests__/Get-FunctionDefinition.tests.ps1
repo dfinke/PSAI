@@ -1,7 +1,7 @@
 Describe "Get-FunctionDefinition" -Tag Get-FunctionDefinition {
     BeforeAll {
 
-        Import-Module "$PSScriptRoot/../PowerShellAIAssistant.psd1" -Force
+        Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
 
     
         function New-User {

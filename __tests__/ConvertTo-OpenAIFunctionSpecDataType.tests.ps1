@@ -1,6 +1,6 @@
 Describe "ConvertTo-OpenAIFunctionSpecDataType" {
     BeforeAll {
-        Import-Module "$PSScriptRoot/../PowerShellAIAssistant.psd1" -Force
+        Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
     }
 
     It "Converts 'int32' to 'number'" {

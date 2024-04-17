@@ -1,6 +1,6 @@
 Describe "ConvertTo-ToolFormat" -Tag ConvertTo-ToolFormat {
     BeforeAll {
-        Import-Module "$PSScriptRoot/../PowerShellAIAssistant.psd1" -Force
+        Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
     }
 
     It "Test if it ConvertTo-ToolFormat exists" {

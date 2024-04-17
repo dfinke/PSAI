@@ -1,6 +1,6 @@
 Describe 'New-OAIThreadQuery' -Tag New-OAIThreadQuery {
     BeforeAll {
-        Import-Module "$PSScriptRoot/../PowerShellAIAssistant.psd1" -Force
+        Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
 
         Mock New-OAIThreadQuery { 
             [PSCustomObject]@{

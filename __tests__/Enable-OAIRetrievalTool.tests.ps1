@@ -1,6 +1,6 @@
 Describe "Enable-OAIRetrievalTool" -Tag Enable-OAIRetrievalTool {
     BeforeAll {
-        Import-Module "$PSScriptRoot/../PowerShellAIAssistant.psd1" -Force
+        Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
     }
 
     It "should have these parameters " {

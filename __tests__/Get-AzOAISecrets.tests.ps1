@@ -1,6 +1,6 @@
 Describe "Get-AzOAISecrets" -Tag Get-AzOAISecrets {
     BeforeAll {
-        Import-Module "$PSScriptRoot/../PowerShellAIAssistant.psd1" -Force
+        Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
     }
 
     It "should have these parameters" {

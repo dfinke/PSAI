@@ -1,6 +1,6 @@
 Describe "ConvertTo-OpenAIFunctionSpec" {
     BeforeAll {
-        Import-Module "$PSScriptRoot/../PowerShellAIAssistant.psd1" -Force
+        Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
     }
 
     It "Converts a function with no parameters" {

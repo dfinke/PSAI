@@ -1,6 +1,6 @@
 Describe "Convert To OAI Assistant" -Tags ConvertTo-OAIAssistant {
     BeforeAll {
-        Import-Module "$PSScriptRoot/../PowerShellAIAssistant.psd1" -Force
+        Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
     }
 
     It "Test if it ConvertTo-OAIAssistant exists" {

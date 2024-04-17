@@ -1,6 +1,6 @@
 Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBetaParams-OpenAI {
     BeforeAll {
-        Import-Module "$PSScriptRoot/../PowerShellAIAssistant.psd1" -Force
+        Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
         . "$PSScriptRoot/PesterMatchHashtable.ps1"
 
         $script:expectedBaseUrl = "https://api.openai.com/v1"

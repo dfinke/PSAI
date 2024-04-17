@@ -1,6 +1,6 @@
 Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-OAIBetaParams-AzureOpenAI {
     BeforeAll {
-        Import-Module "$PSScriptRoot/../PowerShellAIAssistant.psd1" -Force
+        Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
         . "$PSScriptRoot/PesterMatchHashtable.ps1"
 
         $secrets = @{

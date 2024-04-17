@@ -1,6 +1,6 @@
 Describe "Get-OAIFunctionCallSpec" -Tag Get-OAIFunctionCallSpec {
     BeforeAll {
-        Import-Module "$PSScriptRoot/../PowerShellAIAssistant.psd1" -Force
+        Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
     }
 
     It "Test if it Get-OAIFunctionCallSpec exists" {

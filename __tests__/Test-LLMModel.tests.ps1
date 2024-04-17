@@ -1,6 +1,6 @@
 Describe "Test-LLMModel" -Tag Test-LLMModel {
     BeforeAll {
-        Import-Module "$PSScriptRoot/../PowerShellAIAssistant.psd1" -Force
+        Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
     }
 
     It "Should exist" {

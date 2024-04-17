@@ -1,6 +1,6 @@
 Describe "Invoke-OAIChat" -Tag Invoke-OAIChat {
     BeforeAll {
-        Import-Module "$PSScriptRoot/../PowerShellAIAssistant.psd1" -Force
+        Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
     }
 
     It "should have these parameters " {
