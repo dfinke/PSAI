@@ -10,6 +10,8 @@
 PSAI integrates OpenAI's AI Assistants into PowerShell, leveraging advanced AI capabilities in your PowerShell scripts for dynamic, intelligent automation and data processing
 '@
 
+    PowerShellVersion = '5.1'
+
     # Modules that must be imported into the global environment prior to importing this module
     RequiredModules   = @()
 
