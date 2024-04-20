@@ -3,25 +3,30 @@
 </p>
 
 <p align="center">
-    • <a href="https://github.com/dfinke/PSAI/wiki">Documentation</a> •
-
   <a href="https://x.com/dfinke">
     <img src="https://img.shields.io/twitter/follow/dfinke.svg?style=social&label=Follow%20%40dfinke"></a>
   <a href="https://youtube.com/@dougfinke">
     <img src="https://img.shields.io/youtube/channel/subscribers/UCP47ZkO5EDkoI2sr-3P4ShQ"></a>
-  <a href="https://www.powershellgallery.com/packages/PSAI/">
+  <!-- <a href="https://www.powershellgallery.com/packages/PSAI/">
     <img src="https://img.shields.io/powershellgallery/v/PSAI.svg"></a>
   <a href="https://www.powershellgallery.com/packages/PSAI/">
-    <img src="https://img.shields.io/powershellgallery/dt/PSAI.svg"></a>
-    
+    <img src="https://img.shields.io/powershellgallery/dt/PSAI.svg"></a> -->    
+</p>
+
+<p align="center">
+    • <a href="https://github.com/dfinke/PSAI/wiki">Documentation</a> •
 </p>
 
 # PSAI
+
   <a href="https://www.powershellgallery.com/packages/PSAI/">
-    <img src="https://img.shields.io/powershellgallery/v/PSAI.svg"></a>
+    <img src="https://img.shields.io/powershellgallery/v/PSAI.svg"></a></br></br>
 
-The OpenAI PowerShell module provides convenient access to the OpenAI REST API from the console and from PowerShell scripts. The module includes type definitions for all request params and response fields.
+The OpenAI PowerShell module provides convenient access to the OpenAI, ChatGPT, from the console and from PowerShell scripts. 
 
+## Documentation
+
+https://github.com/dfinke/PSAI/wiki
 
 ## Installation
 
@@ -31,9 +36,29 @@ Install-Module -Name PSAI -Scope CurrentUser -Force
 
 ## Usage
 
-> [!IMPORTANT]
-> The SDK was rewritten in v1, which was released November 6th 2023. See the [v1 migration guide](https://github.com/openai/openai-python/discussions/742), which includes scripts to automatically update your code.
+The full set of functions can be found here https://github.com/dfinke/PSAI/wiki/
 
 ```powershell
-New-OAICompletion 'How do I output all files in a directory PowerShell?'
+Invoke-OAIChat 'How do I output all files in a directory PowerShell?'
 ```
+
+### GPT Response
+
+To output all files in a directory using PowerShell, you can use the `Get-ChildItem` cmdlet. Here's an example of how you can do it:
+
+
+```powershell
+Get-ChildItem -Path "C:\Path\To\Directory" -File
+```
+
+Replace `"C:\Path\To\Directory"` with the path to the directory whose files you want to output. This command will list only files in the specified directory.
+
+If you want to list all files, including files in subdirectories, you can add the `-Recurse` parameter to `Get-ChildItem`:
+
+```powershell
+Get-ChildItem -Path "C:\Path\To\Directory" -File -Recurse
+```
+
+This command will recursively list all files in the specified directory and its subdirectories.
+
+Run either of these commands in PowerShell to output all files in a directory.
