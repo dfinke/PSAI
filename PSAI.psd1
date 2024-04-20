@@ -7,7 +7,7 @@
     Copyright         = '© 2024 All rights reserved.'
 
     Description       = @'
-PSAI integrates OpenAI's AI Assistants into PowerShell, leveraging advanced AI capabilities in your PowerShell scripts for dynamic, intelligent automation and data processing
+PSAI brings OpenAI ChatGOT to PowerShell, leveraging advanced AI capabilities in your PowerShell scripts for dynamic, intelligent automation and data processing
 '@
 
     PowerShellVersion = '5.1'
@@ -104,6 +104,7 @@ PSAI integrates OpenAI's AI Assistants into PowerShell, leveraging advanced AI c
             Tags       = @("PowerShell", "GPT", "OpenAI", "Assistant")
             ProjectUri = "https://github.com/dfinke/PSAI"
             LicenseUri = "https://github.com/dfinke/PSAI/blob/main/LICENSE"
+            IconUri    = 'https://raw.githubusercontent.com/dfinke/PSAI/main/Media/PSAI.png'
         }
     }
 }
