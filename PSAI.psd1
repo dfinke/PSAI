@@ -7,7 +7,7 @@
     Copyright         = '© 2024 All rights reserved.'
 
     Description       = @'
-PSAI brings OpenAI ChatGOT to PowerShell, leveraging advanced AI capabilities in your PowerShell scripts for dynamic, intelligent automation and data processing
+PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in your PowerShell scripts for dynamic, intelligent automation and data processing
 '@
 
     PowerShellVersion = '5.1'
