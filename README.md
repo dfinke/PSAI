@@ -34,6 +34,12 @@ https://github.com/dfinke/PSAI/wiki
 Install-Module -Name PSAI -Scope CurrentUser -Force 
 ```
 
+## OpenAI API KEY
+
+Get/Create your OpenAI API key from https://platform.openai.com/account/api-keys.
+
+Then set `$env:OpenAIKey` to your key.
+
 ## Usage
 
 The full set of functions can be found here https://github.com/dfinke/PSAI/wiki/
