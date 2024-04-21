@@ -33,9 +33,9 @@ This function requires the New-OAIAssistant, New-OAIThreadQuery, Wait-OAIOnRun, 
 function Invoke-OAIChat {
     [CmdletBinding()]
     param(
-        $Instructions,
         [Parameter(ValueFromPipeline)]
-        $UserInput,        
+        $UserInput,
+        $Instructions,
         [ValidateSet('gpt-4', 'gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4-1106-preview', 'gpt-4-turbo-preview', 'gpt-3.5-turbo-1106')]
         $model = 'gpt-3.5-turbo'
     )
