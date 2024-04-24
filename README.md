@@ -71,7 +71,7 @@ Run either of these commands in PowerShell to output all files in a directory.
 
 ## Support for Azure OpenAI 
 
-After creating an [Azure OpenAI resource](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/create-resource?pivots=web-portal), you can use the `PowerShellAIAssistant` module to interact with it. 
+After creating an [Azure OpenAI resource](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/create-resource?pivots=web-portal), you can use the `PSAI` module to interact with it. 
 
 You need to get the following secrets form the Azure Portal and Azure AI Studio - `apiURI`,`apiVersion`,`apiKey`,`deploymentName`.
 
