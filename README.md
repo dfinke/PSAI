@@ -68,3 +68,21 @@ Get-ChildItem -Path "C:\Path\To\Directory" -File -Recurse
 This command will recursively list all files in the specified directory and its subdirectories.
 
 Run either of these commands in PowerShell to output all files in a directory.
+
+## Support for Azure OpenAI 
+
+After creating an [Azure OpenAI resource](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/create-resource?pivots=web-portal), you can use the `PowerShellAIAssistant` module to interact with it. 
+
+You need to get the following secrets form the Azure Portal and Azure AI Studio - `apiURI`,`apiVersion`,`apiKey`,`deploymentName`.
+
+```powershell
+$secrets = @{
+    apiURI         = "<Your Azure OpenAI API URI>"
+    apiVersion     = "<Your Azure OpenAI API Version>"
+    apiKey         = "<Your Azure OpenAI API Key>"
+    deploymentName = "<Your Azure OpenAI Deployment Name>"
+}
+
+Set-OAIProvider AzureOpenAI
+Set-AzOAISecrets @secrets
+```
