@@ -35,6 +35,7 @@
 . $PSScriptRoot/Public/Get-OpenAISpecDescriptions.ps1
 . $PSScriptRoot/Public/Import-OAIAssistant.ps1
 . $PSScriptRoot/Public/Invoke-AIExplain.ps1
+. $PSScriptRoot/Public/Invoke-FilesToPrompt.ps1
 . $PSScriptRoot/Public/Invoke-OAIChat.ps1
 . $PSScriptRoot/Public/Invoke-OAIUploadFile.ps1
 . $PSScriptRoot/Public/Invoke-QuickChat.ps1
