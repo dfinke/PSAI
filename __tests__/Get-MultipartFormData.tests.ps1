@@ -15,6 +15,6 @@ Describe 'Get-MultipartFormData' -Tag Get-MultipartFormData {
         $actual.Parameters['Purpose'].Attributes.Mandatory | Should -Be $true
 
         $validateset = $actual.Parameters['Purpose'].Attributes.ValidValues
-        $validateset | Should -Be @('fine-tune', 'assistants')
+        $validateset | Should -Be @('fine-tune', 'assistants', 'vision')
     }
 }

@@ -22,7 +22,7 @@ function Get-OAIFileItem {
         $FileId
     )
     process {
-        $uri = "https://api.openai.com/v1/files/$FileId"
+        $uri = $baseUrl + "/files/$FileId"
         $Method = "Get"
 
         Invoke-OAIBeta -Uri $uri -Method $Method 

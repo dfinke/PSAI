@@ -16,6 +16,6 @@ Describe 'Invoke-OAIUploadFile' -Tag 'Invoke-OAIUploadFile' {
 
         
         $validateset = $actual.Parameters['Purpose'].Attributes.ValidValues
-        $validateset | Should -Be @('fine-tune', 'assistants')
+        $validateset | Should -Be @('fine-tune', 'assistants', 'vision')
     }
 }

@@ -6,7 +6,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
         $script:expectedBaseUrl = "https://api.openai.com/v1"
         $script:expectedHeaders = @{
             "Content-Type"  = "application/json"
-            "OpenAI-Beta"   = "assistants=v1"
+            "OpenAI-Beta"   = "assistants=v2"
             "Authorization" = "Bearer "
         }
 
@@ -55,7 +55,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
             Body          = @{
                 instructions = $null
                 name         = $null
-                model        = "gpt-3.5-turbo"
+                model        = "gpt-4o"
             }
 
             Headers       = $expectedHeaders
@@ -98,7 +98,11 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
             Uri           = "$expectedBaseUrl/threads"
             OutFile       = $null
             ContentType   = 'application/json'
-            Body          = $null
+            Body          = @{
+                messages       = $null
+                tool_resources = $null
+                metadata       = $null
+            }
             Headers       = $expectedHeaders
             NotOpenAIBeta = $false            
             OAIProvider   = 'OpenAI'

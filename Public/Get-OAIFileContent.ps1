@@ -29,10 +29,11 @@ function Get-OAIFileContent {
         $ContentType = "text/plain",
         $OutFile
     )
+
     process {
 
         $params = @{
-            Uri         = "https://api.openai.com/v1/files/$FileId/content"
+            Uri         = $baseUrl + "/files/$FileId/content"
             Method      = "Get"
             ContentType = $ContentType
         }

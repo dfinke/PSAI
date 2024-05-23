@@ -3,7 +3,7 @@ function Get-MultipartFormData {
         [Parameter(Mandatory)]
         $FilePath,
         [Parameter(Mandatory)]
-        [ValidateSet('fine-tune', 'assistants')]        
+        [ValidateSet('fine-tune', 'assistants', 'vision')]        
         $Purpose 
     )
 

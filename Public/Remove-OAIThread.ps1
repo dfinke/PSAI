@@ -16,6 +16,7 @@ This example removes the thread with the ID "123456789" from the OpenAI API.
 .LINK
 https://platform.openai.com/docs/api-reference/threads/deleteThread
 #>
+
 function Remove-OAIThread {
     [CmdletBinding()]
     param(

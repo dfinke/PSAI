@@ -1,4 +1,4 @@
-Describe "Invoke-QuickChat" -Tag "Invoke-QuickChat" {
+Describe "Invoke-QuickChat" -Tag Invoke-QuickChat {
     BeforeAll {
         Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
     }
@@ -10,6 +10,9 @@ Describe "Invoke-QuickChat" -Tag "Invoke-QuickChat" {
 
         $actual.Parameters.Keys.Contains("AssistantId") | Should -Be $true
 
-        $actual.Parameters.AssistantId.Attributes.Mandatory | Should -Be $true
+        $actual.Parameters.AssistantId.Attributes.ValueFromPipelineByPropertyName | Should -Be $true
+
+        $actual.Parameters.AssistantId.Aliases.Count | Should -Be 1
+        $actual.Parameters.AssistantId.Aliases | Should -Be 'id'        
     }
 }
