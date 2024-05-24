@@ -29,7 +29,7 @@ function ModelArgumentCompleter {
 }
 
 if (Get-Command -ErrorAction SilentlyContinue -name Register-ArgumentCompleter) {
-    $functionNames = 'New-OAIAssistant', 'Invoke-OAIChat', 'Invoke-OAIChatCompletion', 'Update-OAIAssistant', 'New-OAIRun', 'Invoke-Chat'
+    $functionNames = 'New-OAIAssistant', 'Invoke-OAIChat', 'Invoke-OAIChatCompletion', 'Update-OAIAssistant', 'New-OAIRun', 'Invoke-Chat', 'Invoke-OAIChatCompletion'
 
     foreach ($functionName in $functionNames) {
         Register-ArgumentCompleter -CommandName $functionName -ParameterName Model -ScriptBlock $Function:ModelArgumentCompleter
