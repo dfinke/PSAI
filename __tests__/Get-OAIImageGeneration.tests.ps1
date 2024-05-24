@@ -32,5 +32,8 @@ Describe "Get-OAIImageGeneration" -Tag Get-OAIImageGeneration {
         
         $validValues = $actual.Parameters['ResponseFormat'].Attributes.ValidValues
         $validValues | Should -Be @('url', 'b64_json')
+
+        $validValues = $actual.Parameters['Style'].Attributes.ValidValues
+        $validValues | Should -Be @('vivid', 'natural')
     }
 }

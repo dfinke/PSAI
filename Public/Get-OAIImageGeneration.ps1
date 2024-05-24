@@ -124,6 +124,7 @@ function Get-OAIImageGeneration {
         $ResponseFormat,
         [ValidateSet('256x256', '512x512', '1024x1024', '1024x1024', '1792x1024', '1024x1792')]        
         $Size,
+        [ValidateSet('vivid', 'natural')]
         $Style,
         $User,
         [Switch]$Show
