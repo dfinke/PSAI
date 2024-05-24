@@ -3,7 +3,6 @@
 . $PSScriptRoot/Private/Invoke-OAIBeta.ps1
 . $PSScriptRoot/Private/Get-MultipartFormData.ps1
 
-. $PSScriptRoot/Public/New-ChatRequestUserMessage.ps1
 . $PSScriptRoot/Public/Add-OAIVectorStore.ps1
 . $PSScriptRoot/Public/Clear-OAIAllItems.ps1
 . $PSScriptRoot/Public/Clear-OAIAssistants.ps1
@@ -53,6 +52,9 @@
 . $PSScriptRoot/Public/Invoke-OAIUploadFile.ps1
 . $PSScriptRoot/Public/Invoke-QuickChat.ps1
 . $PSScriptRoot/Public/Invoke-SimpleQuestion.ps1
+. $PSScriptRoot/Public/New-ChatRequestSystemMessage.ps1
+. $PSScriptRoot/Public/New-ChatRequestUserMessage.ps1
+. $PSScriptRoot/Public/New-ChatRequestAssistantMessage.ps1
 . $PSScriptRoot/Public/New-OAIAssistant.ps1
 . $PSScriptRoot/Public/New-OAIAssistantWithVectorStore.ps1
 . $PSScriptRoot/Public/New-OAIChatMessage.ps1
