@@ -118,9 +118,11 @@ function Get-OAIImageGeneration {
         [ValidateSet('dall-e-2', 'dall-e-3')]
         $Model,
         $N,
+        [ValidateSet('standard', 'hd')]
         $Quality,
         [ValidateSet('url', 'b64_json')] 
         $ResponseFormat,
+        [ValidateSet('256x256', '512x512', '1024x1024', '1024x1024', '1792x1024', '1024x1792')]        
         $Size,
         $Style,
         $User,
