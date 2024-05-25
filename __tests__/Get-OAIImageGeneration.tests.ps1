@@ -28,7 +28,7 @@ Describe "Get-OAIImageGeneration" -Tag Get-OAIImageGeneration {
         $validValues | Should -Be @('standard', 'hd')
 
         $validValues = $actual.Parameters['Size'].Attributes.ValidValues
-        $validValues | Should -Be @('256x256', '512x512', '1024x1024', '1024x1024', '1792x1024', '1024x1792')
+        $validValues | Should -Be @('256x256', '512x512', '1024x1024', '1792x1024', '1024x1792')
         
         $validValues = $actual.Parameters['ResponseFormat'].Attributes.ValidValues
         $validValues | Should -Be @('url', 'b64_json')
