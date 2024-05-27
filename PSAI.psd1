@@ -22,6 +22,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Invoke-OAIBeta'
 
         # Public
+        'New-ChatRequestToolMessage'
         'Add-OAIVectorStore'
         'Clear-OAIAllItems'
         'Clear-OAIAssistants'
