@@ -15,16 +15,16 @@ function Get-CurrentWeather {
 }
 #endregion
 
-function Get-CurrentWeather {
-  param (
-    $location,
-    $unit
-  )
+# function Get-CurrentWeather {
+#   param (
+#     $location,
+#     $unit
+#   )
      
-  Write-Host "Getting the weather for $location in $unit"
+#   Write-Host "Getting the weather for $location in $unit"
 
-  "The weather for Montreal is 15°C"
-}
+#   "The weather for Montreal is 15°C"
+# }
 
 #region Function JSON
 $functionsJSON = @"
