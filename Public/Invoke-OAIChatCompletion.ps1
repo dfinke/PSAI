@@ -62,12 +62,6 @@
 .PARAMETER User
     Specifies the user for the conversation. Default is not set.
 
-.PARAMETER FunctionCall
-    Specifies the function call for the conversation. Default is not set.
-
-.PARAMETER Functions
-    Specifies the list of functions for the conversation. Default is not set.
-
 .EXAMPLE
     $messages = @(
         @{
@@ -111,9 +105,7 @@ function Invoke-OAIChatCompletion {
         $TopP,
         $Tools,
         $ToolChoice,
-        $User,
-        $FunctionCall,
-        $Functions
+        $User
     )
     
     $body = @{}
@@ -192,14 +184,6 @@ function Invoke-OAIChatCompletion {
 
     if ($null -ne $User) { 
         $body['user'] = $User
-    }
-
-    if ($null -ne $FunctionCall) { 
-        $body['function_call'] = $FunctionCall
-    }
-
-    if ($null -ne $Functions) { 
-        $body['functions'] = $Functions
     }
 
     $url = $baseUrl + '/chat/completions'

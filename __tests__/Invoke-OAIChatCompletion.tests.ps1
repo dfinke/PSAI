@@ -29,8 +29,6 @@ Describe "Invoke-OAIChatCompletion" -Tag Invoke-OAIChatCompletion {
         $keyArray[16] | Should -BeExactly 'Tools'
         $keyArray[17] | Should -BeExactly 'ToolChoice'
         $keyArray[18] | Should -BeExactly 'User'
-        $keyArray[19] | Should -BeExactly 'FunctionCall'
-        $keyArray[20] | Should -BeExactly 'Functions'
 
         $actual.Parameters.Messages.Attributes.Mandatory | Should -Be $true
 
