@@ -10,8 +10,8 @@ Describe 'New-OAIThread' -Tag New-OAIThread {
 
         $keyArray = $actual.Parameters.Keys -as [array]
        
-        $keyArray[0] | Should -Be 'messages'
-        $keyArray[1] | Should -Be 'tool_resources'
-        $keyArray[2] | Should -Be 'metadata'
+        $keyArray[0] | Should -Be 'Messages'
+        $keyArray[1] | Should -Be 'ToolResources'
+        $keyArray[2] | Should -Be 'Metadata'
     }
 }

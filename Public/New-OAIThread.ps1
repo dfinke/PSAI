@@ -41,18 +41,18 @@ https://platform.openai.com/docs/api-reference/threads/createThread
 function New-OAIThread {
     [CmdletBinding()]
     param(
-        [Object[]]$messages,
-        $tool_resources,
-        $metadata
+        [Object[]]$Messages,
+        $ToolResources,
+        $Metadata
     )
 
     $url = $baseUrl + '/threads'
     $Method = 'Post'
 
     $body = @{
-        messages       = $messages
-        tool_resources = $tool_resources
-        metadata       = $metadata
+        messages       = $Messages
+        tool_resources = $ToolResources
+        metadata       = $Metadata
     }
 
     Invoke-OAIBeta -Uri $url -Method $Method -Body $body
