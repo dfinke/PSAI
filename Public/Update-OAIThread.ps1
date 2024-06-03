@@ -37,7 +37,7 @@ The modified thread object matching the specified ID.
 Updates an OAI thread with the specified thread ID, tool resources, and metadata.
 
 .DESCRIPTION
-The Update-OAIThread function is used to update an OAI (OpenAI) thread with the specified thread ID, tool resources, and metadata. It sends a POST request to the OAI API endpoint to update the thread.
+The Update-OAIThread function is used to update an OAI (OpenAI) thread with the specified thread ID, tool resources, and metadata. It sends a POST request to the specified URL with the provided data.
 
 .PARAMETER threadId
 The ID of the thread to be updated. This parameter is mandatory.
