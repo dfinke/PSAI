@@ -183,7 +183,7 @@ function Invoke-OAIChatCompletion {
     }
 
     if ($null -ne $Tools) { 
-        $body['tools'] = $Tools
+        $body['tools'] = @($Tools)
     }
 
     if ($null -ne $ToolChoice) { 
