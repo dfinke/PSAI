@@ -28,7 +28,8 @@ Describe "Invoke-OAIChatCompletion" -Tag Invoke-OAIChatCompletion {
         $keyArray[15] | Should -BeExactly 'TopP'
         $keyArray[16] | Should -BeExactly 'Tools'
         $keyArray[17] | Should -BeExactly 'ToolChoice'
-        $keyArray[18] | Should -BeExactly 'User'
+        $keyArray[18] | Should -BeExactly 'ParallelToolCalls'
+        $keyArray[19] | Should -BeExactly 'User'
 
         $actual.Parameters.Messages.Attributes.Mandatory | Should -Be $true
 
@@ -36,6 +37,10 @@ Describe "Invoke-OAIChatCompletion" -Tag Invoke-OAIChatCompletion {
         $validValues | Should -Be @('auto', 'json', 'text')        
         
         $actual.Parameters.Temperature.Attributes.ScriptBlock | Should -BeExactly ' $_ -ge 0 -and $_ -le 2 '
-        $actual.Parameters.TopP.Attributes.ScriptBlock | Should -BeExactly ' $_ -ge 0 -and $_ -le 1 '        
+        $actual.Parameters.TopP.Attributes.ScriptBlock | Should -BeExactly ' $_ -ge 0 -and $_ -le 1 '
+        
+        # check the data type of the parameter
+
+        # $actual.Parameters.Messages.Attributes.ParameterType.FullName | Should -Be 'System.Object'
     }
 }

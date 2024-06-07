@@ -105,6 +105,7 @@ function Invoke-OAIChatCompletion {
         $TopP,
         $Tools,
         $ToolChoice,
+        $ParallelToolCalls,
         $User
     )
     
@@ -180,6 +181,10 @@ function Invoke-OAIChatCompletion {
 
     if ($null -ne $ToolChoice) { 
         $body['tool_choice'] = $ToolChoice
+    }
+
+    if ($null -ne $ParallelToolCalls) { 
+        $body['parallel_tool_calls'] = $ParallelToolCalls
     }
 
     if ($null -ne $User) { 
