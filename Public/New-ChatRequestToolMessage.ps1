@@ -35,6 +35,6 @@ function New-ChatRequestToolMessage {
         role         = 'tool'
         tool_call_id = $toolCallId
         name         = $toolFunctionName
-        content      = $content
+        content      = $content | Out-String
     }
 }
