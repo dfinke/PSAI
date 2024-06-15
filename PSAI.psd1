@@ -22,8 +22,6 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Invoke-OAIBeta'
 
         # Public
-        'Enable-AIShortCutKey'
-        'New-ChatRequestToolMessage'
         'Add-OAIVectorStore'
         'Clear-OAIAllItems'
         'Clear-OAIAssistants'
@@ -38,6 +36,8 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'ConvertTo-ToolFormat'
         'Copy-OAIAssistant'
         'Disable-UnitTesting'
+        'dumpJson'
+        'Enable-AIShortCutKey'
         'Enable-OAICodeInterpreter'        
         'Enable-OAIFileSearchTool'
         'Enable-UnitTesting'
@@ -80,6 +80,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Invoke-SimpleQuestion'
         'New-ChatRequestAssistantMessage'
         'New-ChatRequestSystemMessage'
+        'New-ChatRequestToolMessage'
         'New-ChatRequestUserMessage'
         'New-OAIAssistant'
         'New-OAIAssistantWithVectorStore'
@@ -99,6 +100,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Remove-OAIThread'
         'Remove-OAIVectorStore'
         'Remove-OAIVectorStoreFile'
+        'Reset-AIShortCutKey'
         'Reset-OAIProvider'
         'Set-AzOAISecrets'
         'Set-OAIProvider'

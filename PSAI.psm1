@@ -16,6 +16,7 @@
 . $PSScriptRoot/Public/ConvertTo-OpenAIFunctionSpecDataType.ps1
 . $PSScriptRoot/Public/ConvertTo-ToolFormat.ps1
 . $PSScriptRoot/Public/Copy-OAIAssistant.ps1
+. $PSScriptRoot/Public/dumpJson.ps1
 . $PSScriptRoot/Public/Enable-AIShortCutKey.ps1
 . $PSScriptRoot/Public/Enable-OAICodeInterpreter.ps1
 . $PSScriptRoot/Public/Enable-OAIFileSearchTool.ps1
