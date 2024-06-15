@@ -56,3 +56,7 @@ you are a helpful powershell expert. be concise, accurate, and friendly.
         }
     }
 }
+
+function Reset-AIShortCutKey {
+    $script:messages = @()
+}
