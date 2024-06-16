@@ -133,6 +133,7 @@ function Invoke-OAIBeta {
             $targetError = $_.Exception.Message
         }
 
-        Write-Error $targetError
+        # Write-Error $targetError
+        throw $targetError
     }
 }
