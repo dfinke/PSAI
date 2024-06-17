@@ -31,6 +31,6 @@ function New-OAIThread {
     if ($OAIProvider -eq 'AzureOpenAI') {
         $url += '?api-version={0}' -f $AzOAISecrets.apiVersion 
     }
-    Write-Verbose "New-OAIThread url: $url"
+
     Invoke-OAIBeta -Uri $url -Method $Method
 }

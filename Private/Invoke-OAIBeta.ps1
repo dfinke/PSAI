@@ -105,8 +105,6 @@ function Invoke-OAIBeta {
     }
 
     try {
-        Write-Verbose "Invoke-OAIBeta params:"
-        $params |convertto-json |Write-Verbose
         Invoke-RestMethod @params
     } 
     catch {

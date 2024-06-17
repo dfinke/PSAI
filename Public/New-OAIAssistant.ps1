@@ -69,6 +69,6 @@ function New-OAIAssistant {
     if ($Metadata) {
         $body['metadata'] = $Metadata        
     }
-    Write-Verbose "New-OAIAssistant url: $url"
+
     Invoke-OAIBeta -Uri $url -Method $Method -Body $body
 }
