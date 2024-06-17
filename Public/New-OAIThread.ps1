@@ -25,8 +25,12 @@ https://platform.openai.com/docs/api-reference/threads/createThread
 function New-OAIThread {
     [CmdletBinding()]
 
-    $url = $baseUrl + '/threads'
+    $url = Get-OAIEndpoint -Url 'threads'
     $Method = 'Post'
 
+    if ($OAIProvider -eq 'AzureOpenAI') {
+        $url += '?api-version={0}' -f $AzOAISecrets.apiVersion 
+    }
+    Write-Verbose "New-OAIThread url: $url"
     Invoke-OAIBeta -Uri $url -Method $Method
 }

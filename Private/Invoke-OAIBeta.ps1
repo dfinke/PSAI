@@ -58,23 +58,14 @@ function Invoke-OAIBeta {
 
         'AzureOpenAI' {
             $headers['api-key'] = "$($AzOAISecrets.apiKEY)"
-            
             if ($Body -isnot [System.IO.Stream]) {
                 if ($null -ne $Body -and $Body.Contains("model") ) {
                     $Body.model = $AzOAISecrets.deploymentName
                 }
             }
 
-            $Uri = $Uri -replace $baseUrl, ''
-            if ($Uri.EndsWith('/')) {
-                $Uri = $Uri.Substring(0, $Uri.Length - 1)
-            }
-            
-            $separator = '?'
-            if ($Uri.Contains('?')) {
-                $separator = '&'
-            }
-            $Uri = "{0}/openai{1}{2}api-version={3}" -f $AzOAISecrets.apiURI, $Uri, $separator, $AzOAISecrets.apiVersion         
+            #$Uri = '{0}/openai/deployments/{1}/chat/completions?api-version={2}' -f $AzOAISecrets.apiURI.TrimEnd('/'), $AzOAISecrets.deploymentName, $AzOAISecrets.apiVersion        
+            #$Uri = $Uri ?? '{0}/openai/assistants?api-version={1}' -f $AzOAISecrets.apiURI.TrimEnd('/'), $AzOAISecrets.apiVersion        
         }
     }    
 
@@ -114,6 +105,8 @@ function Invoke-OAIBeta {
     }
 
     try {
+        Write-Verbose "Invoke-OAIBeta params:"
+        $params |convertto-json |Write-Verbose
         Invoke-RestMethod @params
     } 
     catch {

@@ -24,7 +24,7 @@ function Remove-OAIThread {
     )
 
     Process {
-        $url = $baseUrl + "/threads/$threadId"
+        $url = Get-OAIEndpoint -Url "threads/$threadId"
         $Method = 'Delete'
 
         Invoke-OAIBeta -Uri $url -Method $Method

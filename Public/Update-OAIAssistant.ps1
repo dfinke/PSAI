@@ -52,7 +52,7 @@ function Update-OAIAssistant {
     )
 
     Process {
-        $url = $baseUrl + "/assistants/$Id"
+        $url = Get-OAIEndpoint -Url "assistants/$Id"
         $Method = 'Post'
 
         $body = @{}

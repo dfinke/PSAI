@@ -84,7 +84,8 @@ function New-OAIRun {
             break
         }
 
-        $url = $baseUrl + "/threads/$ThreadId/runs"
+        $url = Get-OAIEndpoint -Url "threads/$ThreadId/runs"
+
         $Method = 'Post'
 
         $body = @{

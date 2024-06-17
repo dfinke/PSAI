@@ -44,7 +44,8 @@ function New-OAIMessage {
     )
 
     Process {
-        $url = $baseUrl + "/threads/$ThreadId/messages"
+        $url = Get-OAIEndpoint -Url "threads/$ThreadId/messages"
+
         $Method = 'Post'
 
         $body = @{

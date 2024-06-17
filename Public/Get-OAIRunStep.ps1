@@ -48,7 +48,6 @@ function Get-OAIRunStep {
         $Before
     )
 
-    $url = $baseUrl + "/threads/$ThreadId/runs/$RunId/steps"
     $Method = 'Get'
 
     $urlParams = @()
@@ -65,6 +64,6 @@ function Get-OAIRunStep {
         $urlParams += "before=$Before"
     }
 
-    $urlParams = "?" + ($urlParams -join '&')
+    $url = Get-OAIEndpoint -Url "threads/$ThreadId/messages" -Parameters $urlParams 
     Invoke-OAIBeta -Uri ($url + $urlParams) -Method $Method
 }

@@ -45,7 +45,7 @@ function Get-OAIMessage {
         }
 
         $Method = 'Get'
-        $url = $baseUrl + "/threads/$ThreadId/messages"
+
 
         $urlParams = @()
         if ($limit) {
@@ -61,7 +61,7 @@ function Get-OAIMessage {
             $urlParams += "before=$before"
         }    
 
-        $urlParams = "?" + ($urlParams -join '&')
-        Invoke-OAIBeta -Uri ($url + $urlParams) -Method $Method
+        $url = Get-OAIEndpoint -Url "threads/$ThreadId/messages" -Parameters $urlParams
+        Invoke-OAIBeta -Uri $url -Method $Method
     }
 }

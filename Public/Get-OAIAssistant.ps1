@@ -32,7 +32,7 @@ function Get-OAIAssistant {
         [Switch]$Raw
     )
 
-    $url = $baseUrl + "/assistants"
+    $url = $url = Get-OAIEndpoint -Url "assistants"
     $Method = 'Get'
 
     $response = Invoke-OAIBeta -Uri $url -Method $Method

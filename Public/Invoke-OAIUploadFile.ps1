@@ -30,7 +30,7 @@ function Invoke-OAIUploadFile {
     )
     
     Process {
-        $url = $baseUrl + '/files'
+        $url = Get-OAIEndpoint -Url 'files'
         $Method = 'POST'
 
         $FormData = Get-MultipartFormData -FilePath $Path -Purpose $Purpose

@@ -41,7 +41,7 @@ function Get-OAIRun {
     )
 
     Process {
-        $url = $baseUrl + "/threads/$threadId/runs"
+
         $Method = 'Get'
 
         $urlParams = @()
@@ -57,8 +57,7 @@ function Get-OAIRun {
         if ($before) {
             $urlParams += "before=$before"
         }
-
-        $urlParams = "?" + ($urlParams -join '&')
+        $url = Get-OAIEndpoint -Url "threads/$threadId/runs" -Parameters $urlParams
         Invoke-OAIBeta -Uri ($url + $urlParams) -Method $Method
     }
 }

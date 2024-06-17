@@ -1,4 +1,5 @@
 . $PSScriptRoot/Private/Add-OAIToolsToList.ps1
+. $PSScriptRoot/Private/Get-OAIEndpoint.ps1
 . $PSScriptRoot/Private/Invoke-OAIBeta.ps1
 . $PSScriptRoot/Private/Get-MultipartFormData.ps1
 

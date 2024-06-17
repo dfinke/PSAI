@@ -23,7 +23,7 @@ function Get-OAIFile {
         [Switch]$Raw
     )
     
-    $url = $baseUrl + "/files"
+    $url = $url = Get-OAIEndpoint -Url "files"
     $Method = 'Get'
 
     if ($purpose) {
