@@ -34,6 +34,7 @@
 .LINK
 https://platform.openai.com/docs/api-reference/runs/listRunSteps
 #>
+
 function Get-OAIRunStep {
     [CmdletBinding()]
     param(
@@ -41,7 +42,7 @@ function Get-OAIRunStep {
         $ThreadId,
         [Parameter(Mandatory)]
         $RunId,
-        $Limit = 20,
+        $Limit,
         [ValidateSet('asc', 'desc')]
         $Order = 'desc',
         $After,

@@ -1,28 +1,34 @@
 <#
 .SYNOPSIS
-Retrieves messages from a specific thread in the OAIBeta API.
+Retrieves messages for a specific thread ID.
 
 .DESCRIPTION
-The Get-OAIMessage function retrieves messages from a specific thread in the OAIBeta API. It allows you to specify various parameters such as thread ID, limit, order, after, and before to filter the messages.
+The Get-OAIMessage function retrieves messages for a specific thread ID. It allows you to specify various parameters such as the number of messages to retrieve, the order in which they should be sorted, and filters based on timestamps and run IDs.
 
 .PARAMETER ThreadId
-The ID of the thread from which to retrieve messages.
+The ID of the thread for which messages should be retrieved.
 
 .PARAMETER Limit
 The maximum number of messages to retrieve. The default value is 20.
 
 .PARAMETER Order
-The order in which the messages should be retrieved. Valid values are 'asc' (ascending) and 'desc' (descending). The default value is 'desc'.
+The order in which the messages should be sorted. Valid values are 'asc' (ascending) and 'desc' (descending). The default value is 'desc'.
 
 .PARAMETER After
-Retrieve messages after the specified date/time.
+Retrieve messages after the specified timestamp.
 
 .PARAMETER Before
-Retrieve messages before the specified date/time.
+Retrieve messages before the specified timestamp.
+
+.PARAMETER RunId
+Retrieve messages for a specific run ID.
 
 .EXAMPLE
-Get-OAIMessage -ThreadId 12345 -Limit 10 -Order 'asc' -After $Message1.id -Before $Message5.id
-Retrieves the 10 oldest messages from the thread with ID 12345, in ascending order, between messages 1 and 5.
+Get-OAIMessage -ThreadId 12345 -Limit 10 -Order 'asc' -After '2022-01-01' -RunId 'abc123'
+Retrieves the 10 oldest messages for the thread with ID 12345, sorted in ascending order, after the specified timestamp, and for the specified run ID.
+
+.LINK
+https://beta.openai.com/docs/api-reference/messages/list
 #>
 
 function Get-OAIMessage {
@@ -35,12 +41,13 @@ function Get-OAIMessage {
         [ValidateSet('asc', 'desc')]
         $Order = 'desc',
         $After,
-        $Before
+        $Before,
+        $RunId
     )
 
     Process {
 
-        if($null -eq $ThreadId) {
+        if ($null -eq $ThreadId) {
             return
         }
 
@@ -59,9 +66,13 @@ function Get-OAIMessage {
         }
         if ($before) {
             $urlParams += "before=$before"
-        }    
+        }
+        if ($runId) {
+            $urlParams += "run_id=$runId"
+        }
 
         $urlParams = "?" + ($urlParams -join '&')
+
         Invoke-OAIBeta -Uri ($url + $urlParams) -Method $Method
     }
 }

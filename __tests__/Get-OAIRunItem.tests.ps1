@@ -8,8 +8,13 @@ Describe 'Get-OAIRunItem' -Tag Get-OAIRunItem {
      
         $actual | Should -Not -BeNullOrEmpty
 
+        $keyArray = $actual.Parameters.Keys -as [array]
+
+        $keyArray[0] | Should -BeExactly 'ThreadId'
+        $keyArray[1] | Should -BeExactly 'RunId'
+
         $actual.Parameters.Keys.Contains('ThreadId') | Should -Be $true
-        # $actual.Parameters.threadId.Attributes.Mandatory | Should -Be $true
+        
         $actual.Parameters.threadId.Attributes.ValueFromPipelineByPropertyName | Should -Be $true
         $actual.Parameters.ThreadId.Aliases.Count | Should -Be 1
         $actual.Parameters.ThreadId.Aliases | Should -Be 'thread_id'
