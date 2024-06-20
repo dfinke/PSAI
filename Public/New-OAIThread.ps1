@@ -49,11 +49,13 @@ function New-OAIThread {
     $url = Get-OAIEndpoint -Url 'threads'
     $Method = 'Post'
 
-    $body = @{
+    # Azure OpenAI threads are created without anything
+    # Tools must be added to the assistant
+    $body = $OAIProvider -eq 'OpenAI' ? @{
         messages       = $Messages
         tool_resources = $ToolResources
         metadata       = $Metadata
-    }
-
+    } : ''
+    Write-Debug "Calling $url from New-OAIThread"
     Invoke-OAIBeta -Uri $url -Method $Method -Body $body
 }

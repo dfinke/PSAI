@@ -53,7 +53,7 @@ function Invoke-OAIChat {
         $assistantParams["model"] = $model
 
         $assistant = New-OAIAssistant @assistantParams
-
+        Write-Debug "Assistant created: $($assistant.Id)"
         [System.Collections.ArrayList]$lines = @()
     }
 
@@ -65,6 +65,7 @@ function Invoke-OAIChat {
         $prompt = ($lines | Out-String).Trim()
 
         $queryResult = New-OAIThreadQuery -UserInput $prompt -Assistant $assistant 
+        Write-Debug "Query created: $($queryResult.Thread.Id)"
         $null = Wait-OAIOnRun -Run $queryResult.Run -Thread $queryResult.Thread
         $messages = Get-OAIMessage -ThreadId $queryResult.Thread.Id
         $messages.data[0].content.text.value

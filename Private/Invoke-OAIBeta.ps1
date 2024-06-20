@@ -106,6 +106,7 @@ function Invoke-OAIBeta {
     }
 
     try {
+        Write-Debug "Sending request to $Uri from Invoke-OAIBeta:"
         Invoke-RestMethod @params
     } 
     catch {

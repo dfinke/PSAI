@@ -101,6 +101,6 @@ function New-OAIAssistant {
     elseif ($ResponseFormat -eq 'text') {
         $body['response_format'] = @{ 'type' = 'text' }
     }
-
+    Write-Debug "Sending request to $url from New-OAIAssistant"
     Invoke-OAIBeta -Uri $url -Method $Method -Body $body
 }
