@@ -18,12 +18,13 @@ Retrieves information about the run item with thread ID 123 and run ID 456.
 .LINK
 https://platform.openai.com/docs/api-reference/runs/getRun
 #>
+
 function Get-OAIRunItem {
     [CmdletBinding()]
     param(
         [Parameter(ValueFromPipelineByPropertyName)]
         [Alias('thread_id')]        
-        $ThreadID,
+        $ThreadId,
         [Parameter(ValueFromPipelineByPropertyName)]
         [Alias('run_id')]
         $RunId

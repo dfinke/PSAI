@@ -9,7 +9,9 @@ Describe 'Remove-OAIAssistant' -Tag Remove-OAIAssistant {
      
         $actual | Should -Not -BeNullOrEmpty
 
-        $actual.Parameters.Keys.Contains('Id') | Should -Be $true
+        $keyArray = $actual.Parameters.Keys -as [array]
+
+        $keyArray[0] | Should -BeExactly 'Id'
         $actual.Parameters['Id'].Attributes.ValueFromPipelineByPropertyName | Should -Be $true
     }
 }

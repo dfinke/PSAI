@@ -25,7 +25,7 @@ function Invoke-OAIUploadFile {
         [Parameter(ValueFromPipelineByPropertyName)]
         [Alias('FullName')]
         $Path,
-        [ValidateSet('fine-tune', 'assistants')]        
+        [ValidateSet('fine-tune', 'assistants', 'vision')]        
         $Purpose = 'assistants'
     )
     
@@ -35,7 +35,7 @@ function Invoke-OAIUploadFile {
 
         $FormData = Get-MultipartFormData -FilePath $Path -Purpose $Purpose
 
-        Write-Host "Uploading file '$($Path)' with purpose '$Purpose' ..."
+        Write-Verbose "Uploading file '$($Path)' with purpose '$Purpose' ..."
         Invoke-OAIBeta -Uri $url -Method $Method -Body $FormData['Stream'] -ContentType $FormData['ContentType']
 
         $FormData['Stream'].Close()

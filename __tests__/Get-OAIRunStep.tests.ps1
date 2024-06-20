@@ -1,4 +1,4 @@
-Describe 'Get-OAIRunStep' -Tag 'Get-OAIRunStep' {
+Describe 'Get-OAIRunStep' -Tag Get-OAIRunStep {
     BeforeAll {
         Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
     }
@@ -8,20 +8,25 @@ Describe 'Get-OAIRunStep' -Tag 'Get-OAIRunStep' {
      
         $actual | Should -Not -BeNullOrEmpty
 
-        $actual.Parameters.Keys.Contains('Threadid') | Should -Be $true
+        $keyArray = $actual.Parameters.Keys -as [array]
+
+        $keyArray[0] | Should -BeExactly 'ThreadId'
+        $keyArray[1] | Should -BeExactly 'RunId'
+        $keyArray[2] | Should -BeExactly 'Limit'
+        $keyArray[3] | Should -BeExactly 'Order'
+        $keyArray[4] | Should -BeExactly 'After'
+        $keyArray[5] | Should -BeExactly 'Before'
+
         $actual.Parameters.threadId.Attributes.Mandatory | Should -Be $true
 
-        $actual.Parameters.Keys.Contains('Runid') | Should -Be $true
         $actual.Parameters.runId.Attributes.Mandatory | Should -Be $true
 
-        $actual.Parameters.Keys.Contains('Limit') | Should -Be $true
-        
-        $actual.Parameters.Keys.Contains('Order') | Should -Be $true
+        # $actual.Parameters.Order.Attributes.ValidateSet | Should -Be @('asc', 'desc')
 
-        # $actual.Parameters.order.Attributes.ValidateSet | Should -Be @('asc', 'desc')
-
-        $actual.Parameters.Keys.Contains('After') | Should -Be $true
+        $validateSet = $actual.Parameters.Order.Attributes | Where-Object { $_ -is [System.Management.Automation.ValidateSetAttribute] }
         
-        $actual.Parameters.Keys.Contains('Before') | Should -Be $true
+        $validateSet | Should -Not -BeNullOrEmpty
+       
+        $validateSet[0].ValidValues | Should -Be @('asc', 'desc')
     }
 }

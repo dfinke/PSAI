@@ -22,7 +22,23 @@
   <a href="https://www.powershellgallery.com/packages/PSAI/">
     <img src="https://img.shields.io/powershellgallery/v/PSAI.svg"></a></br></br>
 
-The OpenAI PowerShell module provides convenient access to the OpenAI, ChatGPT, from the console and from PowerShell scripts. 
+The OpenAI PowerShell module provides convenient access to the OpenAI APIs from the console and from PowerShell scripts.
+
+## Release v0.2.0
+As of June 19, 2024
+
+This release supports the latest OpenAI API changes.
+Here's what's new:
+
+- Improved retrieval tool called file_search, which can ingest up to 10,000 files per assistant - 500x more than before. It is faster, supports parallel queries through multi-threaded searches, and features enhanced reranking and query rewriting.
+- Introducing vector_store objects in the API. Once a file is added to a vector store, it's automatically parsed, chunked, and embedded, made ready to be searched. Vector stores can be used across assistants and threads, simplifying file management and billing.
+- Control the maximum number of tokens a run uses in the Assistants API, allowing you to manage token usage costs. 
+- Set limits on the number of previous / recent messages used in each run.
+- Supports the tool_choice parameter which can be used to force the use of a specific tool (like file_search, code_interpreter, or a function) in a particular run.
+- Create messages with the role assistant to create custom conversation histories in Threads.
+- Assistant and Run objects now support model configuration parameters like temperature, response_format (JSON mode), and top_p.
+
+more to come ...
 
 ## Documentation
 

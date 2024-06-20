@@ -1,33 +1,34 @@
 <#
 .SYNOPSIS
-Creates a new message in a specified thread.
+Creates a new message for a specified thread in the OpenAI API.
 
 .DESCRIPTION
-The New-OAIMessage function is used to create a new message in a specified thread. It requires the thread ID, role, content, and optional file IDs as parameters.
+The New-OAIMessage function creates a new message for a specified thread in the OpenAI API. It allows you to specify the thread ID, role, content, attachments, and metadata for the message.
 
-.PARAMETER threadId
-The ID of the thread where the message will be created.
+.PARAMETER ThreadId
+The ID of the thread to which the message belongs.
 
 .PARAMETER Role
-The role of the message sender. Only 'user' is currently supported.
+The role of the message. Valid values are 'user' and 'assistant'.
 
 .PARAMETER Content
 The content of the message.
 
-.PARAMETER FileIds
-An optional array of file IDs to attach to the message.
+.PARAMETER Attachments
+Optional. Any attachments to include with the message.
 
 .PARAMETER Metadata
-Optional metadata to include with the message.
+Optional. Any metadata to include with the message.
 
 .EXAMPLE
-New-OAIMessage -ThreadId 12345 -Role 'user' -Content 'Hello, world!' -FileIds 'file1', 'file2'
+New-OAIMessage -ThreadId "12345" -Role "user" -Content "Hello, how can I help you?"
 
-This example creates a new message in the thread with ID 12345, sent by a user with the content "Hello, world!" and attaches two files with IDs 'file1' and 'file2'.
+This example creates a new user message with the content "Hello, how can I help you?" for the thread with ID "12345".
 
 .LINK
 https://platform.openai.com/docs/api-reference/messages/createMessage
 #>
+
 function New-OAIMessage {
     [CmdletBinding()]
     param(
@@ -35,12 +36,12 @@ function New-OAIMessage {
         [Alias('Id')]
         $ThreadId,
         [Parameter(Mandatory)]
-        [ValidateSet('user')]
+        [ValidateSet('user', 'assistant')]
         $Role,
         [Parameter(Mandatory)]
         $Content,
-        $FileIds,
-        $Metadata        
+        $Attachments,
+        $Metadata
     )
 
     Process {
@@ -52,9 +53,13 @@ function New-OAIMessage {
             role    = $Role
             content = $Content
         }
-    
-        if ($FileIds) {
-            $body['file_ids'] = @($FileIds)
+
+        if ($Attachments) {
+            $body.attachments = $Attachments
+        }
+
+        if ($Metadata) {
+            $body.metadata = $Metadata
         }
 
         Invoke-OAIBeta -Uri $url -Method $Method -Body $body

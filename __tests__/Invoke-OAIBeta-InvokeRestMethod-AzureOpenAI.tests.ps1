@@ -19,7 +19,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
 
         $script:expectedHeaders = @{
             "Content-Type" = "application/json"
-            "OpenAI-Beta"  = "assistants=v1"
+            "OpenAI-Beta"  = "assistants=v2"
             "api-key"      = '1'
         }
 
@@ -125,7 +125,11 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
             Uri           = Get-TargetUri "threads"
             OutFile       = $null
             ContentType   = 'application/json'
-            Body          = $null
+            Body          = @{
+                messages       = $null
+                tool_resources = $null
+                metadata       = $null
+            }
             Headers       = $expectedHeaders
             NotOpenAIBeta = $false            
             OAIProvider   = 'AzureOpenAI'

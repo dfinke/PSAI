@@ -41,7 +41,7 @@ function Invoke-OAIBeta {
     )        
     
     $headers = @{
-        'OpenAI-Beta'  = 'assistants=v1'     
+        'OpenAI-Beta'  = 'assistants=v2'    
         'Content-Type' = $ContentType
     }
 
@@ -87,8 +87,9 @@ function Invoke-OAIBeta {
     if ($OutFile) {
         $params['OutFile'] = $OutFile
     }
-   
 
+    Write-Verbose ($params | ConvertTo-Json -Depth 5)
+    
     if (Test-IsUnitTestingEnabled) {
         Write-Host "Data saved. Use Get-UnitTestingData to retrieve the data."
         $script:InvokeOAIUnitTestingData = @{
@@ -123,6 +124,7 @@ function Invoke-OAIBeta {
             $targetError = $_.Exception.Message
         }
 
-        Write-Error $targetError
+        # Write-Error $targetError
+        throw $targetError
     }
 }

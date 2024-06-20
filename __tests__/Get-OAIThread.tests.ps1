@@ -1,4 +1,4 @@
-Describe 'Get-OAIThread' -Tag 'Get-OAIThread' {
+Describe 'Get-OAIThread' -Tag Get-OAIThread {
     BeforeAll {
         Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
     }
@@ -8,8 +8,9 @@ Describe 'Get-OAIThread' -Tag 'Get-OAIThread' {
      
         $actual | Should -Not -BeNullOrEmpty
 
-        $actual.Parameters.Keys.Contains('threadId') | Should -Be $true
+        $keyArray = $actual.Parameters.Keys -as [array]
 
+        $keyArray[0] | Should -Be 'threadId'
         $actual.Parameters.threadId.Attributes.Mandatory | Should -Be $true
     }
 }
