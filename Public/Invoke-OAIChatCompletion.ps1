@@ -191,7 +191,29 @@ function Invoke-OAIChatCompletion {
         $body['user'] = $User
     }
 
+    <#
+curl "https://openai-gpt-latest.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-02-15-preview" \
+-H "Content-Type: application/json" \
+-H "api-key: YOUR_API_KEY" \
+-d "{
+\"messages\": [],
+\"max_tokens\": 800,
+\"temperature\": 0.7,
+\"frequency_penalty\": 0,
+\"presence_penalty\": 0,
+\"top_p\": 0.95,
+\"stop\": null
+}
+    #>
+
     $url = $baseUrl + '/chat/completions'
+    
+    if (Get-OAIProvider -eq 'AzureOpenAI') {
+        $AzOAISecrets = Get-AzOAISecrets
+
+        $url = $baseUrl + '/deployments/' + $AzOAISecrets.deploymentName + '/chat/completions'
+    }
+    
     $Method = 'Post'
 
     Invoke-OAIBeta -Uri $url -Method $Method -Body $body
