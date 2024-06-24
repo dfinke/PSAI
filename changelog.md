@@ -1,3 +1,8 @@
+## v0.2.1
+
+- Updated `New-OAIThread` to support the the correct payload for the provider
+- Updated `Invoke-OAIChatCompletion` to support Azure OpenAI
+
 ## v0.2.0
 
 In the latest update to the PSAI module, several new features and enhancements were introduced. This supports the OpenAI V2 capabilities. 
