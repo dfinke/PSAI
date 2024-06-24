@@ -125,11 +125,11 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
             Uri           = Get-TargetUri "threads"
             OutFile       = $null
             ContentType   = 'application/json'
-            Body          = @{
-                messages       = $null
-                tool_resources = $null
-                metadata       = $null
-            }
+            # Body          = @{
+            #     messages       = $null
+            #     tool_resources = $null
+            #     metadata       = $null
+            # }
             Headers       = $expectedHeaders
             NotOpenAIBeta = $false            
             OAIProvider   = 'AzureOpenAI'
