@@ -49,11 +49,11 @@ function New-OAIThread {
     $url = $baseUrl + '/threads'
     $Method = 'Post'
 
-    $body = @{
+    $body = (Get-OAIProvider) -eq 'OpenAI' ? @{
         messages       = $Messages
         tool_resources = $ToolResources
         metadata       = $Metadata
-    }
-
+    } : ''
+    
     Invoke-OAIBeta -Uri $url -Method $Method -Body $body
 }
