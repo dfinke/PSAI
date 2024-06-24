@@ -208,7 +208,7 @@ curl "https://openai-gpt-latest.openai.azure.com/openai/deployments/gpt-4o/chat/
 
     $url = $baseUrl + '/chat/completions'
     
-    if (Get-OAIProvider -eq 'AzureOpenAI') {
+    if ((Get-OAIProvider) -eq 'AzureOpenAI') {
         $AzOAISecrets = Get-AzOAISecrets
 
         $url = $baseUrl + '/deployments/' + $AzOAISecrets.deploymentName + '/chat/completions'
