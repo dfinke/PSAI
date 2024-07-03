@@ -2,6 +2,7 @@
 
 - Remove unused Show-OAILocalPlayground.tests.ps1 file
 - Add Show-OAIBilling function to open OpenAI platform billing
+- Update Invoke-OAIChatCompletion.ps1 to handle JSON response
 
 ## v0.2.1
 
