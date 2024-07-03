@@ -1,3 +1,8 @@
+## v0.2.?
+
+- Remove unused Show-OAILocalPlayground.tests.ps1 file
+- Add Show-OAIBilling function to open OpenAI platform billing
+
 ## v0.2.1
 
 - Updated `New-OAIThread` to support the the correct payload for the provider
