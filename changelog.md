@@ -1,8 +1,9 @@
-## v0.2.?
+## v0.2.2
 
 - Remove unused Show-OAILocalPlayground.tests.ps1 file
 - Add Show-OAIBilling function to open OpenAI platform billing
 - Update Invoke-OAIChatCompletion.ps1 to handle JSON response
+- Update `dumpJson` with `-Depth` parameter to control the depth of the JSON output
 
 ## v0.2.1
 
