@@ -29,10 +29,11 @@ function dumpJson {
     [CmdletBinding()]
     param(
         [Parameter(ValueFromPipeline)]
-        [object]$obj
+        [object]$obj,
+        $Depth = 10
     )
     
     Process {
-        ConvertTo-Json $obj -Depth 10
+        ConvertTo-Json $obj -Depth $Depth
     }
 }
