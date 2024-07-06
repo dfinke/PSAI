@@ -148,7 +148,11 @@ function Invoke-OAIChatCompletion {
     }
 
     if ($null -ne $ResponseFormat) { 
-        $body['response_format'] = $ResponseFormat
+        # $body['response_format'] = $ResponseFormat
+        if ($ResponseFormat -eq 'json') {
+            $body['response_format'] = @{"type" = "json_object" }
+        }
+
     }
 
     if ($null -ne $Seed) { 

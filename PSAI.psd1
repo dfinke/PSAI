@@ -22,6 +22,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Invoke-OAIBeta'
 
         # Public
+        'Show-OAIBilling'
         'Add-OAIVectorStore'
         'Clear-OAIAllItems'
         'Clear-OAIAssistants'
@@ -106,7 +107,6 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Set-OAIProvider'
         'Show-OAIAPIReferenceWebPage'
         'Show-OAIAssistantWebPage'
-        'Show-OAILocalPlayground'
         'Show-OAIPlaygroundWebPage'
         'Show-OAIVectorStoreWebPage'
         'Stop-OAIRun'
