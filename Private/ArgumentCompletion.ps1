@@ -37,7 +37,6 @@ if (Get-Command -ErrorAction SilentlyContinue -name Register-ArgumentCompleter) 
         'Invoke-Chat'
         'Invoke-OAIChat'
         'Invoke-OAIChatCompletion'
-        'Invoke-OAIChatCompletion'
         'New-OAIAssistant'
         'New-OAIRun' 
         'New-OpenAIChat'
