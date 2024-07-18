@@ -1,3 +1,7 @@
+## v0.2.3
+
+- Add model `GPT-4o mini`. Most advanced model in the small models category, and cheapest model yet.
+
 ## v0.2.2
 
 - Remove unused Show-OAILocalPlayground.tests.ps1 file
