@@ -1,3 +1,7 @@
+## v0.2.4
+
+- Update default model to 'gpt-4o-omni' in Invoke-OAIChat.ps1, Invoke-OAIChatCompletion.ps1, and New-OAIAssistant.ps1
+
 ## v0.2.3
 
 - Add model `GPT-4o mini`. Most advanced model in the small models category, and cheapest model yet.
