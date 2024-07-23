@@ -9,7 +9,7 @@
     Specifies the list of messages in the conversation. Each message should have a 'role' (either 'system', 'user', or 'assistant') and 'content' (the content of the message).
 
 .PARAMETER Model
-    Specifies the model to use for generating completions. Default is 'gpt-4o'.
+    Specifies the model to use for generating completions. Default is 'gpt-4o-omni'.
 
 .PARAMETER FrequencyPenalty
     Specifies the frequency penalty to apply. Higher values will make the model avoid repeating the same completions. Default is not set.
@@ -85,7 +85,7 @@ function Invoke-OAIChatCompletion {
     param(
         [Parameter(Mandatory)]
         $Messages,
-        $Model = 'gpt-4o',
+        $Model = 'gpt-4o-omni',
         $FrequencyPenalty,
         $LogitBias,
         $Logprobs,
