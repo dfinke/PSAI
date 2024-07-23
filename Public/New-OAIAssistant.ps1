@@ -51,7 +51,7 @@ function New-OAIAssistant {
         $Description,
         $Tools,
         $ToolResources,
-        $Model = 'gpt-4o',
+        $Model = 'gpt-4o-omni',
         $Metadata,
         [ValidateScript({ $_ -ge 0 -and $_ -le 2 })]
         $Temperature = $null,
