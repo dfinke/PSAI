@@ -36,7 +36,7 @@ function Invoke-OAIChat {
         [Parameter(ValueFromPipeline)]
         $UserInput,
         $Instructions,
-        $model = 'gpt-4o-omni'
+        $model = 'gpt-4o-mini'
     )
 
     Begin {

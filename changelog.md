@@ -1,6 +1,10 @@
+## 0.2.5
+
+- Fix $model to 'gpt-4o-mini'
+
 ## v0.2.4
 
-- Update default model to 'gpt-4o-omni' in Invoke-OAIChat.ps1, Invoke-OAIChatCompletion.ps1, and New-OAIAssistant.ps1
+- Update default model to 'gpt-4o-mini' in Invoke-OAIChat.ps1, Invoke-OAIChatCompletion.ps1, and New-OAIAssistant.ps1
 
 ## v0.2.3
 
