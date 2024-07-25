@@ -3,7 +3,6 @@
 . $PSScriptRoot/Private/Invoke-OAIBeta.ps1
 . $PSScriptRoot/Private/Get-MultipartFormData.ps1
 
-. $PSScriptRoot/Public/Show-OAIBilling.ps1
 . $PSScriptRoot/Public/Add-OAIVectorStore.ps1
 . $PSScriptRoot/Public/Clear-OAIAllItems.ps1
 . $PSScriptRoot/Public/Clear-OAIAssistants.ps1
@@ -50,6 +49,7 @@
 . $PSScriptRoot/Public/Get-OpenAISpecDescriptions.ps1
 . $PSScriptRoot/Public/Import-OAIAssistant.ps1
 . $PSScriptRoot/Public/Invoke-AIExplain.ps1
+. $PSScriptRoot/Public/Invoke-AIPrompt.ps1
 . $PSScriptRoot/Public/Invoke-FilesToPrompt.ps1
 . $PSScriptRoot/Public/Invoke-OAIChat.ps1
 . $PSScriptRoot/Public/Invoke-OAIChatCompletion.ps1
@@ -83,6 +83,7 @@
 . $PSScriptRoot/Public/Set-OAIProvider.ps1
 . $PSScriptRoot/Public/Show-OAIAPIReferenceWebPage.ps1
 . $PSScriptRoot/Public/Show-OAIAssistantWebPage.ps1
+. $PSScriptRoot/Public/Show-OAIBilling.ps1
 . $PSScriptRoot/Public/Show-OAIPlaygroundWebPage.ps1
 . $PSScriptRoot/Public/Show-OAIVectorStoreWebPage.ps1
 . $PSScriptRoot/Public/Stop-OAIRun.ps1
