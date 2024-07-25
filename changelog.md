@@ -1,4 +1,8 @@
-## 0.2.5
+## v0.2.6
+
+- Add Update-TypeData
+
+## v0.2.5
 
 - Fix $model to 'gpt-4o-mini'
 
