@@ -27,11 +27,15 @@
     
     This example invokes the Invoke-FilesToPrompt function to process all Markdown files in the "C:\MyFiles" directory.
 
-    .EXAMPLE
+.EXAMPLE
     Invoke-FilesToPrompt -Path "C:\MyFiles\*.md", "C:\MyOtherFiles\*.md"
     
     This example invokes the Invoke-FilesToPrompt function to process all Markdown files in the "C:\MyFiles" directory.
 
+.EXAMPLE
+    (Invoke-FilesToPrompt (dir . -r *.md))
+
+    This example recursively processes all Markdown files in the current directory.
 #>
 function Invoke-FilesToPrompt {
     [CmdletBinding()]
