@@ -1,3 +1,7 @@
+## 0.2.6
+
+- Added `Show-OAIStatus` takes you to the current status of the OpenAI API website
+
 ## 0.2.5
 
 - Fix $model to 'gpt-4o-mini'
