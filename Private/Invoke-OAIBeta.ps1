@@ -55,6 +55,11 @@ function Invoke-OAIBeta {
         'OpenAI' {
             $headers['Authorization'] = "Bearer $env:OpenAIKey"
         }
+        'AIToolKit' {
+            $Uri = $Uri -replace $baseUrl, ''
+            $script:baseUrl = 'http://127.0.0.1:5272/v1'
+            $Uri = "{0}{1}" -f $baseUrl, $Uri
+        }
 
         'AzureOpenAI' {
             $headers['api-key'] = "$($AzOAISecrets.apiKEY)"
