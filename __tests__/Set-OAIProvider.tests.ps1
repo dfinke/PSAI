@@ -12,6 +12,6 @@ Describe "Set-OAIProvider" -Tag Set-OAIProvider {
 
         # $actual.Parameters.Provider.DefaultValue | Should -Be 'OpenAI'
 
-        $actual.Parameters.Provider.Attributes.ValidValues | Should -Be @('AzureOpenAI', 'OpenAI')
+        $actual.Parameters.Provider.Attributes.ValidValues | Should -Be @('AzureOpenAI', 'OpenAI', 'AIToolKit')
     }
 }
