@@ -25,6 +25,7 @@ function ModelArgumentCompleter {
         "gpt-4o-mini"
         "gpt-4o"
         "Phi-3-mini-4k-directml-int4-awq-block-128-onnx"
+        "mistral-7b-v02-int4-gpu"
     )
 
     foreach ($model in $models) {
