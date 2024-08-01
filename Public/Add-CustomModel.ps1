@@ -14,5 +14,4 @@ function Add-CustomModel {
     else {
         $ModelName | Export-Clixml -Path $AdditionalModelsPath
     }
-    ModelArgumentCompleter -verbose
 }
