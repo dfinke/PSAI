@@ -1,4 +1,5 @@
 function ModelArgumentCompleter {
+    [CmdletBinding()]
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
 
     $models = $(
@@ -24,9 +25,15 @@ function ModelArgumentCompleter {
         "gpt-4o-mini-2024-07-18"
         "gpt-4o-mini"
         "gpt-4o"
-        "Phi-3-mini-4k-directml-int4-awq-block-128-onnx"
-        "mistral-7b-v02-int4-gpu"
     )
+
+    $AdditionalModelsPath = Join-Path $($PSScriptRoot -replace 'Private', 'Public') 'AdditionalModels.clixml'
+    Write-Verbose $AdditionalModelsPath
+    if (Test-Path -Path $AdditionalModelsPath) {
+        Write-Verbose "Adding additional models"
+        $additionalModels = Import-Clixml -Path $AdditionalModelsPath
+        $models += $additionalModels
+    }
 
     foreach ($model in $models) {
         New-Object -TypeName System.Management.Automation.CompletionResult -ArgumentList "'$model'",
