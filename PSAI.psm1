@@ -4,6 +4,8 @@
 . $PSScriptRoot/Private/Get-MultipartFormData.ps1
 
 . $PSScriptRoot/Public/Show-OAIBilling.ps1
+. $PSScriptRoot/Public/Add-CustomModel.ps1
+. $PSScriptRoot/Public/Remove-CustomModel.ps1
 . $PSScriptRoot/Public/Add-OAIVectorStore.ps1
 . $PSScriptRoot/Public/Clear-OAIAllItems.ps1
 . $PSScriptRoot/Public/Clear-OAIAssistants.ps1
