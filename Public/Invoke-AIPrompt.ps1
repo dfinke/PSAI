@@ -1,8 +1,11 @@
 function Invoke-AIPrompt {
     [CmdletBinding()]
     param(
+        [Parameter(Mandatory)]
         $Prompt,
+        [Parameter(Mandatory)]
         $Data,
+        $Model = 'gpt-4o-mini',
         [Switch]$UsePowerShellPersona
     )
 
@@ -17,22 +20,4 @@ function Invoke-AIPrompt {
 
     $result = Invoke-OAIChatCompletion -Messages $messages
     $result.choices[0].message.content
-}
-
-$targetTypes = "System.String", "System.Array"
-
-foreach ($targetType in $targetTypes) {
-    Update-TypeData -TypeName $targetType -MemberType ScriptMethod -MemberName "Chat" -Force -Value {
-        param($Prompt)
-
-        Invoke-AIPrompt -Prompt $Prompt -Data $this
-    }
-}
-
-foreach ($targetType in $targetTypes) {
-    Update-TypeData -TypeName $targetType -MemberType ScriptMethod -MemberName "PSChat" -Force -Value {
-        param($Prompt)
-
-        Invoke-AIPrompt -Prompt $Prompt -Data $this -UsePowerShellPersona
-    }
 }
