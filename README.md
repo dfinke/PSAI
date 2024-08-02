@@ -7,10 +7,13 @@
     <img src="https://img.shields.io/twitter/follow/dfinke.svg?style=social&label=Follow%20%40dfinke"></a>
   <a href="https://youtube.com/@dougfinke">
     <img src="https://img.shields.io/youtube/channel/subscribers/UCP47ZkO5EDkoI2sr-3P4ShQ"></a>
-  <!-- <a href="https://www.powershellgallery.com/packages/PSAI/">
+</p>
+
+<p align="center">
+  <a href="https://www.powershellgallery.com/packages/PSAI/">
     <img src="https://img.shields.io/powershellgallery/v/PSAI.svg"></a>
   <a href="https://www.powershellgallery.com/packages/PSAI/">
-    <img src="https://img.shields.io/powershellgallery/dt/PSAI.svg"></a> -->    
+    <img src="https://img.shields.io/powershellgallery/dt/PSAI.svg"></a> 
 </p>
 
 <p align="center">
@@ -19,11 +22,7 @@
 
 # PSAI
 
-  <a href="https://www.powershellgallery.com/packages/PSAI/">
-    <img src="https://img.shields.io/powershellgallery/v/PSAI.svg"></a></br></br>
-
-The OpenAI PowerShell module provides convenient access to the OpenAI APIs from the console and from PowerShell scripts.
-
+Imagine empowering your PowerShell scripts with the intelligence of OpenAI. With PSAI, I’ve transformed how we interact with AI, making it as simple as running a command. PSAI bridges the gap between PowerShell and AI, enabling seamless integration for file searches, data analysis, and more. It's not just about automation; it's about revolutionizing what we can achieve with just a few lines of code. This module opens a world of possibilities, making AI accessible directly from your console and your scripts.
 ## Release v0.2.0
 As of June 19, 2024
 
