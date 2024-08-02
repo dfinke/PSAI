@@ -127,3 +127,21 @@ Set-Alias noaia New-OAIAssistant
 Set-Alias noait New-OAIThread
 Set-Alias uoaia Update-OAIAssistant
 Set-Alias ai Invoke-OAIChat
+
+$targetTypes = "System.String", "System.Array"
+
+foreach ($targetType in $targetTypes) {
+    Update-TypeData -TypeName $targetType -MemberType ScriptMethod -MemberName "Chat" -Force -Value {
+        param($Prompt)
+
+        Invoke-AIPrompt -Prompt $Prompt -Data $this
+    }
+}
+
+foreach ($targetType in $targetTypes) {
+    Update-TypeData -TypeName $targetType -MemberType ScriptMethod -MemberName "PSChat" -Force -Value {
+        param($Prompt)
+
+        Invoke-AIPrompt -Prompt $Prompt -Data $this -UsePowerShellPersona
+    }
+}
