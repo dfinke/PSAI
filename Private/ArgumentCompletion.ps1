@@ -34,6 +34,7 @@ function ModelArgumentCompleter {
 
 if (Get-Command -ErrorAction SilentlyContinue -name Register-ArgumentCompleter) {
     $functionNames = $(
+        'Invoke-AIPrompt'
         'Invoke-Chat'
         'Invoke-OAIChat'
         'Invoke-OAIChatCompletion'

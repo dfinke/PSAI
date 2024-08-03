@@ -1,4 +1,9 @@
-## 0.2.5
+## v0.2.6
+
+- Added `Invoke-AIPrompt` - Uses persona and system messages 
+- Added `Update-TypeData` to extend `System.String` and `System.Array`
+
+## v0.2.5
 
 - Fix $model to 'gpt-4o-mini'
 

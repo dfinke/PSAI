@@ -1,6 +1,6 @@
 @{
     RootModule        = 'PSAI.psm1'
-    ModuleVersion     = '0.2.5'
+    ModuleVersion     = '0.2.6'
     GUID              = '68662d19-a8f1-484f-b1b7-3bf0e8a436df'
     Author            = 'Douglas Finke'
     CompanyName       = 'Doug Finke'
@@ -22,7 +22,6 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Invoke-OAIBeta'
 
         # Public
-        'Show-OAIBilling'
         'Add-OAIVectorStore'
         'Clear-OAIAllItems'
         'Clear-OAIAssistants'
@@ -73,6 +72,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Get-UnitTestingStatus'
         'Import-OAIAssistant'
         'Invoke-AIExplain'
+        'Invoke-AIPrompt'
         'Invoke-FilesToPrompt'
         'Invoke-OAIChat'
         'Invoke-OAIChatCompletion'
@@ -107,6 +107,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Set-OAIProvider'
         'Show-OAIAPIReferenceWebPage'
         'Show-OAIAssistantWebPage'
+        'Show-OAIBilling'
         'Show-OAIPlaygroundWebPage'
         'Show-OAIVectorStoreWebPage'
         'Stop-OAIRun'
