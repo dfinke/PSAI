@@ -5,12 +5,12 @@
 .DESCRIPTION
     Takes one or more paths to files or directories and outputs every file, recursively, each one preceded with its filename like this:
 
-    path/to/file.py
+    path/to/file.ps1
     ----
-    Contents of file.py goes here
+    Contents of file.ps1 goes here
 
     ---
-    path/to/file2.py
+    path/to/file2.ps1
     ---
     ...
 
