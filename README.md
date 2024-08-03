@@ -23,8 +23,8 @@
 # PSAI
 
 Imagine empowering your PowerShell scripts with the intelligence of OpenAI. With PSAI, I’ve transformed how we interact with AI, making it as simple as running a command. PSAI bridges the gap between PowerShell and AI, enabling seamless integration for file searches, data analysis, and more. It's not just about automation; it's about revolutionizing what we can achieve with just a few lines of code. This module opens a world of possibilities, making AI accessible directly from your console and your scripts.
-## Release v0.2.0
-As of June 19, 2024
+
+----
 
 This release supports the latest OpenAI API changes.
 Here's what's new:
