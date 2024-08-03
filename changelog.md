@@ -1,6 +1,7 @@
 ## v0.2.6
 
-- Add Update-TypeData
+- Added `Invoke-AIPrompt` - Uses persona and system messages 
+- Added `Update-TypeData` to extend `System.String` and `System.Array`
 
 ## v0.2.5
 
