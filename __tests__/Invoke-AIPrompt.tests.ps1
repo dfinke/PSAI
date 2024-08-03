@@ -12,7 +12,8 @@ Describe "Invoke-AIPrompt" -Tag Invoke-AIPrompt {
 
         $keyArray[0] | Should -BeExactly 'Prompt'
         $keyArray[1] | Should -BeExactly 'Data'
-        $keyArray[2] | Should -BeExactly 'UsePowerShellPersona'
+        $keyArray[2] | Should -BeExactly 'Model'
+        $keyArray[3] | Should -BeExactly 'UsePowerShellPersona'
 
         $actual.Parameters['UsePowerShellPersona'].SwitchParameter | Should -Be $true
     }
