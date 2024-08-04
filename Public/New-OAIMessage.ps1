@@ -41,16 +41,29 @@ function New-OAIMessage {
         [Parameter(Mandatory)]
         $Content,
         $Attachments,
-        $Metadata
+        $Metadata,
+        [switch]
+        $IsGemini
     )
 
     Process {
         $url = $baseUrl + "/threads/$ThreadId/messages"
+
         $Method = 'Post'
 
-        $body = @{
+        $body = !$IsGemini ?  @{
             role    = $Role
             content = $Content
+        } : @{
+            contents = @(
+            @{
+                parts = @(
+                    @{
+                        text = $Content
+                    }
+                )
+            }
+        )
         }
 
         if ($Attachments) {
