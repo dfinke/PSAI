@@ -1,3 +1,7 @@
+## v0.2.7
+
+- Added new OpenAI model
+
 ## v0.2.6
 
 - Added `Invoke-AIPrompt` - Uses persona and system messages 
