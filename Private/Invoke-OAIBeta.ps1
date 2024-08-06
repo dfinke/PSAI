@@ -51,9 +51,15 @@ function Invoke-OAIBeta {
 
     $Provider = Get-OAIProvider
     $AzOAISecrets = Get-AzOAISecrets
+
     switch ($Provider) {
         'OpenAI' {
             $headers['Authorization'] = "Bearer $env:OpenAIKey"
+        }
+        'AIToolKit' {
+            $Uri = $Uri -replace $baseUrl, ''
+            $script:baseUrl = 'http://127.0.0.1:5272/v1'
+            $Uri = "{0}{1}" -f $baseUrl, $Uri
         }
 
         'AzureOpenAI' {
@@ -76,17 +82,30 @@ function Invoke-OAIBeta {
             }
             $Uri = "{0}/openai{1}{2}api-version={3}" -f $AzOAISecrets.apiURI, $Uri, $separator, $AzOAISecrets.apiVersion         
         }
+
+        'Gemini' {
+            $Method = 'POST'
+            $Uri = 'https://generativelanguage.googleapis.com/{0}/models/{1}?key={2}' -f 
+                $script:GeminiOAISecrets.apiVersion,
+                $script:GeminiOAISecrets.modelName,
+                $script:GeminiOAISecrets.apiKEY
+        }
     }    
 
     $params = @{
         Uri     = $Uri
         Method  = $Method
         Headers = $headers
+        ContentType = 'application/json'
     }
     
     if ($Body) {
         if ($Body -is [System.IO.Stream]) {
             $params['Body'] = $Body
+        }
+        elseif ($Provider -eq 'Gemini') {
+            $params.Remove('Headers')
+            $params['Body'] = $Body.messages | ConvertTo-Json -Depth 10 -Compress
         }
         else {
             $params['Body'] = $Body | ConvertTo-Json -Depth 10
@@ -97,7 +116,7 @@ function Invoke-OAIBeta {
         $params['OutFile'] = $OutFile
     }
 
-    Write-Verbose ($params | ConvertTo-Json -Depth 5)
+    Write-Verbose "Body: $($params.Body)"
     
     if (Test-IsUnitTestingEnabled) {
         Write-Host "Data saved. Use Get-UnitTestingData to retrieve the data."
@@ -115,7 +134,7 @@ function Invoke-OAIBeta {
     }
 
     try {
-        Invoke-RestMethod @params
+        Invoke-RestMethod  @params
     } 
     catch {
         if ($Provider -eq 'OpenAI') {
@@ -131,6 +150,10 @@ function Invoke-OAIBeta {
 
         if ($Provider -eq 'AzureOpenAI') {
             $targetError = $_.Exception.Message
+        }
+
+        else {
+            $targetError = $_
         }
 
         # Write-Error $targetError

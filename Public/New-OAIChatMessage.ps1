@@ -26,11 +26,23 @@ function New-OAIChatMessage {
     param(
         $Content,
         [ValidateSet('system', 'user', 'assistant')]
-        $Role = 'user'       
+        $Role = 'user',
+        [switch]
+        $IsGemini
     )
 
-    [PSCustomObject]@{
+    !$IsGemini ? [PSCustomObject]@{
         role    = $Role
         content = $Content
+    } : @{
+        contents = @(
+            @{
+            parts = @(
+                @{
+                    text = $Content
+                }
+            )
+        }
+    )
     }
 }
