@@ -52,6 +52,11 @@ function Invoke-OAIBeta {
     $Provider = Get-OAIProvider
     $AzOAISecrets = Get-AzOAISecrets
     switch ($Provider) {
+        'GitHub' {
+            $headers['Authorization'] = "Bearer $env:GITHUB_TOKEN"
+            $uri = "https://models.inference.ai.azure.com/chat/completions"
+        }
+
         'OpenAI' {
             $headers['Authorization'] = "Bearer $env:OpenAIKey"
         }
@@ -118,7 +123,7 @@ function Invoke-OAIBeta {
         Invoke-RestMethod @params
     } 
     catch {
-        if ($Provider -eq 'OpenAI') {
+        if ($Provider -eq 'OpenAI' -or $Provider -eq 'GitHub') {
             $message = $_.ErrorDetails.Message
             if (Test-JsonReplacement $message -ErrorAction SilentlyContinue) {            
                 $targetError = $message | ConvertFrom-Json
