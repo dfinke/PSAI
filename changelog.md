@@ -1,7 +1,7 @@
 ## v0.2.8
 
 - For users on an older version of PowerShell
-    - Don't use ternary the operator or parallel processing
+    - Don't use the ternary operator or parallel processing
 
 ## v0.2.7
 
