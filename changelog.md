@@ -1,3 +1,8 @@
+## v0.2.8
+
+- For users on an older version of PowerShell
+    - Don't use ternary the operator or parallel processing
+
 ## v0.2.7
 
 - Added new OpenAI model

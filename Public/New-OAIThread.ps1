@@ -49,11 +49,22 @@ function New-OAIThread {
     $url = $baseUrl + '/threads'
     $Method = 'Post'
 
-    $body = (Get-OAIProvider) -eq 'OpenAI' ? @{
-        messages       = $Messages
-        tool_resources = $ToolResources
-        metadata       = $Metadata
-    } : ''
+    # $body = (Get-OAIProvider) -eq 'OpenAI' ? @{
+    #     messages       = $Messages
+    #     tool_resources = $ToolResources
+    #     metadata       = $Metadata
+    # } : ''
+    
+    if ((Get-OAIProvider) -eq 'OpenAI') {
+        $body = @{
+            messages       = $Messages
+            tool_resources = $ToolResources
+            metadata       = $Metadata
+        }
+    }
+    else {
+        $body = ''
+    }
     
     Invoke-OAIBeta -Uri $url -Method $Method -Body $body
 }

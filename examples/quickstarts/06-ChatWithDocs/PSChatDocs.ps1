@@ -7,9 +7,19 @@ function PSChatDocs {
     )
 
     Write-Host "Uploading files..." -ForegroundColor Cyan
-    $files = Get-ChildItem $Path | ForEach-Object -Parallel {
-        Invoke-OAIUploadFile -Path $_.FullName
+    
+    if ($PSVersionTable.PSVersion.Major -lt 7) {
+        # slower sequential upload
+        # use a newer version of PowerShell for parallel processing
+        $files = Get-ChildItem $Path | ForEach-Object {
+            Invoke-OAIUploadFile -Path $_.FullName
+        }
+    } else {
+        $files = Get-ChildItem $Path | ForEach-Object -Parallel {
+            Invoke-OAIUploadFile -Path $_.FullName
+        }
     }
+
 
     Write-Host "Creating Assistant..." -ForegroundColor Cyan
     $ToolResources = @{
