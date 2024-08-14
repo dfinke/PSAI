@@ -9,6 +9,9 @@ function ConvertTo-OpenAIFunctionSpec {
         .PARAMETER targetCode
         The PowerShell function to convert to an OpenAI function specification.
 
+        .PARAMETER Strict
+        When Structured Outputs are enabled, model outputs will match the supplied tool definition.
+
         .PARAMETER Compress
         Indicates whether to compress the output JSON.
 
@@ -24,6 +27,7 @@ function ConvertTo-OpenAIFunctionSpec {
     [CmdletBinding()]
     param(
         $targetCode,
+        [Switch]$Strict,
         [Switch]$Compress,
         [Switch]$Raw
     )
@@ -42,10 +46,9 @@ function ConvertTo-OpenAIFunctionSpec {
             $targetDescription = $descriptions.FunctionDescription
         }
 
-        $functionSpec += [ordered]@{
+        $newFunctionSpec = [ordered]@{
             name        = $function.Name
-            description = $targetDescription
-
+            description = $targetDescription         
             parameters  = [ordered]@{
                 type       = 'object'
                 properties = [ordered]@{}
@@ -53,6 +56,12 @@ function ConvertTo-OpenAIFunctionSpec {
             }
         }
 
+        if($Strict) {
+            $newFunctionSpec["strict"] = $true
+            $newFunctionSpec["parameters"]["additionalProperties"] = $false
+        }
+
+        $functionSpec += $newFunctionSpec
         $properties = $functionSpec[-1].parameters.properties
         $parameters = $function.Body.ParamBlock.Parameters
         foreach ($parameter in $parameters) {

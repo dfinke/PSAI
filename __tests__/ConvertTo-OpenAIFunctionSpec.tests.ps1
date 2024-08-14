@@ -1,6 +1,23 @@
-Describe "ConvertTo-OpenAIFunctionSpec" {
+Describe "ConvertTo-OpenAIFunctionSpec" -Tag ConvertTo-OpenAIFunctionSpec {
     BeforeAll {
         Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
+    }
+
+    It "should have these parameters" {
+        $actual = Get-Command ConvertTo-OpenAIFunctionSpec -ErrorAction SilentlyContinue
+     
+        $actual | Should -Not -BeNullOrEmpty
+
+        $keyArray = $actual.Parameters.Keys -as [array]
+
+        $keyArray[0] | Should -BeExactly 'targetCode'
+        $keyArray[1] | Should -BeExactly 'Strict'
+        $keyArray[2] | Should -BeExactly 'Compress'
+        $keyArray[3] | Should -BeExactly 'Raw'
+
+        $actual.Parameters.Strict.SwitchParameter | Should -Be $true
+        $actual.Parameters.Compress.SwitchParameter | Should -Be $true
+        $actual.Parameters.Raw.SwitchParameter | Should -Be $true
     }
 
     It "Converts a function with no parameters" {
@@ -12,6 +29,21 @@ function Test-Function {}
         $actualFunctionSpec.Count | Should -BeExactly 1
         $actualFunctionSpec[0].name | Should -BeExactly 'Test-Function'
         $actualFunctionSpec[0].description | Should -BeExactly 'not supplied'
+        $actualFunctionSpec[0].parameters.type | Should -BeExactly 'object'
+        $actualFunctionSpec[0].parameters.properties | Should -BeNullOrEmpty
+        $actualFunctionSpec[0].required.Count | Should -BeExactly 0        
+    }
+
+    It "Converts a function with and enables strict" {
+        $targetCode = @'
+function Test-Function {}
+'@
+        $actualFunctionSpec = ConvertTo-OpenAIFunctionSpec $targetCode -strict | ConvertFrom-Json
+
+        $actualFunctionSpec.Count | Should -BeExactly 1
+        $actualFunctionSpec[0].name | Should -BeExactly 'Test-Function'
+        $actualFunctionSpec[0].description | Should -BeExactly 'not supplied'
+        $actualFunctionSpec[0].strict | Should -Be $true
         $actualFunctionSpec[0].parameters.type | Should -BeExactly 'object'
         $actualFunctionSpec[0].parameters.properties | Should -BeNullOrEmpty
         $actualFunctionSpec[0].required.Count | Should -BeExactly 0        
