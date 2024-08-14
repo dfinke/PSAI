@@ -7,8 +7,16 @@ Describe "Get-OAIFunctionCallSpec" -Tag Get-OAIFunctionCallSpec {
         $actual = Get-Command Get-OAIFunctionCallSpec -ErrorAction SilentlyContinue
         $actual | Should -Not -BeNullOrEmpty
 
-        $actual.Parameters.Keys.Contains('functionInfo') | Should -Be $true
-        $actual.Parameters['functionInfo'].ParameterType.FullName | Should -Be 'System.Management.Automation.FunctionInfo'        
+        $keyArray = $actual.Parameters.Keys -as [array]
+
+        $keyArray[0] | Should -BeExactly 'functionInfo'
+        $keyArray[1] | Should -BeExactly 'Strict'
+
+        $actual.Parameters['Strict'].SwitchParameter | Should -Be $true
+        
+        $actual.Parameters['functionInfo'].ParameterType.FullName | Should -Be 'System.Management.Automation.FunctionInfo'
+
+        $actual.Parameters.Strict.Attributes.Mandatory | Should -Be $false
     }
 
     It "Test if Get-OAIFunctionCallSpec is null" {
@@ -37,6 +45,33 @@ Describe "Get-OAIFunctionCallSpec" -Tag Get-OAIFunctionCallSpec {
 
         $actual.Contains('type') | Should -Be $true
         $actual.type | Should -Be 'function'
+
+        Get-ChildItem function:dotest | Remove-Item
+    }
+
+    It "Test Get-OAIFunctionCallSpec sets string" {
+        function DoTest {
+            <#
+            .DESCRIPTION
+            This is a test function
+            #>
+            param(
+                [string]$name
+            )
+            Write-Host "Hello $name"
+        }
+
+        $actual = Get-OAIFunctionCallSpec -functionInfo (Get-Command DoTest) -Strict
+        $actual | Should -Not -BeNullOrEmpty
+
+        $actual.function.strict | Should -Be $true
+        $actual.function.parameters.additionalProperties | Should -Be $false
+        
+        $actual.function.name | Should -Be 'DoTest'
+        $actual.function.description | Should -Be 'not supplied'        
+        $actual.function.parameters.properties.name | Should -Not -BeNullOrEmpty
+        $actual.function.parameters.properties.name.type | Should -Be 'string'
+        $actual.function.parameters.properties.name.description | Should -Be 'not supplied'
 
         Get-ChildItem function:dotest | Remove-Item
     }
