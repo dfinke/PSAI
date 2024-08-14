@@ -1,3 +1,7 @@
+## v0.2.9
+
+- Added `strict` parameter for function calling
+
 ## v0.2.8
 
 - For users on an older version of PowerShell
