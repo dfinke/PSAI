@@ -52,6 +52,7 @@
 . $PSScriptRoot/Public/Invoke-AIPrompt.ps1
 . $PSScriptRoot/Public/Invoke-FilesToPrompt.ps1
 . $PSScriptRoot/Public/Invoke-OAIChat.ps1
+. $PSScriptRoot/Public/Invoke-ChatGPT.ps1
 . $PSScriptRoot/Public/Invoke-OAIChatCompletion.ps1
 . $PSScriptRoot/Public/Invoke-OAIUploadFile.ps1
 . $PSScriptRoot/Public/Invoke-QuickChat.ps1

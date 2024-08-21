@@ -1,6 +1,6 @@
 @{
     RootModule        = 'PSAI.psm1'
-    ModuleVersion     = '0.2.9'
+    ModuleVersion     = '0.2.10'
     GUID              = '68662d19-a8f1-484f-b1b7-3bf0e8a436df'
     Author            = 'Douglas Finke'
     CompanyName       = 'Doug Finke'
@@ -75,6 +75,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Invoke-AIPrompt'
         'Invoke-FilesToPrompt'
         'Invoke-OAIChat'
+        'Invoke-ChatGPT'
         'Invoke-OAIChatCompletion'
         'Invoke-OAIUploadFile'
         'Invoke-QuickChat'
@@ -133,6 +134,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'noait'
         'roaia'
         'uoaia'
+        'chatgpt'
     )
 
     PrivateData       = @{
