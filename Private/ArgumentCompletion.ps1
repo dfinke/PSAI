@@ -37,6 +37,7 @@ if (Get-Command -ErrorAction SilentlyContinue -name Register-ArgumentCompleter) 
     $functionNames = $(
         'Invoke-AIPrompt'
         'Invoke-Chat'
+        'Invoke-ChatGPT'
         'Invoke-OAIChat'
         'Invoke-OAIChatCompletion'
         'New-OAIAssistant'
