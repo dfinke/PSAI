@@ -1,3 +1,10 @@
+## v0.2.10
+
+- Added `Invoke-ChatGPT` alias `ChatGPT`
+    - `chatgpt 'capital of France'`
+    - `cat test.yaml | chatgpt 'convert to json'`
+    - `get-cliboard | chatgpt 'convert to csv' -model 'gpt-4o'`
+
 ## v0.2.9
 
 - Added `strict` parameter for function calling
