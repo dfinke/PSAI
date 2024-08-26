@@ -30,10 +30,11 @@ function dumpJson {
     param(
         [Parameter(ValueFromPipeline)]
         [object]$obj,
-        $Depth = 10
+        $Depth = 10,
+        [Switch]$Compress
     )
     
     Process {
-        ConvertTo-Json $obj -Depth $Depth
+        ConvertTo-Json $obj -Depth $Depth -Compress:$Compress
     }
 }
