@@ -33,8 +33,17 @@ function dumpJson {
         $Depth = 10,
         [Switch]$Compress
     )
-    
+    begin {
+        $pscExists = $null -ne (Get-Module -list PwshSpectreConsole -ErrorAction SilentlyContinue)
+    }
     Process {
-        ConvertTo-Json $obj -Depth $Depth -Compress:$Compress
+
+        $result = ConvertTo-Json $obj -Depth $Depth -Compress:$Compress
+        if ($pscExists) {
+            $result | Format-SpectreJson
+        }
+        else {
+            $result        
+        }
     }
 }
