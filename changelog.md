@@ -1,3 +1,7 @@
+## v0.2.10
+
+- Added o1-* models
+
 ## v0.2.9
 
 - Added `strict` parameter for function calling
