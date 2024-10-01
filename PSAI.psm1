@@ -100,6 +100,7 @@
 . $PSScriptRoot/Public/Update-OAIThread.ps1
 . $PSScriptRoot/Public/Update-OAIVectorStore.ps1
 . $PSScriptRoot/Public/Wait-OAIOnRun.ps1
+. $PSScriptRoot/Public/ConvertTo-OAIMessage.ps1
 
 $script:EnableUnitTesting = $false
 $script:InvokeOAIUnitTestingData = $null
