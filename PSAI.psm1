@@ -12,6 +12,7 @@
 . $PSScriptRoot/Public/ConvertFrom-OAIAssistant.ps1
 . $PSScriptRoot/Public/ConvertFrom-UnixTimestamp.ps1
 . $PSScriptRoot/Public/ConvertTo-OAIAssistant.ps1
+. $PSScriptRoot/Public/ConvertTo-OAIMessage.ps1
 . $PSScriptRoot/Public/ConvertTo-OpenAIFunctionSpec.ps1
 . $PSScriptRoot/Public/ConvertTo-OpenAIFunctionSpecDataType.ps1
 . $PSScriptRoot/Public/ConvertTo-ToolFormat.ps1
@@ -72,6 +73,7 @@
 . $PSScriptRoot/Public/New-OAIVectorStoreFile.ps1
 . $PSScriptRoot/Public/New-OAIVectorStoreFileBatch.ps1
 . $PSScriptRoot/Public/Out-OAIMessages.ps1
+. $PSScriptRoot/Public/Register-Tool.ps1
 . $PSScriptRoot/Public/Remove-OAIAssistant.ps1
 . $PSScriptRoot/Public/Remove-OAIFile.ps1
 . $PSScriptRoot/Public/Remove-OAIMessage.ps1
@@ -100,7 +102,6 @@
 . $PSScriptRoot/Public/Update-OAIThread.ps1
 . $PSScriptRoot/Public/Update-OAIVectorStore.ps1
 . $PSScriptRoot/Public/Wait-OAIOnRun.ps1
-. $PSScriptRoot/Public/ConvertTo-OAIMessage.ps1
 
 $script:EnableUnitTesting = $false
 $script:InvokeOAIUnitTestingData = $null
