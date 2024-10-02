@@ -3,7 +3,6 @@
 . $PSScriptRoot/Private/Invoke-OAIBeta.ps1
 . $PSScriptRoot/Private/Get-MultipartFormData.ps1
 
-. $PSScriptRoot/Public/llm/openai/New-OpenAIChat.ps1
 . $PSScriptRoot/Public/Add-OAIVectorStore.ps1
 . $PSScriptRoot/Public/Clear-OAIAllItems.ps1
 . $PSScriptRoot/Public/Clear-OAIAssistants.ps1
@@ -55,9 +54,11 @@
 . $PSScriptRoot/Public/Invoke-FilesToPrompt.ps1
 . $PSScriptRoot/Public/Invoke-OAIChat.ps1
 . $PSScriptRoot/Public/Invoke-OAIChatCompletion.ps1
+. $PSScriptRoot/Public/Invoke-OAIFunctionCall.ps1
 . $PSScriptRoot/Public/Invoke-OAIUploadFile.ps1
 . $PSScriptRoot/Public/Invoke-QuickChat.ps1
 . $PSScriptRoot/Public/Invoke-SimpleQuestion.ps1
+. $PSScriptRoot/Public/llm/openai/New-OpenAIChat.ps1
 . $PSScriptRoot/Public/New-ChatRequestAssistantMessage.ps1
 . $PSScriptRoot/Public/New-ChatRequestSystemMessage.ps1
 . $PSScriptRoot/Public/New-ChatRequestToolMessage.ps1
