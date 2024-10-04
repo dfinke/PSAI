@@ -3,6 +3,10 @@
 . $PSScriptRoot/Private/Invoke-OAIBeta.ps1
 . $PSScriptRoot/Private/Get-MultipartFormData.ps1
 
+# Agent Tools 
+Import-Module $PSScriptRoot/Public/Tools/CalculatorTool.psm1
+
+# Public Functions
 . $PSScriptRoot/Public/New-Agent.ps1
 . $PSScriptRoot/Public/Get-AgentResponse.ps1
 . $PSScriptRoot/Public/Invoke-InteractiveCLI.ps1
