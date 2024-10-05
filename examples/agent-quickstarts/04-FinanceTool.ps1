@@ -1,5 +1,5 @@
 param(
-    [string]$prompt,
+    [string]$prompt = 'What did Microsoft, Apple and Google close at?',
     [Switch]$ShowToolCalls
 )
 
