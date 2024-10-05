@@ -5,6 +5,7 @@
 
 # Agent Tools 
 Import-Module $PSScriptRoot/Public/Tools/CalculatorTool.psm1
+Import-Module $PSScriptRoot/Public/Tools/TavilyTool.psm1
 
 # Public Functions
 . $PSScriptRoot/Public/New-Agent.ps1
