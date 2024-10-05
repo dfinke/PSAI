@@ -1,3 +1,66 @@
+<#
+.SYNOPSIS
+Provides a set of mathematical operations as tools.
+
+.DESCRIPTION
+The CalculatorTool module includes functions for various mathematical operations such as addition, subtraction, multiplication, division, exponentiation, factorial calculation, prime checking, and square root calculation. Each function returns the result in JSON format.
+
+.FUNCTIONS
+New-CalculatorTool
+    Initializes and registers the CalculatorTool functions.
+
+Invoke-Add
+    Adds two floating-point numbers and returns the result in JSON format.
+
+Invoke-Subtract
+    Subtracts the second floating-point number from the first and returns the result in JSON format.
+
+Invoke-Multiply
+    Multiplies two floating-point numbers and returns the result in JSON format.
+
+Invoke-Divide
+    Divides the first floating-point number by the second and returns the result in JSON format. Handles division by zero.
+
+Invoke-Exponentiate
+    Raises the first floating-point number to the power of the second and returns the result in JSON format.
+
+Invoke-Factorial
+    Calculates the factorial of a non-negative integer and returns the result. Returns "NaN" for negative inputs.
+
+Invoke-IsPrime
+    Checks if an integer is a prime number and returns the result in JSON format.
+
+Invoke-SquareRoot
+    Calculates the square root of a non-negative floating-point number and returns the result in JSON format. Handles negative inputs.
+
+.EXAMPLE
+# Initialize the CalculatorTool
+New-CalculatorTool
+
+# Perform addition
+Invoke-Add -a 5 -b 3
+
+# Perform subtraction
+Invoke-Subtract -a 10 -b 4
+
+# Perform multiplication
+Invoke-Multiply -a 6 -b 7
+
+# Perform division
+Invoke-Divide -a 20 -b 4
+
+# Perform exponentiation
+Invoke-Exponentiate -a 2 -b 3
+
+# Calculate factorial
+Invoke-Factorial -n 5
+
+# Check if a number is prime
+Invoke-IsPrime -n 11
+
+# Calculate square root
+Invoke-SquareRoot -n 16
+#>
 function New-CalculatorTool {
     [CmdletBinding()]
     param()
@@ -100,14 +163,6 @@ function Invoke-Factorial {
         Write-Host "Attempt to calculate factorial of a negative number"
         return "NaN"
     }
-
-    # if ($n -lt 0) {
-    #     Write-Host "Attempt to calculate factorial of a negative number"
-    #     return (ConvertTo-Json -Compress -InputObject @{operation = 'factorial'; error = 'Factorial of a negative number is undefined' })
-    # }
-    # $result = [math]::Factorial($n)
-    # Write-Host "Calculating factorial of $n to get $result"
-    # return (ConvertTo-Json -Compress -InputObject @{operation = 'factorial'; result = $result })
 }
 
 function Invoke-IsPrime {
