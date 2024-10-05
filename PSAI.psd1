@@ -23,6 +23,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
 
         # Agent Tools
         'New-CalculatorTool'
+        'New-TavilyAITool'
 
         # Public
         'New-Agent'
