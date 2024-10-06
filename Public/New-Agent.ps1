@@ -25,7 +25,7 @@ $PrintResponse = {
         $script:messages += @($response.choices[0].message | ConvertTo-OAIMessage)
     
         $script:messages += @(Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls)
-        $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel
+        # $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel
     } until ($response.choices.finish_reason -eq "stop")
 
     return $response.choices[0].message.content
