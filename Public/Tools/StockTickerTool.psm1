@@ -24,7 +24,7 @@ function New-StockTickerTool {
     param()
     
     if ($null -eq $env:financialmodelingprep) {
-        throw "Please set the environment variable 'financialmodelingprep' to your API key. Get it here: https://intelligence.financialmodelingprep.com/developer/docs"
+        throw "Please set the environment variable '$env:financialmodelingprep' to your API key. Get it here: https://intelligence.financialmodelingprep.com/developer/docs"
     }
 
     Write-Verbose "New-StockTickerTool was called"
