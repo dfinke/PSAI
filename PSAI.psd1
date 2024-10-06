@@ -1,6 +1,6 @@
 @{
     RootModule        = 'PSAI.psm1'
-    ModuleVersion     = '0.2.10'
+    ModuleVersion     = '0.2.11'
     GUID              = '68662d19-a8f1-484f-b1b7-3bf0e8a436df'
     Author            = 'Douglas Finke'
     CompanyName       = 'Doug Finke'
@@ -21,7 +21,15 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Get-MultiPartFormData'
         'Invoke-OAIBeta'
 
+        # Agent Tools
+        'New-CalculatorTool'
+        'New-TavilyAITool'
+        'New-StockTickerTool'
+
         # Public
+        'New-Agent'
+        'Get-AgentResponse'
+        'Invoke-InteractiveCLI'
         'Add-OAIVectorStore'
         'Clear-OAIAllItems'
         'Clear-OAIAssistants'
@@ -31,6 +39,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'ConvertFrom-OAIAssistant'
         'ConvertFrom-UnixTimestamp'
         'ConvertTo-OAIAssistant'
+        'ConvertTo-OAIMessage'
         'ConvertTo-OpenAIFunctionSpec'
         'ConvertTo-OpenAIFunctionSpecDataType'
         'ConvertTo-ToolFormat'
@@ -76,6 +85,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Invoke-FilesToPrompt'
         'Invoke-OAIChat'
         'Invoke-OAIChatCompletion'
+        'Invoke-OAIFunctionCall'
         'Invoke-OAIUploadFile'
         'Invoke-QuickChat'
         'Invoke-SimpleQuestion'
@@ -94,7 +104,9 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'New-OAIVectorStore'
         'New-OAIVectorStoreFile'
         'New-OAIVectorStoreFileBatch'
+        'New-OpenAIChat'
         'Out-OAIMessages'
+        'Register-Tool'
         'Remove-OAIAssistant'
         'Remove-OAIFile'
         'Remove-OAIMessage'

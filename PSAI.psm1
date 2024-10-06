@@ -3,6 +3,15 @@
 . $PSScriptRoot/Private/Invoke-OAIBeta.ps1
 . $PSScriptRoot/Private/Get-MultipartFormData.ps1
 
+# Agent Tools 
+Import-Module $PSScriptRoot/Public/Tools/CalculatorTool.psm1
+Import-Module $PSScriptRoot/Public/Tools/TavilyTool.psm1
+Import-Module $PSScriptRoot/Public/Tools/StockTickerTool.psm1
+
+# Public Functions
+. $PSScriptRoot/Public/New-Agent.ps1
+. $PSScriptRoot/Public/Get-AgentResponse.ps1
+. $PSScriptRoot/Public/Invoke-InteractiveCLI.ps1
 . $PSScriptRoot/Public/Add-OAIVectorStore.ps1
 . $PSScriptRoot/Public/Clear-OAIAllItems.ps1
 . $PSScriptRoot/Public/Clear-OAIAssistants.ps1
@@ -12,6 +21,7 @@
 . $PSScriptRoot/Public/ConvertFrom-OAIAssistant.ps1
 . $PSScriptRoot/Public/ConvertFrom-UnixTimestamp.ps1
 . $PSScriptRoot/Public/ConvertTo-OAIAssistant.ps1
+. $PSScriptRoot/Public/ConvertTo-OAIMessage.ps1
 . $PSScriptRoot/Public/ConvertTo-OpenAIFunctionSpec.ps1
 . $PSScriptRoot/Public/ConvertTo-OpenAIFunctionSpecDataType.ps1
 . $PSScriptRoot/Public/ConvertTo-ToolFormat.ps1
@@ -53,9 +63,11 @@
 . $PSScriptRoot/Public/Invoke-FilesToPrompt.ps1
 . $PSScriptRoot/Public/Invoke-OAIChat.ps1
 . $PSScriptRoot/Public/Invoke-OAIChatCompletion.ps1
+. $PSScriptRoot/Public/Invoke-OAIFunctionCall.ps1
 . $PSScriptRoot/Public/Invoke-OAIUploadFile.ps1
 . $PSScriptRoot/Public/Invoke-QuickChat.ps1
 . $PSScriptRoot/Public/Invoke-SimpleQuestion.ps1
+. $PSScriptRoot/Public/llm/openai/New-OpenAIChat.ps1
 . $PSScriptRoot/Public/New-ChatRequestAssistantMessage.ps1
 . $PSScriptRoot/Public/New-ChatRequestSystemMessage.ps1
 . $PSScriptRoot/Public/New-ChatRequestToolMessage.ps1
@@ -72,6 +84,7 @@
 . $PSScriptRoot/Public/New-OAIVectorStoreFile.ps1
 . $PSScriptRoot/Public/New-OAIVectorStoreFileBatch.ps1
 . $PSScriptRoot/Public/Out-OAIMessages.ps1
+. $PSScriptRoot/Public/Register-Tool.ps1
 . $PSScriptRoot/Public/Remove-OAIAssistant.ps1
 . $PSScriptRoot/Public/Remove-OAIFile.ps1
 . $PSScriptRoot/Public/Remove-OAIMessage.ps1
