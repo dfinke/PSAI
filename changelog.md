@@ -1,3 +1,7 @@
+## v0.2.11
+
+* Integrate my PSAI Agents module #35 by @dfinke in https://github.com/dfinke/PSAI/pull/360
+
 ## v0.2.10
 
 - Added o1-* models
