@@ -166,6 +166,8 @@ $agent | Get-AgentResponse $prompt
 Search for information using the TavilyAI tool:
 NOTE: You need to set the `TavilyAIKey` environment variable with your API key. You can get a free key at https://tavily.com.
 
+Set the `TavilyAIKey` environment variable: `$env:TAVILY_API_KEY`
+
 ```powershell
 $agent = New-Agent -Tools (New-TavilyAITool) -ShowToolCalls
 $agent | Get-AgentResponse 'what is the latest news on PowerShell?'
@@ -174,6 +176,8 @@ $agent | Get-AgentResponse 'what is the latest news on PowerShell?'
 #### **Finance Tool**
 Fetch stock market data
 NOTE You can obtain an API key from: https://intelligence.financialmodelingprep.com/developer/docs
+
+Set the `StockTickerKey` environment variable: `$env:financialmodelingprep`
 
 ```powershell
 $agent = New-Agent -Tools (New-StockTickerTool) -ShowToolCalls
