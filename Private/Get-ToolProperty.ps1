@@ -1,3 +1,19 @@
+<#
+.SYNOPSIS
+Retrieves the properties of a specified tool.
+
+.DESCRIPTION
+The Get-ToolProperty function retrieves the properties of a specified tool from a given parameter.
+
+.PARAMETER Parameter
+
+Gets the type from the parameter and returns a tool property object.
+
+.EXAMPLE
+Get-ToolProperty -Parameter "FilePath"
+
+Returns a string type property for the FilePath parameter.
+#>
 function Get-ToolProperty {
     [CmdletBinding()]
     param (
