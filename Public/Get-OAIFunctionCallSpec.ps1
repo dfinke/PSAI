@@ -1,45 +1,83 @@
-<#
-.SYNOPSIS
-Retrieves the OpenAI function call specification for a given function.
-
-.DESCRIPTION
-The Get-OAIFunctionCallSpec function retrieves the OpenAI function call specification for a given function. It takes a FunctionInfo object as input and returns the function call specification in a tool-specific format.
-
-.PARAMETER functionInfo
-Specifies the FunctionInfo object representing the function for which to retrieve the function call specification.
-
-.PARAMETER Strict
-Specifies whether to enforce strict mode when retrieving the function call specification. When strict mode is enabled, the function call specification will include additional information such as parameter descriptions and whether the parameter is required.
-
-.EXAMPLE
-Function Test-Func {param($x)}; $functionInfo = Get-Command -Name "Test-Func"
-Get-OAIFunctionCallSpec -functionInfo $functionInfo
-
-This example retrieves the function call specification for the "Get-Process" function.
-
-.INPUTS
-[System.Management.Automation.FunctionInfo]
-Accepts a FunctionInfo object representing the function for which to retrieve the function call specification.
-
-.OUTPUTS
-[System.Object]
-Returns the function call specification in a tool-specific format.
-#>
 function Get-OAIFunctionCallSpec {
     [CmdletBinding()]
-    param(
-        [System.Management.Automation.FunctionInfo]$functionInfo,
-        [Switch]$Strict
+    param (
+        [string]
+        $CmdletName,
+        [switch]
+        $Strict,
+        [Parameter(HelpMessage = "The ParameterSet to use. Iterate according to documentation")]
+        [int]
+        $ParameterSet = 0,
+        [switch]
+        $ReturnJson,
+        [switch]
+        $ClearRequired
     )
-
-    if ($null -eq $functionInfo) {
-        return
+    
+    begin {
+        if ($CmdletName) {
+            $CommandInfo = Get-Command -Name $CmdletName
+            if ($CommandInfo.ParameterSets.Count -lt $parameterset+1) {
+                Write-Error "ParameterSet $ParameterSet does not exist for $CmdletName. These ParameterSets are available: $($CommandInfo.ParameterSets.Name -join ', ')" -ErrorAction Stop
+            }
+            Write-Verbose "Preparing to generate specification for $CmdletName ParameterSet $($CommandInfo.ParameterSets[$ParameterSet].Name)"
+        }
     }
+    
+    process {
+        # There are not going to be more then one - remove this loop
+        foreach ($Command in $CommandInfo) {
+            # FunctionSpec scaffold:
+            Write-Verbose "Generating specification for $($Command.Name)"
+            $help = Get-Help $Command.Name
+            $description = $help.description.text | Out-String
+            if ($description.Length -gt 1024) {
+                $description = $description.Substring(0, 1024)
+            }
+            $FunctionSpec = [ordered]@{
+                name        = $Command.Name
+                description = $description
+                parameters  = [ordered]@{
+                    type       = 'object'
+                    properties = [ordered]@{}
+                    required   = [System.Collections.Generic.List[string]]@()
+                }
+            }
 
-    $functions = foreach ($function in $functionInfo) {
-        $fnd = Get-FunctionDefinition $function
-        ConvertTo-OpenAIFunctionSpec $fnd -Raw -Strict:$Strict
+            if (!$help.description.text) {
+                $FunctionSpec.Remove("description")
+            }
+
+            if ($Strict) {
+                $FunctionSpec.parameters["additionalProperties"] = $false
+                $FunctionSpec["strict"] = $true
+            }
+            $Parameters = $Command.ParameterSets[$ParameterSet].Parameters | Where-Object {
+                $_.Name -notmatch 'Verbose|Debug|ErrorAction|WarningAction|InformationAction|ErrorVariable|WarningVariable|InformationVariable|OutVariable|OutBuffer|PipelineVariable|WhatIf|Confirm'
+            } | Select-Object Name, ParameterType, IsMandatory, HelpMessage, Attributes -Unique
+            
+            foreach ($Parameter in $Parameters) {
+                $property = Get-ToolProperty $Parameter
+                if ($property){$FunctionSpec.parameters.properties.Add($Parameter.Name, $property)}
+                if ($Parameter.IsMandatory -and !$ClearRequired) {
+                    $FunctionSpec.parameters.required.Add($Parameter.Name)
+                }
+            }
+
+            $result = @{
+                type     = 'function'
+                function = $FunctionSpec
+            }
+            if ($ReturnJson) {
+                return ($result | ConvertTo-Json -Depth 10)
+            }
+            $result
+
+
+        }
     }
-
-    ConvertTo-ToolFormat $functions
+    
+    end {
+        
+    }
 }
