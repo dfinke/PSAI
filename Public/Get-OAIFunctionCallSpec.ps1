@@ -83,7 +83,7 @@ function Get-OAIFunctionCallSpec {
                 $FunctionSpec["strict"] = $true
             }
             $Parameters = $Command.ParameterSets[$ParameterSet].Parameters | Where-Object {
-                $_.Name -notmatch 'Verbose|Debug|ErrorAction|WarningAction|InformationAction|ErrorVariable|WarningVariable|InformationVariable|OutVariable|OutBuffer|PipelineVariable|WhatIf|Confirm|NoHyperLinkConversion'
+                $_.Name -notmatch 'Verbose|Debug|ErrorAction|WarningAction|InformationAction|ErrorVariable|WarningVariable|InformationVariable|OutVariable|OutBuffer|PipelineVariable|WhatIf|Confirm|NoHyperLinkConversion|ProgressAction'
             } | Select-Object Name, ParameterType, IsMandatory, HelpMessage, Attributes -Unique
             
             foreach ($Parameter in $Parameters) {
