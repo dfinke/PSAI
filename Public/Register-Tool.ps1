@@ -20,10 +20,11 @@ function Register-Tool {
     [CmdletBinding()]
     param(
         $FunctionName,
+        $ParameterSet=0,
         [Switch]$Strict
     )
     
     Write-Verbose "Registering tool $FunctionName"
 
-    Get-OAIFunctionCallSpec (Get-Command $FunctionName) -Strict:$Strict 
+    Get-OAIFunctionCallSpec $FunctionName -Strict:$Strict -ParameterSet $ParameterSet
 }

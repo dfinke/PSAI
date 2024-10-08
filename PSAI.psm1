@@ -2,6 +2,7 @@
 . $PSScriptRoot/Private/ArgumentCompletion.ps1
 . $PSScriptRoot/Private/Invoke-OAIBeta.ps1
 . $PSScriptRoot/Private/Get-MultipartFormData.ps1
+. $PSScriptRoot/Private/Get-ToolProperty.ps1
 
 # Agent Tools 
 Import-Module $PSScriptRoot/Public/Tools/CalculatorTool.psm1
