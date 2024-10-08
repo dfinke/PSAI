@@ -83,11 +83,20 @@ function Get-OAIFunctionCallSpec {
                 $FunctionSpec["strict"] = $true
             }
             $Parameters = $Command.ParameterSets[$ParameterSet].Parameters | Where-Object {
-                $_.Name -notmatch 'Verbose|Debug|ErrorAction|WarningAction|InformationAction|ErrorVariable|WarningVariable|InformationVariable|OutVariable|OutBuffer|PipelineVariable|WhatIf|Confirm'
+                $_.Name -notmatch 'Verbose|Debug|ErrorAction|WarningAction|InformationAction|ErrorVariable|WarningVariable|InformationVariable|OutVariable|OutBuffer|PipelineVariable|WhatIf|Confirm|NoHyperLinkConversion'
             } | Select-Object Name, ParameterType, IsMandatory, HelpMessage, Attributes -Unique
             
             foreach ($Parameter in $Parameters) {
                 $property = Get-ToolProperty $Parameter
+                if ($null -eq $property) {
+                    Write-Warning "No type translation found for $($Parameter.Name). Type is $($Parameter.ParameterType)"
+                    continue
+                }
+                try {$ParameterDescription = Get-Help $Command.Name -Parameter $Parameter.Name | Select-Object -ExpandProperty Description | Select-Object -ExpandProperty Text}
+                catch {Write-Warning "No description found for $($Parameter.Name)"}
+                if ($ParameterDescription) {
+                    $property['description'] = $ParameterDescription
+                }
                 if ($property){$FunctionSpec.parameters.properties.Add($Parameter.Name, $property)}
                 if ($Parameter.IsMandatory -and !$ClearRequired) {
                     $FunctionSpec.parameters.required.Add($Parameter.Name)

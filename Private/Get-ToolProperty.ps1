@@ -36,7 +36,9 @@ function Get-ToolProperty {
             "string[]" { $property.Add("type", "array"), $property.Add("items", @{type = "string"}) }
             "System.IO.FileInfo" { $property.Add("type", "string") }
             "psobject" { $property.Add("type", "object") }
+            "System.Object" { $property.Add("type", "object") }
             "psobject[]" { $property.Add("type", "object"), $property.Add("items", @{type = "object"})}
+            "System.Object[]" { $property.Add("type", "object"), $property.Add("items", @{type = "object"})}
             { $_ -match 'decimal|float|single|int' } {  $property.Add("type", "number")}
             { $_ -match 'switch|bool|boolean'} {  $property.Add("type", "boolean") }
         }
