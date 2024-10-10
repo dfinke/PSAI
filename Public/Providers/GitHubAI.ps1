@@ -53,7 +53,7 @@
         }
 
         #Add messages to the body object
-        $body.messages = $messages
+        if ($null -ne $body.messages) {$body.messages += $messages}
 
         $params = @{
             Headers     = @{ "Authorization" = "$($this.Provider.GetApiKey())" }

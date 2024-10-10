@@ -158,6 +158,7 @@ function Invoke-OAIBeta {
     # Get default providers default model.
     ## TODO implement model passing in all functions
     $model = Get-AIModel
+    Write-Verbose "Using provider: $($model.Provider.Name)"
     Write-Verbose "Using model: $($model.Name)"
     $Response = $model.Chat('',$true,$Body,@())
     if ($response.ResponseObject) {
