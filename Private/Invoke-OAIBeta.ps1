@@ -40,64 +40,103 @@ function Invoke-OAIBeta {
         [Switch]$NotOpenAIBeta        
     )        
     
-    $headers = @{
-        'OpenAI-Beta'  = 'assistants=v2'    
-        'Content-Type' = $ContentType
-    }
 
-    if ($NotOpenAIBeta) {
-        $headers.Remove('OpenAI-Beta')
-    }
+    # $headers = @{
+    #     'OpenAI-Beta'  = 'assistants=v2'    
+    #     'Content-Type' = $ContentType
+    # }
 
-    $Provider = Get-OAIProvider
+    # if ($NotOpenAIBeta) {
+    #     $headers.Remove('OpenAI-Beta')
+    # }
+
+    # Get the correct model based on input and ProviderList
+    # Make sure the Provider List exists
+    $ProviderList = Get-AIProviderList
+
+    # Get the OAI variables
+    $OAIProvider = Get-OAIProvider
+    $OAIApiKey = $env:OpenAIKey
     $AzOAISecrets = Get-AzOAISecrets
-    switch ($Provider) {
-        'OpenAI' {
-            $headers['Authorization'] = "Bearer $env:OpenAIKey"
+    $BodyModel = $Body['model']
+
+    # If the Provider List is empty, try to create it
+    if ($null -eq $ProviderList) {
+        if ($null -ne $OAIApiKey) {
+            $params = @{
+                Provider = 'OpenAI'
+                ApiKey   = $OAIApiKey | ConvertTo-SecureString -AsPlainText -Force
+            }
+            if ($null -ne $BodyModel) {
+                $params['ModelNames'] = $BodyModel
+            }
+            Import-AIProvider @params
+            continue
         }
-
-        'AzureOpenAI' {
-            $headers['api-key'] = "$($AzOAISecrets.apiKEY)"
-            
-            if ($Body -isnot [System.IO.Stream]) {
-                if ($null -ne $Body -and $Body.Contains("model") ) {
-                    $Body.model = $AzOAISecrets.deploymentName
-                }
+        if ($null -ne $AzOAISecrets['apiKEY']) {
+            $params = @{
+                Provider      = 'AzureOpenAI'
+                ApiKey        = $AzOAISecrets.apiKEY |ConvertTo-SecureString -AsPlainText -Force
+                ModelNames = $AzOAISecrets.deploymentName
+                BaseUri       = $AzOAISecrets.apiURI
             }
-
-            $Uri = $Uri -replace $baseUrl, ''
-            if ($Uri.EndsWith('/')) {
-                $Uri = $Uri.Substring(0, $Uri.Length - 1)
-            }
-            
-            $separator = '?'
-            if ($Uri.Contains('?')) {
-                $separator = '&'
-            }
-            $Uri = "{0}/openai{1}{2}api-version={3}" -f $AzOAISecrets.apiURI, $Uri, $separator, $AzOAISecrets.apiVersion         
+            Import-AIProvider @params
+            continue
         }
-    }    
-
-    $params = @{
-        Uri     = $Uri
-        Method  = $Method
-        Headers = $headers
+        throw "No provider has been set up yet. Please read the instructions for the module to set up a provider."
     }
     
-    if ($Body) {
-        if ($Body -is [System.IO.Stream]) {
-            $params['Body'] = $Body
-        }
-        else {
-            $params['Body'] = $Body | ConvertTo-Json -Depth 10
-        }
-    }
 
-    if ($OutFile) {
-        $params['OutFile'] = $OutFile
-    }
 
-    Write-Verbose ($params | ConvertTo-Json -Depth 5)
+    # $Provider = Get-OAIProvider
+    # $AzOAISecrets = Get-AzOAISecrets
+    # switch ($Provider) {
+    #     'OpenAI' {
+    #         $headers['Authorization'] = "Bearer $env:OpenAIKey"
+    #     }
+
+    #     'AzureOpenAI' {
+    #         $headers['api-key'] = "$($AzOAISecrets.apiKEY)"
+            
+    #         if ($Body -isnot [System.IO.Stream]) {
+    #             if ($null -ne $Body -and $Body.Contains("model") ) {
+    #                 $Body.model = $AzOAISecrets.deploymentName
+    #             }
+    #         }
+
+    #         $Uri = $Uri -replace $baseUrl, ''
+    #         if ($Uri.EndsWith('/')) {
+    #             $Uri = $Uri.Substring(0, $Uri.Length - 1)
+    #         }
+            
+    #         $separator = '?'
+    #         if ($Uri.Contains('?')) {
+    #             $separator = '&'
+    #         }
+    #         $Uri = "{0}/openai{1}{2}api-version={3}" -f $AzOAISecrets.apiURI, $Uri, $separator, $AzOAISecrets.apiVersion         
+    #     }
+    # }    
+
+    # $params = @{
+    #     Uri     = $Uri
+    #     Method  = $Method
+    #     Headers = $headers
+    # }
+    
+    # if ($Body) {
+    #     if ($Body -is [System.IO.Stream]) {
+    #         $params['Body'] = $Body
+    #     }
+    #     else {
+    #         $params['Body'] = $Body | ConvertTo-Json -Depth 10
+    #     }
+    # }
+
+    # if ($OutFile) {
+    #     $params['OutFile'] = $OutFile
+    # }
+
+    # Write-Verbose ($params | ConvertTo-Json -Depth 5)
     
     if (Test-IsUnitTestingEnabled) {
         Write-Host "Data saved. Use Get-UnitTestingData to retrieve the data."
@@ -113,27 +152,16 @@ function Invoke-OAIBeta {
         }        
         return
     }
-
-    try {
-        Invoke-RestMethod @params
-    } 
-    catch {
-        if ($Provider -eq 'OpenAI') {
-            $message = $_.ErrorDetails.Message
-            if (Test-JsonReplacement $message -ErrorAction SilentlyContinue) {            
-                $targetError = $message | ConvertFrom-Json
-                $targetError = $targetError.error.message
-            } 
-            else {
-                $targetError = "[{0}] - {1}" -f $Uri, $message
-            }
-        }
-
-        if ($Provider -eq 'AzureOpenAI') {
-            $targetError = $_.Exception.Message
-        }
-
-        # Write-Error $targetError
-        throw $targetError
+    
+    # Remove model from body - handled by modelobject
+    $Body.Remove('model')
+    # Get default providers default model.
+    ## TODO implement model passing in all functions
+    $model = Get-AIModel
+    Write-Verbose "Using model: $($model.Name)"
+    $Response = $model.Chat('',$true,$Body,@())
+    if ($response.ResponseObject) {
+        return $response.ResponseObject
     }
+    throw $Response
 }
