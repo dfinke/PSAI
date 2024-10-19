@@ -43,7 +43,7 @@ function Get-OAIVectorStore {
     )
 
     process {
-        $uri = $baseUrl + "/vector_stores"
+        $uri = "/vector_stores"
         $Method = "Get"
 
         $queryParams = @()

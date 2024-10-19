@@ -34,7 +34,7 @@ function Invoke-OAIBeta {
     param(
         $Uri,
         $Method,
-        $Body,
+        $Body = [ordered]@{},
         $ContentType = 'application/json',
         $OutFile,        
         [Switch]$NotOpenAIBeta        
@@ -58,7 +58,6 @@ function Invoke-OAIBeta {
     $OAIProvider = Get-OAIProvider
     $OAIApiKey = $env:OpenAIKey
     $AzOAISecrets = Get-AzOAISecrets
-    $BodyModel = $Body['model']
 
     # If the Provider List is empty, try to create it
     if ($null -eq $ProviderList) {
@@ -67,18 +66,18 @@ function Invoke-OAIBeta {
                 Provider = 'OpenAI'
                 ApiKey   = $OAIApiKey | ConvertTo-SecureString -AsPlainText -Force
             }
-            if ($null -ne $BodyModel) {
-                $params['ModelNames'] = $BodyModel
+            if ($Body.Keys -contains 'model') {
+                $params['ModelNames'] = $Body['model']
             }
             Import-AIProvider @params
             continue
         }
         if ($null -ne $AzOAISecrets['apiKEY']) {
             $params = @{
-                Provider      = 'AzureOpenAI'
-                ApiKey        = $AzOAISecrets.apiKEY |ConvertTo-SecureString -AsPlainText -Force
+                Provider   = 'AzureOpenAI'
+                ApiKey     = $AzOAISecrets.apiKEY | ConvertTo-SecureString -AsPlainText -Force
                 ModelNames = $AzOAISecrets.deploymentName
-                BaseUri       = $AzOAISecrets.apiURI
+                BaseUri    = $AzOAISecrets.apiURI
             }
             Import-AIProvider @params
             continue
@@ -160,7 +159,7 @@ function Invoke-OAIBeta {
     $model = Get-AIModel
     Write-Verbose "Using provider: $($model.Provider.Name)"
     Write-Verbose "Using model: $($model.Name)"
-    $Response = $model.Chat('',$true,$Body,@())
+    $Response = $model.InvokeModel('', $true, $Body, @(), $Uri, $Method)
     if ($response.ResponseObject) {
         return $response.ResponseObject
     }

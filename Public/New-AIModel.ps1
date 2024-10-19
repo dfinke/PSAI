@@ -5,9 +5,10 @@ function New-AIModel {
         [string] $Id,
         [switch] $Default,
         [string] $ProviderName,
-        [string] $Chat,
-        [string] $NewMessage,
-        [switch] $PassThru
+        # [string] $Chat,
+        # [string] $NewMessage,
+        [switch] $PassThru,
+        [hashtable] $ModelFunctions
     )
     
     begin {
@@ -18,16 +19,18 @@ function New-AIModel {
             PSTypeName = 'AIModel'
             Name = $Name
             Provider = [PSCustomObject]@{}
-            DefaultEndpoint = ''
         }
 
-        if ($Chat) {
-            Add-Member -InputObject $Model -MemberType ScriptMethod -Name Chat -Value $([Scriptblock]::Create($Chat))
-        }
-        if ($NewMessage) {
-            Add-Member -InputObject $Model -MemberType ScriptMethod -Name NewMessage -Value $([Scriptblock]::Create($NewMessage))
-        }
+        # if ($Chat) {
+        #     Add-Member -InputObject $Model -MemberType ScriptMethod -Name Chat -Value $([Scriptblock]::Create($Chat))
+        # }
+        # if ($NewMessage) {
+        #     Add-Member -InputObject $Model -MemberType ScriptMethod -Name NewMessage -Value $([Scriptblock]::Create($NewMessage))
+        # }
         
+        $ModelFunctions.Keys | ForEach-Object {
+            Add-Member -InputObject $Model -MemberType ScriptMethod -Name $_ -Value $([Scriptblock]::Create($ModelFunctions[$_]))
+        }
 
         if ($ProviderName){
             [PSCustomObject]$AIProvider = Get-AIProvider -Name $ProviderName

@@ -112,8 +112,9 @@ function Import-AIProvider {
             $models | ForEach-Object {
                 # Override configured ModelName - this can cause conflicts if not unique
                 $model = @{Name = $_}
-                $model.Add('Chat', $Content.Chat)
-                $model.Add('NewMessage', $Content.NewMessage)
+                # $model.Add('Chat', $Content.Chat)
+                # $model.Add('NewMessage', $Content.NewMessage)
+                $model.Add('ModelFunctions', $Content.ModelFunctions)
                 New-AIModel @model -Provider $providerHash['Name']
             }
 
