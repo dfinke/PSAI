@@ -47,6 +47,10 @@ function Get-OAIFunctionCallSpec {
     begin {
         if ($CmdletName) {
             $CommandInfo = Get-Command -Name $CmdletName
+            if ($CommandInfo -is [System.Management.Automation.AliasInfo]) {
+                Write-Verbose "$CmdletName is an alias for $($CommandInfo.ResolvedCommand.Name)"
+                $CommandInfo = $CommandInfo.ResolvedCommand
+            }
             if ($CommandInfo.ParameterSets.Count -lt $parameterset+1) {
                 Write-Error "ParameterSet $ParameterSet does not exist for $CmdletName. These ParameterSets are available: $($CommandInfo.ParameterSets.Name -join ', ')" -ErrorAction Stop
             }
@@ -92,7 +96,11 @@ function Get-OAIFunctionCallSpec {
                     Write-Warning "No type translation found for $($Parameter.Name). Type is $($Parameter.ParameterType)"
                     continue
                 }
-                try {$ParameterDescription = Get-Help $Command.Name -Parameter $Parameter.Name | Select-Object -ExpandProperty Description | Select-Object -ExpandProperty Text}
+                try {
+                    $ParameterDescription = Get-Help $Command.Name -Parameter $Parameter.Name -ErrorAction Stop |
+                    Select-Object -ExpandProperty Description -ErrorAction Stop |
+                    Select-Object -ExpandProperty Text
+                }
                 catch {Write-Warning "No description found for $($Parameter.Name)"}
                 if ($ParameterDescription) {
                     $property['description'] = $ParameterDescription
