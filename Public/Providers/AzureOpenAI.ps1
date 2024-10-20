@@ -25,8 +25,9 @@
         GetUri      = {
             [CmdletBinding()]
             param(
-                [string]$APIPath = "deployments/$($this.Name)/chat/completions"
+                [string]$APIPath = "chat/completions"
             )
+            if ($APIPath -match 'chat') { $APIPath = "deployments/$($this.Name)/" + $APIPath }
             $PathClean = $APIPath.TrimStart('/').TrimEnd('?')
             if ($PathClean -match '\?') { $PathClean += "&" }else { $PathClean += "?" }
             $uri = "$($this.Provider.BaseUri)/openai/$($PathClean)api-version=$($this.Provider.Version)"
@@ -54,15 +55,15 @@
             param(
                 $prompt,
                 [switch]$ReturnObject,
-                $BodyOptions = @{},
+                $BodyOptions = [ordered]@{},
                 [array]$messages = @(),
-                [string]$Uri = "deployments/$($this.Name)/chat/completions",
+                [string]$Uri = $this.GetUri(),
                 [string]$Method = "Post",
                 [string]$ContentType = 'application/json'
             )
     
             #Initiialize a body object
-            $body = [ordered]@{}
+            #$body = [ordered]@{}
     
             #Add prompt to messages
             if ($prompt.Length -gt 0) {
@@ -70,7 +71,7 @@
             }
 
             #Add messages to the body object
-            if ($messages) { $body.messages += $messages }
+            if ($messages) { $BodyOptions.messages += $messages }
 
             $params = @{
                 Headers     = @{ "api-key" = "$($this.Provider.GetApiKey())" }
