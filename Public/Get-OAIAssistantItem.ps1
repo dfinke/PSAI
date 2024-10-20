@@ -37,7 +37,7 @@ function Get-OAIAssistantItem {
             return
         }
 
-        $url = $baseUrl + "/assistants/$AssistantId"
+        $url = "assistants/$AssistantId"
         $Method = 'Get'
 
         Invoke-OAIBeta -Uri $url -Method $Method

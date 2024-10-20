@@ -45,7 +45,7 @@ function New-OAIMessage {
     )
 
     Process {
-        $url = $baseUrl + "/threads/$ThreadId/messages"
+        $url = "threads/$ThreadId/messages"
         $Method = 'Post'
 
         $body = @{

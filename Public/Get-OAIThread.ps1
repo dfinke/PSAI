@@ -23,7 +23,7 @@ function Get-OAIThread {
         $threadId
     )
 
-    $url = $baseUrl + "/threads/$threadId"
+    $url = "threads/$threadId"
     $Method = 'Get'
 
     Invoke-OAIBeta -Uri $url -Method $Method

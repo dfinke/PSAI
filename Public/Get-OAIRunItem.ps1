@@ -35,7 +35,7 @@ function Get-OAIRunItem {
             return
         }
 
-        $url = $baseUrl + "/threads/$ThreadID/runs/$RunId"
+        $url = "/threads/$ThreadID/runs/$RunId"
         $Method = 'Get'
 
         Invoke-OAIBeta -Uri $url -Method $Method

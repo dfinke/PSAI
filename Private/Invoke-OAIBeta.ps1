@@ -144,7 +144,7 @@ function Invoke-OAIBeta {
             Method        = $Method
             Headers       = $headers.Clone()
             Body          = $Body
-            OAIProvider   = Get-OAIProvider            
+            OAIProvider   = Get-OAIProvider
             ContentType   = $ContentType
             OutFile       = $OutFile
             NotOpenAIBeta = $NotOpenAIBeta
@@ -153,13 +153,13 @@ function Invoke-OAIBeta {
     }
     
     # Remove model from body - handled by modelobject
-    $Body.Remove('model')
+    try {$Body.Remove('model')} catch{} #MemoryStreams don't have a remove method
     # Get default providers default model.
     ## TODO implement model passing in all functions
     $model = Get-AIModel
     Write-Verbose "Using provider: $($model.Provider.Name)"
     Write-Verbose "Using model: $($model.Name)"
-    $Response = $model.InvokeModel('', $true, $Body, @(), $Uri, $Method)
+    $Response = $model.InvokeModel('', $true, $Body, @(), $Uri, $Method, $ContentType)
     if ($response.ResponseObject) {
         return $response.ResponseObject
     }

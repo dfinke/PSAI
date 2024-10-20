@@ -29,7 +29,7 @@ function Get-OAIVectorStoreFileItem {
     )
 
     $params = @{
-        Uri    = $baseUrl + "/vector_stores/$VectorStoreId/files/$FileId"
+        Uri    = "vector_stores/$VectorStoreId/files/$FileId"
         Method = "Get"
     }
 

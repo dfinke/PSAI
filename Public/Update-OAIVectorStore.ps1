@@ -51,7 +51,7 @@ function Update-OAIVectorStore {
     }
 
     $params = @{
-        Uri    = $baseUrl + "/vector_stores/$VectorStoreId"
+        Uri    = "vector_stores/$VectorStoreId"
         Method = 'POST'
         body   = $body
     }

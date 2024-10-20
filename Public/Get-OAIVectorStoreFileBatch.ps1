@@ -29,7 +29,7 @@ function Get-OAIVectorStoreFileBatch {
     )
     
     $params = @{
-        Uri    = $baseUrl + "/vector_stores/$VectorStoreId/file_batches/$BatchId"
+        Uri    = "vector_stores/$VectorStoreId/file_batches/$BatchId"
         Method = "Get"
     }
 

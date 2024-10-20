@@ -20,7 +20,7 @@
     ModelFunctions    = @{
         # The URI structure for calls to the provider
         # The URI has minor variations or each provider. This function will return the URI for the provider.
-        GetUri     = {
+        GetUri      = {
             [CmdletBinding()]
             param(
                 [string]$APIPath = "chat/completions"
@@ -29,7 +29,7 @@
             $uri = "$($this.Provider.BaseUri)/$($this.Provider.Version)/$($PathClean)"
             $uri
         }
-        NewMessage = {
+        NewMessage  = {
             [outputType([hashtable])]
             [CmdletBinding()]
             param(
@@ -43,24 +43,20 @@
             }
         }
 
-        InvokeModel       = {
+        InvokeModel = {
             [CmdletBinding()]
             param(
                 $prompt,
                 [switch]$ReturnObject,
-                [hashtable]$BodyOptions = @{},
+                $BodyOptions = @{},
                 [array]$messages = @(),
                 [string]$Uri = "chat/completions",
-                [string]$Method = "Post"
+                [string]$Method = "Post",
+                [string]$ContentType = 'application/json'
             )
     
             #Initiialize a body object
             $body = [ordered]@{}
-    
-            #Add options to the body object
-            $BodyOptions.Keys | ForEach-Object {
-                $body[$_] = $BodyOptions[$_]
-            }
 
             #Add prompt to messages
             if ($prompt.Length -gt 0) {
@@ -73,15 +69,20 @@
             # Headers are special on OpenAI
             $headers = @{
                 Authorization = "Bearer $($this.Provider.GetApiKey())"
-                "OpenAI-Beta"  = "assistants=v2"
+                "OpenAI-Beta" = "assistants=v2"
             }
 
             $params = @{
                 Headers     = $headers
-                Uri         ="$($this.GetUri($Uri))"
-                Method      = 'POST'
-                ContentType = 'application/json'
-                Body        = $body | ConvertTo-Json -Depth 10
+                Uri         = "$($this.GetUri($Uri))"
+                Method      = $Method
+                ContentType = $ContentType
+            }
+
+            if ($BodyOptions -is [System.IO.MemoryStream]) {
+                $params['Body'] = $BodyOptions
+            } elseif ($BodyOptions.Keys.Count -gt 0) {
+                $params['Body'] = $BodyOptions | ConvertTo-Json -Depth 10
             }
 
             try {
@@ -106,7 +107,7 @@
             param(
                 $prompt,
                 [switch]$ReturnObject,
-                [hashtable]$BodyOptions = @{model=$this.Name},
+                [hashtable]$BodyOptions = @{model = $this.Name },
                 [array]$messages = @()
             )
             $this.InvokeModel($prompt, $ReturnObject, $BodyOptions, $messages)

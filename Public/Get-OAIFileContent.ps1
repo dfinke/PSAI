@@ -33,7 +33,7 @@ function Get-OAIFileContent {
     process {
 
         $params = @{
-            Uri         = $baseUrl + "/files/$FileId/content"
+            Uri         = "files/$FileId/content"
             Method      = "Get"
             ContentType = $ContentType
         }

@@ -22,7 +22,7 @@ function Get-OAIFileItem {
         $FileId
     )
     process {
-        $uri = $baseUrl + "/files/$FileId"
+        $uri = "files/$FileId"
         $Method = "Get"
 
         Invoke-OAIBeta -Uri $uri -Method $Method 

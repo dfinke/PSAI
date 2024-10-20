@@ -54,20 +54,16 @@
             param(
                 $prompt,
                 [switch]$ReturnObject,
-                [hashtable]$BodyOptions = @{},
+                $BodyOptions = @{},
                 [array]$messages = @(),
                 [string]$Uri = "deployments/$($this.Name)/chat/completions",
-                [string]$Method = "Post"
+                [string]$Method = "Post",
+                [string]$ContentType = 'application/json'
             )
     
             #Initiialize a body object
             $body = [ordered]@{}
     
-            #Add options to the body object
-            $BodyOptions.Keys | ForEach-Object {
-                $body[$_] = $BodyOptions[$_]
-            }
-
             #Add prompt to messages
             if ($prompt.Length -gt 0) {
                 $messages += $this.NewMessage("user", $prompt)
@@ -80,9 +76,14 @@
                 Headers     = @{ "api-key" = "$($this.Provider.GetApiKey())" }
                 Uri         = "$($this.GetUri($Uri))"
                 Method      = $Method
-                ContentType = 'application/json'
-                Body        = $body | ConvertTo-Json -Depth 15
+                ContentType = $ContentType
             }
+            if ($BodyOptions -is [System.IO.MemoryStream]) {
+                $params['Body'] = $BodyOptions
+            } elseif ($BodyOptions.Keys.Count -gt 0) {
+                $params['Body'] = $BodyOptions | ConvertTo-Json -Depth 10
+            }
+
             Write-Debug $($params |Convertto-json -Depth 5)
 
             try {

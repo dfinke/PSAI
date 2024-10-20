@@ -40,7 +40,7 @@ function Remove-OAIMessage {
         }
 
         $Method = 'Delete'
-        $url = $baseUrl + "/threads/$ThreadId/messages/$MessageId"
+        $url = "threads/$ThreadId/messages/$MessageId"
 
         Invoke-OAIBeta -Uri $url -Method $Method
     }

@@ -6,16 +6,16 @@ function New-RAGLibrary {
         HelpMessage ='The directory to save the RAG library to. Files in subfolders will be included. Subfolder names will be used to describe the content type of the files in RAG.'
         )]
         [System.IO.DirectoryInfo]
-        $Directory,
-        $Model = $(Get-AIModel)
+        $Directory
     )
     
     begin {
-        $Files = Get-ChildItem -Path $Directory -Recurse
+        $Files = Get-ChildItem -Path $Directory -Recurse | Invoke-OAIUploadFile
     }
     
     process {
-        $VectorStore = $Model.InvokeModel('',$true, @{name='RAGLibrary'}, @(),'/vector_stores')
+        $VectorStore = New-OAIVectorStore -Name 'RAGLibrary' -FileIds $Files.id
+
     }
     
     end {

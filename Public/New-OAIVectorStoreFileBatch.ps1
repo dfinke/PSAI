@@ -34,7 +34,7 @@ function New-OAIVectorStoreFileBatch {
     )
     
     $params = @{
-        Uri    = $baseUrl + "/vector_stores/$VectorStoreId/file_batches"
+        Uri    = "vector_stores/$VectorStoreId/file_batches"
         Method = "Post"
         Body   = @{file_ids = $FileIds }
     }

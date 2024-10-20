@@ -9,6 +9,8 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
             apiKey         = '1'
             deploymentName = "gpt4-latest"
         }
+
+        $secrets = Get-Secret AzOAISecrets -Vault AxKeys -AsPlainText | ConvertFrom-Json -AsHashtable
         
         Set-OAIProvider AzureOpenAI
         Set-AzOAISecrets @secrets

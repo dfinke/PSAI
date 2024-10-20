@@ -24,7 +24,7 @@ function Remove-OAIFile {
     )
 
     Process {
-        $url = $baseUrl + "/files/$id"
+        $url = "files/$id"
         $Method = 'Delete'
 
         Invoke-OAIBeta -Uri $url -Method $Method

@@ -40,7 +40,7 @@ function Get-OAIRunStepItem {
         $StepId
     )
     
-    $url = $baseUrl + "/threads/$ThreadId/runs/$RunId/steps/$StepId"
+    $url = "threads/$ThreadId/runs/$RunId/steps/$StepId"
     $Method = 'Get'
 
     Invoke-OAIBeta -Url $url -Method $Method

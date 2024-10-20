@@ -61,7 +61,7 @@ function New-OAIAssistant {
         $ResponseFormat = 'auto'
     )
     
-    $url = $baseUrl + '/assistants'
+    $url = 'assistants'
     $Method = 'Post'
     
     $body = @{

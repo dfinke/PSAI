@@ -31,7 +31,7 @@ function Stop-OAIRun {
         $RunId
     )
 
-    $uri = $baseUrl + "/threads/$ThreadId/runs/$RunId/cancel"
+    $uri = "threads/$ThreadId/runs/$RunId/cancel"
 
     Invoke-OAIBeta -Method POST -Uri $uri
 }

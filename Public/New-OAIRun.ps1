@@ -151,7 +151,7 @@ function New-OAIRun {
             break
         }
 
-        $url = $baseUrl + "/threads/$ThreadId/runs"
+        $url = "threads/$ThreadId/runs"
         $Method = 'Post'
 
         $body = @{

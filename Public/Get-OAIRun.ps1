@@ -41,7 +41,7 @@ function Get-OAIRun {
     )
 
     Process {
-        $url = $baseUrl + "/threads/$threadId/runs"
+        $url = "/threads/$threadId/runs"
         $Method = 'Get'
 
         $urlParams = @()

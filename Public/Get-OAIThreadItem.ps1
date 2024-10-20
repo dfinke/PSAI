@@ -24,7 +24,7 @@ function Get-OAIThreadItem {
     )
 
     Process {
-        $url = $baseUrl + "/threads/$ThreadId"
+        $url = "threads/$ThreadId"
         $Method = 'Get'
 
         Invoke-OAIBeta -Uri $url -Method $Method

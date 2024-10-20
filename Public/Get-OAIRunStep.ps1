@@ -49,7 +49,7 @@ function Get-OAIRunStep {
         $Before
     )
 
-    $url = $baseUrl + "/threads/$ThreadId/runs/$RunId/steps"
+    $url = "threads/$ThreadId/runs/$RunId/steps"
     $Method = 'Get'
 
     $urlParams = @()

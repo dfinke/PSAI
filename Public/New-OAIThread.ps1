@@ -46,7 +46,7 @@ function New-OAIThread {
         $Metadata
     )
 
-    $url = $baseUrl + '/threads'
+    $url = 'threads'
     $Method = 'Post'
 
     # $body = (Get-OAIProvider) -eq 'OpenAI' ? @{

@@ -36,7 +36,7 @@ function New-OAIVectorStoreFile {
 
     Begin {
         $params = @{
-            Uri    = $baseUrl + "/vector_stores/$VectorStoreId/files"
+            Uri    = "vector_stores/$VectorStoreId/files"
             Method = "Post"
         }
 

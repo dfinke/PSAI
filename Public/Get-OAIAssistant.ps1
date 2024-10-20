@@ -50,7 +50,7 @@ function Get-OAIAssistant {
         [Switch]$Raw
     )
 
-    $url = $baseUrl + "/assistants"
+    $url = "assistants"
     $Method = 'Get'
 
     $urlParams = @()
