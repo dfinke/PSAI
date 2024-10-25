@@ -82,6 +82,7 @@
             if ($BodyOptions -is [System.IO.MemoryStream]) {
                 $params['Body'] = $BodyOptions
             } elseif ($BodyOptions.Keys.Count -gt 0) {
+                if ($Uri -match 'assistants') { $BodyOptions['model'] = $this.Name }
                 $params['Body'] = $BodyOptions | ConvertTo-Json -Depth 10
             }
 
