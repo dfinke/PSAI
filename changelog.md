@@ -1,3 +1,7 @@
+## v0.2.12
+
+- Added AI YouTube components - 'Invoke-YouTubeAssistant', 'Get-YouTubeTop10' and 'New-YouTubeTool'
+
 ## v0.2.11
 
 * Integrate my PSAI Agents module #35 by @dfinke in https://github.com/dfinke/PSAI/pull/360
