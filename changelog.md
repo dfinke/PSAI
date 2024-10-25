@@ -1,3 +1,10 @@
+## v0.2.13
+
+- Huge thanks to [Axel](https://github.com/Agazoth)
+    - handles more data type translations
+    - handles function transpilation not created in PowerShell
+    - and more!
+
 ## v0.2.12
 
 - Added AI YouTube components - 'Invoke-YouTubeAssistant', 'Get-YouTubeTop10' and 'New-YouTubeTool'
