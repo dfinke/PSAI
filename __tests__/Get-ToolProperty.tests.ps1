@@ -29,7 +29,11 @@ Describe "Get-ToolProperty" -Tag Get-ToolProperty {
                 [string[]]$stringArray,
                 [psobject]$targetObject,
                 [object]$object,
-                [object[]]$objectArray
+                [object[]]$objectArray,
+                [long]$long,
+                [datetime]$date,
+                [pscustomobject]$customObject,
+                [System.Collections.ArrayList]$arrayList
             )
             Write-Host "Hello $name"
         }
@@ -53,6 +57,10 @@ Describe "Get-ToolProperty" -Tag Get-ToolProperty {
                 8 { $properties.type | Should -Be 'object' }
                 9 { $properties.type | Should -Be 'object' }
                 10 { $properties.type | Should -Be 'object' }
+                11 { $properties.type | Should -Be 'number' }
+                12 { $properties.type | Should -Be 'string' }
+                13 { $properties.type | Should -Be 'object' }
+                14 { $properties.type | Should -Be 'object' }
             }            
         }
     }
@@ -72,7 +80,7 @@ Describe "Get-ToolProperty" -Tag Get-ToolProperty {
 
         $properties = Get-ToolProperty $Parameters[0]
 
-        $properties.type | Should -BeNullOrEmpty
+        $properties.type | Should -Be 'string'
     }   
 
     It "Tests returning a string type property with valid values" {
