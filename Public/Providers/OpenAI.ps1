@@ -56,7 +56,10 @@
             )
     
             #Initiialize a body object
-            $body = [ordered]@{}
+            $body = $BodyOptions
+            if ($body.Keys -notcontains 'model') {
+                $body.model = $this.Name
+            }
 
             #Add prompt to messages
             if ($prompt.Length -gt 0) {
@@ -81,8 +84,8 @@
 
             if ($BodyOptions -is [System.IO.MemoryStream]) {
                 $params['Body'] = $BodyOptions
-            } elseif ($BodyOptions.Keys.Count -gt 0) {
-                $params['Body'] = $BodyOptions | ConvertTo-Json -Depth 10
+            } else {
+                $params['Body'] = $body | ConvertTo-Json -Depth 10
             }
 
             try {
