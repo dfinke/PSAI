@@ -1,3 +1,8 @@
+## v0.2.14
+
+- Thanks again to [Axel](https://github.com/Agazoth)
+    - Updated parameter type translation to support more data types for function calling
+
 ## v0.2.13
 
 - Huge thanks to [Axel](https://github.com/Agazoth)
