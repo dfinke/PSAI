@@ -57,7 +57,7 @@
                 [switch]$ReturnObject,
                 $BodyOptions = [ordered]@{},
                 [array]$messages = @(),
-                [string]$Uri = $this.GetUri(),
+                [string]$Uri = 'chat/completions',
                 [string]$Method = "Post",
                 [string]$ContentType = 'application/json'
             )

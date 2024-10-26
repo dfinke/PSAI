@@ -34,7 +34,7 @@ function New-AIAgent {
         }
 
         Add-Member -InputObject $Agent -MemberType ScriptMethod -Name Prompt -Value {
-            New-AgentChatCompletion -Agent $this -Prompt $Args[0] -ShowFunctionCalls:$(if ($args.Length -gt 1) {$args[1]} else {$false})
+            Invoke-AgentChatCompletion -Agent $this -Prompt $Args[0] -ShowFunctionCalls:$(if ($args.Length -gt 1) {$args[1]} else {$false})
         }
 
         

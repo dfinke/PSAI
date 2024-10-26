@@ -71,6 +71,7 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/Get-OpenAISpecDescriptions.ps1
 . $PSScriptRoot/Public/Import-AIProvider.ps1
 . $PSScriptRoot/Public/Import-OAIAssistant.ps1
+. $PSScriptRoot/Public/Invoke-AgentChatCompletion.ps1
 . $PSScriptRoot/Public/Invoke-AIExplain.ps1
 . $PSScriptRoot/Public/Invoke-AIPrompt.ps1
 . $PSScriptRoot/Public/Invoke-FilesToPrompt.ps1
