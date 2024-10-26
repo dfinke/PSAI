@@ -1,6 +1,6 @@
 @{
     RootModule        = 'PSAI.psm1'
-    ModuleVersion     = '0.2.11'
+    ModuleVersion     = '0.2.13'
     GUID              = '68662d19-a8f1-484f-b1b7-3bf0e8a436df'
     Author            = 'Douglas Finke'
     CompanyName       = 'Doug Finke'
@@ -21,12 +21,18 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Get-AIObjectParams'
         'Get-MultiPartFormData'
         'Invoke-OAIBeta'
+        'Get-ToolProperty'
         'Update-ArgumentCompleter'
 
         # Agent Tools
         'New-CalculatorTool'
         'New-TavilyAITool'
         'New-StockTickerTool'
+        'New-YouTubeTool'
+
+        # Agent Assistants
+        'Invoke-YouTubeAIAssistant'
+        'Get-YouTubeTop10'
 
         # Public
         'New-Agent'
