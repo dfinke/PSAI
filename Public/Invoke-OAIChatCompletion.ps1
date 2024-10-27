@@ -106,7 +106,8 @@ function Invoke-OAIChatCompletion {
         $Tools,
         $ToolChoice,
         $ParallelToolCalls,
-        $User
+        $User,
+        [switch]$Raw
     )
     
     $body = @{}
@@ -212,13 +213,15 @@ curl "https://openai-gpt-latest.openai.azure.com/openai/deployments/gpt-4o/chat/
 
     $url = 'chat/completions'
     
-    if ((Get-OAIProvider) -eq 'AzureOpenAI') {
-        $AzOAISecrets = Get-AzOAISecrets
+    # if ((Get-OAIProvider) -eq 'AzureOpenAI') {
+    #     $AzOAISecrets = Get-AzOAISecrets
 
-        $url = 'deployments/' + $AzOAISecrets.deploymentName + '/chat/completions'
-    }
+    #     $url = 'deployments/' + $AzOAISecrets.deploymentName + '/chat/completions'
+    # }
     
     $Method = 'Post'
 
-    Invoke-OAIBeta -Uri $url -Method $Method -Body $body
+    $response = Invoke-OAIBeta -Uri $url -Method $Method -Body $body
+    If ($Raw) {return $response}
+    return $response.choices[0].message.content
 }
