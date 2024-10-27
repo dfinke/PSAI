@@ -21,7 +21,7 @@ $PrintResponse = {
 
     $response = $null
     do {
-        $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel
+        $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel -Raw
         $script:messages += @($response.choices[0].message | ConvertTo-OAIMessage)
     
         $script:messages += @(Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls)
