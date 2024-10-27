@@ -20,7 +20,7 @@ function Get-ToolProperty {
         [Parameter(
             Mandatory,
             ValueFromPipeline
-            )]
+        )]
         $Parameter
     )
     
@@ -32,21 +32,21 @@ function Get-ToolProperty {
         
         $property = [ordered]@{}
         switch ($Parameter.ParameterType -as [string]) {
-            {$_ -match "string$|datetime"} { $property.Add("type", "string") }
-            "string[]" { $property.Add("type", "array"), $property.Add("items", @{type = "string"}) }
+            { $_ -match "string$|datetime" } { $property.Add("type", "string") }
+            "string[]" { $property.Add("type", "array"), $property.Add("items", @{type = "string" }) }
             "System.IO.FileInfo" { $property.Add("type", "string") }
             "psobject" { $property.Add("type", "object") }
             "System.Object" { $property.Add("type", "object") }
-            "psobject[]" { $property.Add("type", "object"), $property.Add("items", @{type = "object"})}
-            "System.Object[]" { $property.Add("type", "object"), $property.Add("items", @{type = "object"})}
-            { $_ -match 'decimal|float|single|int|long' } {  $property.Add("type", "number")}
-            { $_ -match 'switch|bool|boolean'} {  $property.Add("type", "boolean") }
+            "psobject[]" { $property.Add("type", "object"), $property.Add("items", @{type = "object" }) }
+            "System.Object[]" { $property.Add("type", "object"), $property.Add("items", @{type = "object" }) }
+            { $_ -match 'decimal|float|single|int|long' } { $property.Add("type", "number") }
+            { $_ -match 'switch|bool|boolean' } { $property.Add("type", "boolean") }
             default { $property.Add("type", "object") ; Write-Warning "Unknown type: $_ - added as object" }
         }
         $ValidValues = $Parameter.Attributes.ValidValues
         if ($property["type"] -and $ValidValues) {
             $property["enum"] = $ValidValues
-            }
+        }
         if ($Parameter.HelpMessage) {
             $property["description"] = $Parameter.HelpMessage
         }
