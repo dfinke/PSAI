@@ -32,6 +32,10 @@ function Invoke-OAIFunctionCall {
             $result = "Function $toolFunctionName not found"
         }
         
+        if ([string]::IsNullOrEmpty($result)) {
+            $result = "NOTE: function did not return any value"
+        }
+        
         New-ChatRequestToolMessage $toolCallId $toolFunctionName $result
     }
 }
