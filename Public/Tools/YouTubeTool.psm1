@@ -11,7 +11,7 @@ function New-YouTubeTool {
     Write-Verbose "New-YouTubeTool was called"
     Write-Verbose "Registering tools for YouTubeTool"
 
-    Register-Tool -FunctionName Get-YouTubeTranscript
+    Register-Tool -FunctionName Get-YouTubeTranscript -WarningAction SilentlyContinue
 }
 
 function Get-YouTubeTranscript {
