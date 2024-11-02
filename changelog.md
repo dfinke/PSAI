@@ -1,3 +1,9 @@
+## v0.3.0
+
+- Fix multi line description transpiled to Json
+- Check if result is null from function calling. Set a default value so the operation continues, and the model has more info
+- Added PwshSpectreConsole for console visuals
+
 ## v0.2.14
 
 - Thanks again to [Axel](https://github.com/Agazoth)

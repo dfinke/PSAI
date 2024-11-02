@@ -25,7 +25,6 @@ $PrintResponse = {
         $script:messages += @($response.choices[0].message | ConvertTo-OAIMessage)
     
         $script:messages += @(Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls)
-        # $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel
     } until ($response.choices.finish_reason -eq "stop")
 
     return $response.choices[0].message.content
@@ -36,26 +35,51 @@ $InteractiveCLI = {
     param(
         $Message,
         $User = 'User',
-        $Emoji = '😎',
-        $ExitOn
+        $Emoji = '😎'
+        # $ExitOn
     )
 
     if ($Message) {
         $this.PrintResponse($Message) | Out-Host
     }
 
-    if ($null -eq $ExitOn) {
-        $ExitOn = @("exit", "quit", "bye")
-    }
+    # if ($null -eq $ExitOn) {
+    #     $ExitOn = @("exit", "quit", "bye")
+    # }
 
     while ($true) {
         $message = Read-Host "$Emoji $User"
 
-        if ($message -in $ExitOn) {
-            break
+        if ([string]::IsNullOrEmpty($Message)) {
+            Format-SpectrePanel -Data "Copied to clipboard." -Title "Information" -Border "Rounded" -Color "Green" | Out-Host
+            $agentResponse | clip
+            break            
         }
+
+        # if ($message -in $ExitOn) {
+        #     break
+        # }
         
-        $this.PrintResponse($message) | Out-Host
+        # $this.PrintResponse($message) | Out-Host
+        $agentResponse = $this.PrintResponse($message)
+        
+        $formatParams = @{
+            Data   = (Get-SpectreEscapedText -Text $agentResponse)
+            Title  = "Agent Response"
+            Border = "Rounded"
+            Color  = "Blue"
+        }
+
+        Format-SpectrePanel @formatParams | Out-Host
+
+        $nextStepsParams = @{
+            Data   = "Follow up, Enter to copy & quit, Ctrl+C to quit."
+            Title  = "Next Steps"
+            Border = "Rounded"
+            Color  = "Cyan1"
+        }
+
+        Format-SpectrePanel @nextStepsParams | Out-Host
     }
 }
 
