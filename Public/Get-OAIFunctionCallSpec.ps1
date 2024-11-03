@@ -31,6 +31,7 @@ This command generates a JSON specification for the Get-Process cmdlet.
 function Get-OAIFunctionCallSpec {
     [CmdletBinding()]
     param (
+        [parameter(Mandatory)]
         [string]
         $CmdletName,
         [switch]
@@ -45,17 +46,19 @@ function Get-OAIFunctionCallSpec {
     )
     
     begin {
-        if ($CmdletName) {
-            $CommandInfo = Get-Command -Name $CmdletName
-            if ($CommandInfo -is [System.Management.Automation.AliasInfo]) {
-                Write-Verbose "$CmdletName is an alias for $($CommandInfo.ResolvedCommand.Name)"
-                $CommandInfo = $CommandInfo.ResolvedCommand
-            }
-            if ($CommandInfo.ParameterSets.Count -lt $parameterset+1) {
-                Write-Error "ParameterSet $ParameterSet does not exist for $CmdletName. These ParameterSets are available: $($CommandInfo.ParameterSets.Name -join ', ')" -ErrorAction Stop
-            }
-            Write-Verbose "Preparing to generate specification for $CmdletName ParameterSet $($CommandInfo.ParameterSets[$ParameterSet].Name)"
+        $CommandInfo = try {Get-Command -Name $CmdletName -ErrorAction Stop} catch {$null}
+        if ($null -eq $CommandInfo) {
+            Write-Warning "$CmdletName not found!"
+            return $null
         }
+        if ($CommandInfo -is [System.Management.Automation.AliasInfo]) {
+            Write-Verbose "$CmdletName is an alias for $($CommandInfo.ResolvedCommand.Name)"
+            $CommandInfo = $CommandInfo.ResolvedCommand
+        }
+        if ($CommandInfo.ParameterSets.Count -lt $parameterset + 1) {
+            Write-Error "ParameterSet $ParameterSet does not exist for $CmdletName. These ParameterSets are available: $($CommandInfo.ParameterSets.Name -join ', ')" -ErrorAction Stop
+        }
+        Write-Verbose "Preparing to generate specification for $CmdletName ParameterSet $($CommandInfo.ParameterSets[$ParameterSet].Name)"
     }
     
     process {
@@ -93,19 +96,19 @@ function Get-OAIFunctionCallSpec {
             foreach ($Parameter in $Parameters) {
                 $property = Get-ToolProperty $Parameter
                 if ($null -eq $property) {
-                    Write-Warning "No type translation found for $($Parameter.Name). Type is $($Parameter.ParameterType)"
+                    Write-Verbose "No type translation found for $($Parameter.Name). Type is $($Parameter.ParameterType)"
                     continue
                 }
                 try {
                     $ParameterDescription = Get-Help $Command.Name -Parameter $Parameter.Name -ErrorAction Stop |
                     Select-Object -ExpandProperty Description -ErrorAction Stop |
-                    Select-Object -ExpandProperty Text | Out-String
+                    Select-Object -ExpandProperty Text -ErrorAction Stop | Out-String
                 }
-                catch {Write-Warning "No description found for $($Parameter.Name)"}
+                catch { Write-Verbose "No description found for $($Parameter.Name)" }
                 if ($ParameterDescription) {
                     $property['description'] = $ParameterDescription
                 }
-                if ($property){$FunctionSpec.parameters.properties.Add($Parameter.Name, $property)}
+                if ($property) { $FunctionSpec.parameters.properties.Add($Parameter.Name, $property) }
                 if ($Parameter.IsMandatory -and !$ClearRequired) {
                     $FunctionSpec.parameters.required.Add($Parameter.Name)
                 }
@@ -119,8 +122,6 @@ function Get-OAIFunctionCallSpec {
                 return ($result | ConvertTo-Json -Depth 10)
             }
             $result
-
-
         }
     }
     
