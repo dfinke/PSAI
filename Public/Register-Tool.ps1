@@ -15,16 +15,25 @@ Specifies strict mode for the server side OpenAPI.
 Register-Tool -FunctionName "MyFunction" -Strict
 Registers the function named "MyFunction" as a tool and enforces strict mode.
 
+.EXAMPLE
+Register-Tool -FunctionName Get-ChildIten, Get-Content
+Registers the cmdlets Get-ChildItem and Get-Content as tools. rOutput is an array of tool specifications.
+
 #>
 function Register-Tool {
     [CmdletBinding()]
     param(
+        [parameter(Mandatory)]
+        [string[]]
         $FunctionName,
-        $ParameterSet=0,
+        $ParameterSet = 0,
         [Switch]$Strict
     )
-    
-    Write-Verbose "Registering tool $FunctionName"
-
-    Get-OAIFunctionCallSpec $FunctionName -Strict:$Strict -ParameterSet $ParameterSet
+    $tools = @(
+        foreach ($f in $FunctionName) {
+            Write-Verbose "Registering tool $f"
+            Get-OAIFunctionCallSpec $f -Strict:$Strict -ParameterSet $ParameterSet
+        }
+    )
+    $tools
 }
