@@ -46,7 +46,11 @@ function Get-OAIFunctionCallSpec {
     )
     
     begin {
-        $CommandInfo = Get-Command -Name $CmdletName
+        $CommandInfo = try {Get-Command -Name $CmdletName -ErrorAction Stop} catch {$null}
+        if ($null -eq $CommandInfo) {
+            Write-Warning "$CmdletName not found!"
+            return $null
+        }
         if ($CommandInfo -is [System.Management.Automation.AliasInfo]) {
             Write-Verbose "$CmdletName is an alias for $($CommandInfo.ResolvedCommand.Name)"
             $CommandInfo = $CommandInfo.ResolvedCommand
