@@ -98,7 +98,7 @@ function Get-OAIFunctionCallSpec {
                 try {
                     $ParameterDescription = Get-Help $Command.Name -Parameter $Parameter.Name -ErrorAction Stop |
                     Select-Object -ExpandProperty Description -ErrorAction Stop |
-                    Select-Object -ExpandProperty Text | Out-String
+                    Select-Object -ExpandProperty Text -ErrorAction Stop | Out-String
                 }
                 catch { Write-Verbose "No description found for $($Parameter.Name)" }
                 if ($ParameterDescription) {
