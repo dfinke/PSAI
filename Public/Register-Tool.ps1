@@ -19,12 +19,14 @@ Registers the function named "MyFunction" as a tool and enforces strict mode.
 function Register-Tool {
     [CmdletBinding()]
     param(
+        [parameter(Mandatory)]
+        [string[]]
         $FunctionName,
         $ParameterSet=0,
         [Switch]$Strict
     )
-    
-    Write-Verbose "Registering tool $FunctionName"
-
-    Get-OAIFunctionCallSpec $FunctionName -Strict:$Strict -ParameterSet $ParameterSet
+    foreach ($f in $FunctionName) {
+        Write-Verbose "Registering tool $f"
+        Get-OAIFunctionCallSpec $f -Strict:$Strict -ParameterSet $ParameterSet
+    }
 }
