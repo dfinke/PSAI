@@ -19,8 +19,8 @@ Describe "Get-OAIFunctionCallSpec" -Tag Get-OAIFunctionCallSpec {
         $actual.Parameters.Strict.Attributes.Mandatory | Should -Be $false
     }
 
-    It "Test if Get-OAIFunctionCallSpec is null" {
-        $actual = Get-OAIFunctionCallSpec
+    It "Test if Get-OAIFunctionCallSpec is null if function does not exist" {
+        $actual = Get-OAIFunctionCallSpec -CmdletName NotExisting
         $actual | Should -BeNullOrEmpty
     }
 
