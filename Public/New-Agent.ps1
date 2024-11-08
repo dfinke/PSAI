@@ -165,20 +165,47 @@ function New-Agent {
         LLM           = $LLM
     }
 
-    $script:messages += @(New-ChatRequestSystemMessage "You are a helpful agent. If you are configured with tools, you can use them to assist the user. They are also considered skills")
+    $IsReasoningModel = $LLM.config.model -like 'o1*'
 
-    if ($Instructions) {
+    $msg = "You are a helpful agent. If you are configured with tools, you can use them to assist the user. They are also considered skills"
+
+    if($IsReasoningModel) {
+        $script:messages += @(New-ChatRequestUserMessage $msg)
+    }
+    else {
+        $script:messages += @(New-ChatRequestSystemMessage $msg)
+    }
+
+    if ($Instructions -and $IsReasoningModel) {
+        $agent | Add-Member -MemberType NoteProperty -Name InitialPrompt -Value $Instructions -Force
+        $script:messages += @(New-ChatRequestUserMessage "InitialPrompt: $Instructions")
+    }
+    elseif ($Instructions) {
         # $agent['Instructions'] = $Instructions
         $agent | Add-Member -MemberType NoteProperty -Name Instructions -Value $Instructions -Force
         $script:messages += @(New-ChatRequestSystemMessage $Instructions)
     }
 
     if ($Name) {
-        $script:messages += @(New-ChatRequestSystemMessage "Agent name: $Name")
+        $msg = "Agent name: $Name"
+
+        if($IsReasoningModel) {
+            $script:messages += @(New-ChatRequestUserMessage $msg)
+        }
+        else {
+            $script:messages += @(New-ChatRequestSystemMessage $msg)
+        }
     }
 
     if ($Description) {
-        $script:messages += @(New-ChatRequestSystemMessage "Agent description: $Description")
+        $msg = "Agent description: $Description"
+
+        if($IsReasoningModel) {
+            $script:messages += @(New-ChatRequestUserMessage $msg)
+        }
+        else {
+            $script:messages += @(New-ChatRequestSystemMessage $msg)
+        }
     }
 
     $agent.psobject.TypeNames.Clear()
