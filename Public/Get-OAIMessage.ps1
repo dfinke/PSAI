@@ -52,7 +52,7 @@ function Get-OAIMessage {
         }
 
         $Method = 'Get'
-        $url = "/threads/$ThreadId/messages"
+        $url = "threads/$ThreadId/messages"
 
         $urlParams = @()
         if ($limit) {

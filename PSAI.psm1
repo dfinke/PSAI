@@ -1,4 +1,5 @@
 . $PSScriptRoot/Private/Add-OAIToolsToList.ps1
+. $PSScriptRoot/Private/New-ProviderListFromEnv.ps1
 . $PSScriptRoot/Private/ArgumentCompletion.ps1
 . $PSScriptRoot/Private/Invoke-OAIBeta.ps1
 . $PSScriptRoot/Private/Get-AIObjectParams.ps1

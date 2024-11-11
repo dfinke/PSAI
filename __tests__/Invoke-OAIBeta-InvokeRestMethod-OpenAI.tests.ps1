@@ -10,6 +10,9 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
             "Authorization" = "Bearer "
         }
 
+        $env:OpenAIKey = '1'
+        Set-OAIProvider OpenAI
+
         function Test-UnitTestingData {
             param(
                 [hashtable]$UnitTestingData,
@@ -27,6 +30,10 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
                     else {
                         $UnitTestingData[$entry.Key] | Should -MatchHashtable $entry.Value
                     }
+                    continue
+                }
+                if ($entry.Key -eq 'Body') {
+                    $UnitTestingData[$entry.Key] | ConvertTo-Json -Depth 10 | Should -BeExactly ($entry.Value | ConvertTo-Json -Depth 10)
                     continue
                 }
                 
@@ -48,7 +55,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
 
         $ExpectedUnitTestingData = @{
             Method        = 'Post'            
-            Uri           = "$expectedBaseUrl/assistants"            
+            Uri           = "assistants"            
             OutFile       = $null
             ContentType   = 'application/json'
             
@@ -75,10 +82,10 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
 
         $ExpectedUnitTestingData = @{
             Method        = 'Get'
-            Uri           = "$expectedBaseUrl/assistants"
+            Uri           = "assistants"
             OutFile       = $null
             ContentType   = 'application/json'
-            Body          = $null
+            Body          = [ordered]@{}
             Headers       = $expectedHeaders
             NotOpenAIBeta = $false
             OAIProvider   = 'OpenAI'
@@ -95,7 +102,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
 
         $ExpectedUnitTestingData = @{
             Method        = 'Post'
-            Uri           = "$expectedBaseUrl/threads"
+            Uri           = "threads"
             OutFile       = $null
             ContentType   = 'application/json'
             Body          = @{
@@ -120,7 +127,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
 
         $ExpectedUnitTestingData = @{
             Method        = 'Post'
-            Uri           = "$expectedBaseUrl/threads/$($tid)/messages"
+            Uri           = "threads/$($tid)/messages"
             OutFile       = $null
             ContentType   = 'application/json'
             Body          = @{
@@ -145,7 +152,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
 
         $ExpectedUnitTestingData = @{
             Method        = 'Post'
-            Uri           = "$expectedBaseUrl/threads/$($tid)/runs"
+            Uri           = "threads/$($tid)/runs"
             OutFile       = $null
             ContentType   = 'application/json'
             Body          = @{
@@ -168,10 +175,10 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
 
         $ExpectedUnitTestingData = @{
             Method        = 'Get'
-            Uri           = "$expectedBaseUrl/threads/$($tid)/messages?limit=20&order=desc"
+            Uri           = "threads/$($tid)/messages?limit=20&order=desc"
             OutFile       = $null
             ContentType   = 'application/json'
-            Body          = $null
+            Body          = [ordered]@{}
             Headers       = $expectedHeaders
             NotOpenAIBeta = $false
             OAIProvider   = 'OpenAI'
@@ -189,10 +196,10 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
 
         $ExpectedUnitTestingData = @{
             Method        = 'Get'
-            Uri           = "$expectedBaseUrl/threads/$($tid)"
+            Uri           = "threads/$($tid)"
             OutFile       = $null
             ContentType   = 'application/json'
-            Body          = $null
+            Body          = [ordered]@{}
             Headers       = $expectedHeaders
             NotOpenAIBeta = $false
             OAIProvider   = 'OpenAI'

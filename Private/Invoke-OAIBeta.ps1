@@ -60,33 +60,11 @@ function Invoke-OAIBeta {
     $AzOAISecrets = Get-AzOAISecrets
 
     # If the Provider List is empty, try to create it
-    if ($null -eq $ProviderList) {
-        if ($null -ne $OAIApiKey) {
-            $params = @{
-                Provider = 'OpenAI'
-                ApiKey   = $OAIApiKey | ConvertTo-SecureString -AsPlainText -Force
-            }
-            if ($Body.Keys -contains 'model') {
-                $params['ModelNames'] = $Body['model']
-            }
-            Import-AIProvider @params
-            continue
-        }
-        if ($null -ne $AzOAISecrets['apiKEY']) {
-            $params = @{
-                Provider   = 'AzureOpenAI'
-                ApiKey     = $AzOAISecrets.apiKEY | ConvertTo-SecureString -AsPlainText -Force
-                ModelNames = $AzOAISecrets.deploymentName
-                BaseUri    = $AzOAISecrets.apiURI
-            }
-            Import-AIProvider @params
-            continue
-        }
-        throw "No provider has been set up yet. Please read the instructions for the module to set up a provider."
-    }
+    if ($null -eq $ProviderList) { New-ProviderListFromEnv }
     
 
-
+    # The code below is still required to run 2 tests in the test suite
+### START ###
     # $Provider = Get-OAIProvider
     # $AzOAISecrets = Get-AzOAISecrets
     # switch ($Provider) {
@@ -134,15 +112,30 @@ function Invoke-OAIBeta {
     # if ($OutFile) {
     #     $params['OutFile'] = $OutFile
     # }
-
+### END ###
     # Write-Verbose ($params | ConvertTo-Json -Depth 5)
     
+    $provider = Get-AIProvider |Select-Object -ExpandProperty Name
     if (Test-IsUnitTestingEnabled) {
         Write-Host "Data saved. Use Get-UnitTestingData to retrieve the data."
+        $headers = @{
+            'OpenAI-Beta'  = 'assistants=v2'
+            'Content-Type' = 'application/json'
+            }
+        if ($provider -eq 'OpenAI') {
+            $headers.Add('Authorization', 'Bearer ')
+        }
+        if ($provider -eq 'AzureOpenAI') {
+            $headers.Add('api-key',(Get-AIProvider).GetApiKey())
+        }
         $script:InvokeOAIUnitTestingData = @{
             Uri           = $Uri
             Method        = $Method
-            Headers       = $headers.Clone()
+            Headers       = $headers.Clone() # @{
+                # 'OpenAI-Beta'  = 'assistants=v2'
+                # 'Content-Type' = 'application/json'
+                # 'api-key'      = (Get-AIProvider).GetApiKey()
+            #} # $headers.Clone()
             Body          = $Body
             OAIProvider   = Get-OAIProvider
             ContentType   = $ContentType

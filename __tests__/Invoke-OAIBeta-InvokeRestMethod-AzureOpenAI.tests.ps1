@@ -7,13 +7,14 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
             apiURI         = "https://openai-gpt-latest.openai.azure.com"
             apiVersion     = "2024-02-15-preview"
             apiKey         = '1'
-            deploymentName = "gpt4-latest"
+            deploymentName = "gpt-4o-mini"
         }
 
-        $secrets = Get-Secret AzOAISecrets -Vault AxKeys -AsPlainText | ConvertFrom-Json -AsHashtable
+        # $secrets = Get-Secret AzOAISecrets -Vault AxKeys -AsPlainText | ConvertFrom-Json -AsHashtable
         
-        Set-OAIProvider AzureOpenAI
+        
         Set-AzOAISecrets @secrets
+        Set-OAIProvider AzureOpenAI
         
         $script:Secrets = Get-AzOAISecrets       
         $script:expectedBaseUrl = $secrets.apiURI
@@ -56,8 +57,17 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
                     }
                     continue
                 }
-                
-                $UnitTestingData[$entry.Key] | Should -BeExactly $entry.Value
+                if ($entry.Key -eq 'Uri') {
+                    $TargetUri = Get-TargetUri $UnitTestingData[$entry.Key]
+                    $TargetUri | Should -BeExactly $entry.Value
+                    continue
+                }
+                if ($entry.Key -eq 'Body') {
+                    $UnitTestingData[$entry.Key] | ConvertTo-Json -Depth 10 | Should -BeExactly ($entry.Value | ConvertTo-Json -Depth 10)
+                    continue
+                }
+
+                $($UnitTestingData[$entry.Key]) | Should -BeExactly $entry.Value
             }
         }
     }
@@ -107,7 +117,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
             Uri           = (Get-TargetUri 'assistants')
             OutFile       = $null
             ContentType   = 'application/json'
-            Body          = $null
+            Body          = [ordered]@{}
             Headers       = $expectedHeaders
             NotOpenAIBeta = $false
             OAIProvider   = 'AzureOpenAI'
@@ -203,7 +213,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
             Uri           = Get-TargetUri "threads/$($tid)/messages?limit=20&order=desc"
             OutFile       = $null
             ContentType   = 'application/json'
-            Body          = $null
+            Body          = [ordered]@{}
             Headers       = $expectedHeaders
             NotOpenAIBeta = $false
             OAIProvider   = 'AzureOpenAI'
