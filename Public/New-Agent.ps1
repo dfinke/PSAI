@@ -147,7 +147,9 @@ function New-Agent {
         # List of instructions added to the system prompt in
         $Instructions,
         $Tools,
-        $LLM = (New-OpenAIChat),
+        $LLM,
+        $Provider,
+        $Model,
         $Name,
         $Description,
         [Switch]$ShowToolCalls
@@ -158,6 +160,13 @@ function New-Agent {
     #Write-Verbose "[$((Get-Date).ToString("yyMMdd:hhmmss"))] New-Agent was called"
     Write-Verbose ("{0} New-Agent was called" -f (Get-LogDate))
     Write-Verbose ("{0} Tools: {1}" -f (Get-LogDate), (ConvertTo-Json -Depth 10 -InputObject $Tools))
+
+    if ($null -eq $LLM) {
+        $params = @{}
+        if ($Provider){$params['Provider'] = $Provider}
+        if ($Model){$params['Model'] = $Model}
+        $LLM = New-OpenAIChat @params
+    }
 
     $agent = [PSCustomObject]@{
         Tools         = $Tools

@@ -21,8 +21,16 @@ This example creates a new OpenAI chat configuration object using the default 'g
 function New-OpenAIChat {
     [CmdletBinding()]
     param(
-        $model = 'gpt-4o-mini'
+        $model,
+        $Provider
     )
+
+    $ProviderList = Get-AIProviderList
+    if ($null -eq $ProviderList) { New-ProviderListFromEnv }
+    $params = @{}
+    if ($Provider){$params['ProviderName'] = $Provider}
+    if ($Model){$params['ModelName'] = $Model}
+    $model = Get-AIModel @params
 
     $openAIConfig = [PSCustomObject]@{
         config = [PSCustomObject]@{

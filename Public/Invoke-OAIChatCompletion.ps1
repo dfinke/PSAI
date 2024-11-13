@@ -221,7 +221,7 @@ curl "https://openai-gpt-latest.openai.azure.com/openai/deployments/gpt-4o/chat/
     
     $Method = 'Post'
 
-    $response = Invoke-OAIBeta -Uri $url -Method $Method -Body $body
+    $response = Invoke-OAIBeta -Uri $url -Method $Method -Body $body -Model $Model
     If ($Raw) {return $response}
     return $response.choices[0].message.content
 }

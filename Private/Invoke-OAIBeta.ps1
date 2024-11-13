@@ -36,11 +36,12 @@ function Invoke-OAIBeta {
         $Method,
         $Body = [ordered]@{},
         $ContentType = 'application/json',
-        $OutFile,        
+        $OutFile,
+        $Model,
+        $Provider,
         [Switch]$NotOpenAIBeta        
     )        
     
-
     # $headers = @{
     #     'OpenAI-Beta'  = 'assistants=v2'    
     #     'Content-Type' = $ContentType
@@ -55,9 +56,9 @@ function Invoke-OAIBeta {
     $ProviderList = Get-AIProviderList
 
     # Get the OAI variables
-    $OAIProvider = Get-OAIProvider
-    $OAIApiKey = $env:OpenAIKey
-    $AzOAISecrets = Get-AzOAISecrets
+    # $OAIProvider = Get-OAIProvider
+    # $OAIApiKey = $env:OpenAIKey
+    # $AzOAISecrets = Get-AzOAISecrets
 
     # If the Provider List is empty, try to create it
     if ($null -eq $ProviderList) { New-ProviderListFromEnv }
@@ -115,8 +116,9 @@ function Invoke-OAIBeta {
 ### END ###
     # Write-Verbose ($params | ConvertTo-Json -Depth 5)
     
-    $provider = Get-AIProvider |Select-Object -ExpandProperty Name
+    
     if (Test-IsUnitTestingEnabled) {
+        $provider = Get-AIProvider | Select-Object -ExpandProperty Name
         Write-Host "Data saved. Use Get-UnitTestingData to retrieve the data."
         $headers = @{
             'OpenAI-Beta'  = 'assistants=v2'
@@ -144,12 +146,25 @@ function Invoke-OAIBeta {
         }        
         return
     }
-    
+    $ModelName = $Body['model']
     # Remove model from body - handled by modelobject
     try {$Body.Remove('model')} catch{} #MemoryStreams don't have a remove method
     # Get default providers default model.
     ## TODO implement model passing in all functions
+    if ($model.pstypenames -notcontains 'AIModel'){
+        $params = @{}
+        if ($Provider){$params['ProviderName'] = $Provider}
+        if ($Model){$params['ModelName'] = $Model}
+        elseif ($ModelName){$params['ModelName'] = $ModelName}
+        $model = Get-AIModel @params
+    }
+
+    # Last chance to get a model if no model was found with a modelname - mainly there for hard coded models. Default functionality of the ProviderList mitigates this
     $model = Get-AIModel
+    if ($null -eq  $model) {
+        throw "No model found"
+    }
+    
     Write-Verbose "Using provider: $($model.Provider.Name)"
     Write-Verbose "Using model: $($model.Name)"
     $Response = $model.InvokeModel('', $true, $Body, @(), $Uri, $Method, $ContentType)
