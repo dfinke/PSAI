@@ -19,7 +19,12 @@ function New-AIProvider {
     }
     
     process {
-        if (!$AIModels) { $AIModels = [System.Collections.Generic.Dictionary[string, PSCustomObject]]@{} }
+        $AIModelsList = [System.Collections.Generic.Dictionary[string, PSCustomObject]]::new([StringComparer]::OrdinalIgnoreCase)
+        if ($AIModels) {
+            $AIModels.Keys | ForEach-Object {
+                $AIModelsList.Add($_, $AIModels[$_])
+            }
+        }
         $ProviderObject = [PSCustomObject]@{
             PSTypeName   = 'AIProvider'
             Name         = $Name
@@ -27,7 +32,7 @@ function New-AIProvider {
             ApiKey       = $ApiKey
             BaseUri      = $BaseUri
             Version      = $Version
-            AIModels     = $AIModels
+            AIModels     = $AIModelsList
             DefaultModel = $DefaultModel
         }
 

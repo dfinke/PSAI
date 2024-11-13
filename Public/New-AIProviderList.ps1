@@ -19,7 +19,7 @@ function New-AIProviderList {
         If (!$script:ProviderList -or $Force) {
             $script:ProviderList = [PSCustomObject]@{
                 PSTypeName = 'AIProviderList'
-                Providers = [System.Collections.Generic.Dictionary[string,PSCustomObject]]@{}
+                Providers = [System.Collections.Generic.Dictionary[string,PSCustomObject]]::new([StringComparer]::OrdinalIgnoreCase)
                 DefaultProvider = ''
             }
         }
