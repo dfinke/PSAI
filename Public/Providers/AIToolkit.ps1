@@ -70,7 +70,6 @@
             # Headers are special on OpenAI
             $headers = @{
                 Authorization = "Bearer $($this.Provider.GetApiKey())"
-                "OpenAI-Beta" = "assistants=v2"
             }
 
             $params = @{
@@ -96,7 +95,7 @@
             }
             if ($ReturnObject) {
                 return [pscustomobject][ordered]@{
-                    Provider       = 'OpenAI'
+                    Provider       = 'AIToolkit'
                     ResponseObject = $r
                 }
             }
