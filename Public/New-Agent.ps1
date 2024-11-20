@@ -168,6 +168,10 @@ function New-Agent {
         $LLM = New-OpenAIChat @params
     }
 
+    if (($Tools |Select-Object -First 1).GetType().Name -eq "string") {
+        $Tools = Register-Tool $Tools 
+    }
+
     $agent = [PSCustomObject]@{
         Tools         = $Tools
         ShowToolCalls = $ShowToolCalls

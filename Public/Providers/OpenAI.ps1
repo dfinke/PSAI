@@ -57,7 +57,7 @@
     
             #Initiialize a body object
             $body = $BodyOptions
-            if ($body.Keys -notcontains 'model') {
+            if ($body.Keys -notcontains 'model' -and !$($BodyOptions -is [System.IO.MemoryStream])) {
                 $body.model = $this.Name
             }
 
