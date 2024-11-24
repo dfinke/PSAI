@@ -21,13 +21,21 @@ $PrintResponse = {
 
     $response = $null
     do {
-        $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel -Raw
+        # Tried to use GetReducedMessages, but it was not working as expected - removed tool_calls from the response
+        $response = Invoke-OAIChatCompletion -Messages $this.GetMessages()  -Tools $this.Tools -Model $llmModel -Raw
         $script:messages += @($response.choices[0].message | ConvertTo-OAIMessage)
     
         $script:messages += @(Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls)
     } until ($response.choices.finish_reason -eq "stop")
 
     return $response.choices[0].message.content
+}
+
+$ClearMessages = {
+    [CmdletBinding()]
+    param()
+    $end = $script:messages.role.IndexOf('user')
+    $script:messages = $script:messages | Select-Object -First $end
 }
 
 $InteractiveCLI = {
@@ -148,11 +156,11 @@ function New-Agent {
         $Instructions,
         $Tools,
         $LLM,
-        $Provider,
-        $Model,
         $Name,
         $Description,
-        [Switch]$ShowToolCalls
+        [Switch]$ShowToolCalls,
+        $Provider,
+        $Model
     )
  
     $script:messages = @()
@@ -209,7 +217,8 @@ function New-Agent {
     Add-Member -MemberType ScriptMethod -Name "PrintResponse" -Force -Value $PrintResponse -PassThru |
     Add-Member -MemberType ScriptMethod -Name "InteractiveCLI" -Force -Value $InteractiveCLI -PassThru |
     Add-Member -MemberType ScriptMethod -Name "GetMessages" -Force -Value $GetAgentMessages -PassThru |
-    Add-Member -MemberType ScriptMethod -Name "PrettyPrintMessages" -Force -Value $PrettyPrintMessages -PassThru
+    Add-Member -MemberType ScriptMethod -Name "PrettyPrintMessages" -Force -Value $PrettyPrintMessages -PassThru |
+    Add-Member -MemberType ScriptMethod -Name "ClearMessages" -Force -Value $ClearMessages -PassThru |
 }
 
 function Get-LogDate {
