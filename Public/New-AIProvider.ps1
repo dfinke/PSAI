@@ -73,7 +73,7 @@ function New-AIProvider {
     
     end {
         # Update tab coimpletion on Get-AIProvider
-        Update-ArgumentCompleter -Function 'Get-AIProvider' -Provider
+        Update-ArgumentCompleter -Function 'Get-AIProvider', 'Set-AIDefaultProvider' -Provider
         if ($PassThru) { $ProviderObject }
     }
 }
