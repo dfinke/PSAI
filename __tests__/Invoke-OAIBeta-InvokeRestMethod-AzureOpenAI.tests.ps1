@@ -3,22 +3,20 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
         Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
         . "$PSScriptRoot/PesterMatchHashtable.ps1"
 
-        $secrets = @{
-            apiURI         = "https://openai-gpt-latest.openai.azure.com"
-            apiVersion     = "2024-02-15-preview"
-            apiKey         = '1'
-            deploymentName = "gpt-4o-mini"
-        }
 
-        # $secrets = Get-Secret AzOAISecrets -Vault AxKeys -AsPlainText | ConvertFrom-Json -AsHashtable
-        
-        
-        Set-AzOAISecrets @secrets
+
         Set-OAIProvider AzureOpenAI
-        
-        $script:Secrets = Get-AzOAISecrets       
-        $script:expectedBaseUrl = $secrets.apiURI
-        $script:expectedSuffixUrl = "?api-version={0}" -f $secrets.apiVersion
+        $ProviderParams = @{
+            Provider   = 'AzureOpenAI'
+            ApiKey     = '1' | ConvertTo-SecureString -AsPlainText
+            ModelNames = @('gpt-4o-mini')
+            BaseUri    = 'https://openai-gpt-latest.openai.azure.com'
+        }
+        Import-AIProvider @ProviderParams
+        $version = Get-AIProvider | Select-Object -ExpandProperty Version
+
+        $script:expectedBaseUrl = $ProviderParams.BaseUri
+        $script:expectedSuffixUrl = "?api-version={0}" -f $Version
 
         $script:expectedHeaders = @{
             "Content-Type" = "application/json"
@@ -94,7 +92,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
             Body          = @{
                 instructions = $null
                 name         = $null
-                model        = $Secrets.deploymentName
+                model        = $ProviderParams.ModelNames[0]
             }
 
             Headers       = $expectedHeaders
@@ -105,6 +103,8 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
 
         $UnitTestingData = Get-UnitTestingData 
         $UnitTestingData | Should -Not -BeNullOrEmpty
+
+        write-host ($UnitTestingData | Convertto-json )
 
         Test-UnitTestingData $UnitTestingData $ExpectedUnitTestingData
     }
