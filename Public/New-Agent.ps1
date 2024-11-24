@@ -218,7 +218,7 @@ function New-Agent {
     Add-Member -MemberType ScriptMethod -Name "InteractiveCLI" -Force -Value $InteractiveCLI -PassThru |
     Add-Member -MemberType ScriptMethod -Name "GetMessages" -Force -Value $GetAgentMessages -PassThru |
     Add-Member -MemberType ScriptMethod -Name "PrettyPrintMessages" -Force -Value $PrettyPrintMessages -PassThru |
-    Add-Member -MemberType ScriptMethod -Name "ClearMessages" -Force -Value $ClearMessages -PassThru |
+    Add-Member -MemberType ScriptMethod -Name "ClearMessages" -Force -Value $ClearMessages -PassThru
 }
 
 function Get-LogDate {
