@@ -30,7 +30,7 @@
     Creates a new Provider list and imports the Provider
 
     .EXAMPLE
-    Import-AIProvider -Provider
+    Import-AIProvider -Provider OpenAI -ApiKey $($env:OpenAIKey | ConvertTo-SecureString -AsPlainText)
     
     .EXAMPLE
     Import-AIProvider -Provider AzureOpenAI -ModelNames "GPT-4o" -ApiKey $($env:ApiKey | ConvertTo-SecureString -AsPlainText) -BaseUri $BaseUri
@@ -41,6 +41,17 @@
     Import-AIProvider -FilePath .\MyProvider.ps1 -ApiKey $(Get-Secret -Name MySecret)
 
     Imports the provider definition from the file MyProvider.ps1 and sets the ApiKey
+
+    .EXAMPLE
+    $provider = Import-AIProvider -Provider AzureOpenAI -ModelNames "GPT-4o" -ApiKey $($env:ApiKey | ConvertTo-SecureString -AsPlainText) -BaseUri $BaseUri -PassThru
+
+    Imports the AzureOpenAI provider with the GPT-4o model and sets the ApiKey and BaseUri. The imported Provider object is returned to the pipeline
+
+    .EXAMPLE
+    Import-AIProvider -Provider AzureOpenAI -ModelNames "GPT-4o" -ApiKey $($env:ApiKey | ConvertTo-SecureString -AsPlainText) -BaseUri $BaseUri -Force
+
+    Imports the AzureOpenAI provider with the GPT-4o model and sets the ApiKey and BaseUri. The Provider is set and owerwrites any existing AzureOpenAI Provider
+
 #>
 function Import-AIProvider {
     [CmdletBinding(DefaultParameterSetName = 'Provider')]
@@ -64,6 +75,7 @@ function Import-AIProvider {
         [string[]]$ModelNames,
         [securestring]$ApiKey,
         [string]$BaseUri,
+        [string]$Version,
         [switch]$Default,
         [switch]$PassThru,
         [switch]$Force
@@ -115,8 +127,6 @@ function Import-AIProvider {
             $models | ForEach-Object {
                 # Override configured ModelName - this can cause conflicts if not unique
                 $model = @{Name = $_}
-                # $model.Add('Chat', $Content.Chat)
-                # $model.Add('NewMessage', $Content.NewMessage)
                 $model.Add('ModelFunctions', $Content.ModelFunctions)
                 New-AIModel @model -Provider $providerHash['Name']
             }
