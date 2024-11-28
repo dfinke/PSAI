@@ -1,3 +1,47 @@
+<#
+.SYNOPSIS
+    Add a new AI Provider to the list of available Providers.
+
+.DESCRIPTION
+    This function creates a new AI Provider object with the specified parameters and adds it to the list of available Providers. The function also adds several methods to the Provider object, including GetApiKey, SetDefaultModel, GetDefaultModel, GetModel, GetModels, and AddModel.
+
+.PARAMETER Name
+    Custom name of the Provider.
+
+.PARAMETER Provider
+    Name of the Provider. This is used to identify the Provider when calling the InvokeModel function.
+
+.PARAMETER ApiKey
+    The ApiKey to use for the Provider. Must be a SecureString.
+
+.PARAMETER BaseUri
+    The BaseUri to use for the Provider.
+
+.PARAMETER Version
+    The version of the Provider API.
+
+.PARAMETER AIModels
+    A hashtable of AI Models to add to the Provider. The key is the Model name and the value is a PSCustomObject with the Model properties.
+
+.PARAMETER DefaultModel
+    The default Model to use for the Provider.
+
+.PARAMETER Default
+    Forces the Provider to be the default if other providers are already imported.
+
+.PARAMETER PassThru
+    Returns the created Provider object to the pipeline.
+
+.PARAMETER Force
+    Creates a new Provider list and imports the Provider.
+
+.EXAMPLE
+    New-AIProvider -Name 'MyProvider' -Provider 'MyProvider' -ApiKey $('SecretKey' | ConvertTo-SecureString -AsPlainText) -BaseUri https://MyProvider.com/v1'
+    Creates a new Provider with no Models.
+
+.NOTES
+    This function is mainly used when importing a new AI Provider from a file or when creating a new Provider in the shell.
+#>
 function New-AIProvider {
     [CmdletBinding()]
     param (

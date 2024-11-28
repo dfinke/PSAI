@@ -11,16 +11,6 @@
     .PARAMETER Provider
     The Provider object to import. Tab completion for included providers is available
 
-    .EXAMPLE
-    Import-AIProvider -Provider AzureOpenAI -ModelNames "GPT-4o" -ApiKey $($env:ApiKey | ConvertTo-SecureString -AsPlainText) -BaseUri $BaseUri
-
-    Imports the AzureOpenAI provider with the GPT-4o model and sets the ApiKey and BaseUri
-
-    .EXAMPLE
-    Import-AIProvider -FilePath .\MyProvider.ps1 -ApiKey $(Get-Secret -Name MySecret)
-
-    Imports the provider definition from the file MyProvider.ps1 and sets the ApiKey
-
     .PARAMETER ModelNames
     An array of Model names to import. The first Model will be set as the default
 
@@ -38,6 +28,19 @@
 
     .PARAMETER Force
     Creates a new Provider list and imports the Provider
+
+    .EXAMPLE
+    Import-AIProvider -Provider
+    
+    .EXAMPLE
+    Import-AIProvider -Provider AzureOpenAI -ModelNames "GPT-4o" -ApiKey $($env:ApiKey | ConvertTo-SecureString -AsPlainText) -BaseUri $BaseUri
+
+    Imports the AzureOpenAI provider with the GPT-4o model and sets the ApiKey and BaseUri
+
+    .EXAMPLE
+    Import-AIProvider -FilePath .\MyProvider.ps1 -ApiKey $(Get-Secret -Name MySecret)
+
+    Imports the provider definition from the file MyProvider.ps1 and sets the ApiKey
 #>
 function Import-AIProvider {
     [CmdletBinding(DefaultParameterSetName = 'Provider')]
