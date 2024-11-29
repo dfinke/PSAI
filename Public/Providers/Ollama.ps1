@@ -24,7 +24,7 @@
         GetUri     = {
             [CmdletBinding()]
             param(
-                [string]$APIPath = "api/generate"
+                [string]$APIPath = "chat/completions"
             )
             $PathClean = $APIPath.TrimStart('/').TrimEnd('?')
             $uri = "$($this.Provider.BaseUri)/$($this.Provider.Version)/$($PathClean)"
@@ -71,7 +71,7 @@
             if ($messages) { $body.messages += $messages }
 
             $params = @{
-                Uri         = "$($this.GetUri($Uri))"
+                Uri         = $this.GetUri()
                 Method      = $Method
                 ContentType = $ContentType
             }

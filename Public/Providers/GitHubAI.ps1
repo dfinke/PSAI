@@ -73,7 +73,7 @@
                     "Authorization" = "$($this.Provider.GetApiKey())"
                     "x-ms-model-mesh-model-name" = $this.name 
                 }
-                Uri         = "$($this.GetUri($Uri))"
+                Uri         = $this.GetUri()
                 Method      = $Method
                 ContentType = $ContentType
             }
