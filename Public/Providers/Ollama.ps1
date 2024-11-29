@@ -51,7 +51,7 @@
                 [switch]$ReturnObject,
                 $BodyOptions = @{},
                 [array]$messages = @(),
-                [string]$Uri = "api/generate",
+                [string]$Uri = "chat/completions",
                 [string]$Method = "Post",
                 [string]$ContentType = 'application/json'
             )
@@ -110,49 +110,4 @@
             $this.InvokeModel($prompt, $ReturnObject, $BodyOptions, $messages)
         }
     }
-
-        # Chat       = {
-        #     [CmdletBinding()]
-        #     param(
-        #         $prompt,
-        #         [switch]$ReturnObject,
-        #         [hashtable]$BodyOptions = @{stream = $false }
-        #     )
-    
-        #     #Initiialize a body object
-        #     $body = [ordered]@{
-        #         model = $this.Name
-        #     }
-
-        #     # Add the prompt to BodyOptions
-        #     $BodyOptions.Add('prompt', $prompt)
-    
-        #     #Add options to the body object
-        #     $BodyOptions.Keys | ForEach-Object {
-        #         $body[$_] = $BodyOptions[$_]
-        #     }
-
-        #     $body | convertto-json -Depth 10 | Write-Verbose
-        
-        #     $params = @{
-        #         Uri         = "$($this.Provider.BaseUri)/api/generate"
-        #         Method      = 'POST'
-        #         ContentType = 'application/json'
-        #         Body        = $body | ConvertTo-Json -Depth 10
-        #     }
-
-        #     $r = Invoke-RestMethod @params
-
-        #     if ($ReturnObject) {
-        #         [pscustomobject][ordered]@{
-        #             Provider       = 'Ollama'
-        #             Response       = $r.response
-        #             ResponseObject = $r
-        #         }
-        #     }
-        #     else {
-        #         $r.response
-        #     }
-        # }
-    #}
 }
