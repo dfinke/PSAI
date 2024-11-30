@@ -1,82 +1,117 @@
 
 # Documentaition: https://docs.anthropic.com/en/api/getting-started
 @{
-    Provider   = @{
+    Provider          = @{
         Name     = "Anthropic"
         Provider = "Anthropic"
         BaseUri  = "https://api.anthropic.com"
         Version  = "2023-06-01"
     }
 
-    Models     = @(
+    Models            = @(
         "claude-3-5-sonnet-20240620"
     )
 
-    NewMessage = {
-        [outputType([hashtable])]
-        [CmdletBinding()]
-        param(
-            [ValidateSet('user', 'assistant', 'system')]
-            [string]$role = "user",
-            $Content # Takes a string or an array of objects
-        )
-        @{
-            role    = $role
-            content = $Content
-        }
+    # This section contains the functions available on the provider
+    ProviderFunctions = @{
+        
     }
-
-    Chat       = {
-        [CmdletBinding()]
-        param(
-            $prompt,
-            [switch]$ReturnObject,
-            [hashtable]$BodyOptions = @{max_tokens=1024}, # max_tokens is required for Antropic
-            [array]$messages = @()
-        )
-    
-        #Initiialize a body object
-        $body = [ordered]@{
-            model = $this.Name
-        }      
-        
-        #Add options to the body object
-        $BodyOptions.Keys | ForEach-Object {
-            $body[$_] = $BodyOptions[$_]
+    # Messeges sent to the model are configured in various ways. This section contains the configuration for the model.
+    # This section contains the functions available on the model
+    ModelFunctions    = @{
+        # The URI structure for calls to the provider
+        # The URI has minor variations or each provider. This function will return the URI for the provider.
+        GetUri      = {
+            [CmdletBinding()]
+            param(
+                [string]$APIPath
+            )
+            # if ($APIPath -eq "") { $APIPath = "generateContent" }
+            # $PathClean = $APIPath.TrimStart('/|:').TrimEnd('?')
+            $uri = "$($this.Provider.BaseUri)/v1/messages"
+            $uri
         }
 
-        #Add prompt to messages
-        if ($prompt) {
-            $messages += $this.NewMessage("user", $prompt)
-        }
-        
-        $body.Add('messages', $messages)
-
-        $headers = @{
-            'x-api-key' = $this.Provider.GetApiKey()
-            'anthropic-version' = $this.Provider.Version
-        }
-
-        $params = @{
-            Headers     = $headers
-            Uri         = "$($this.Provider.BaseUri)/v1/messages"
-            Method      = 'POST'
-            ContentType = 'application/json'
-            Body        = $body | ConvertTo-Json -Depth 10
-        }
-
-        $r = Invoke-RestMethod @params
-
-        if ($ReturnObject) {
-            [pscustomobject][ordered]@{
-                Provider       = 'Anthropic'
-                Response       = $r.content[0].text # There might come other stuff out here
-                ResponseObject = $r
+        NewMessage  = {
+            [outputType([hashtable])]
+            [CmdletBinding()]
+            param(
+                [ValidateSet('user', 'assistant', 'system')]
+                [string]$role = "user",
+                $Content # Takes a string or an array of objects
+            )
+            @{
+                role    = $role
+                content = $Content
             }
         }
-        else {
-            $r.content[0].text
+
+        InvokeModel = {
+            [CmdletBinding()]
+            param(
+                $prompt,
+                [switch]$ReturnObject,
+                $BodyOptions = [ordered]@{},
+                [array]$messages = @(),
+                [string]$Uri,
+                [string]$Method = "Post",
+                [string]$ContentType = 'application/json'
+            )
+            # anthropic requires a max_token parameter in the body
+            if ($BodyOptions.Keys -notcontains 'max_tokens') {
+                $BodyOptions.Add('max_tokens', 1024)
+            }
+            if ($BodyOptions.Keys -notcontains 'model') {
+                $BodyOptions.Add('model', $this.Name)
+            }
+
+            #Add prompt to messages
+            if ($prompt) {
+                $messages += $this.NewMessage("user", $prompt)
+                $BodyOptions.messages += $messages
+            }
+        
+            $headers = @{
+                'x-api-key'         = $this.Provider.GetApiKey()
+                'anthropic-version' = $this.Provider.Version
+            }
+
+            $params = @{
+                Headers     = $headers
+                Uri         = $this.GetUri($Uri)
+                Method      = 'POST'
+                ContentType = 'application/json'
+                Body        = $BodyOptions | ConvertTo-Json -Depth 10
+            }
+
+            try {
+                $r = Invoke-RestMethod @params  -ErrorVariable InvokeRestError
+            }
+            catch {}
+
+            if ($InvokeRestError) {
+                return $InvokeRestError
+            }
+            $responseString = $r.content[0].text
+            if ($ReturnObject) {
+                return [pscustomobject][ordered]@{
+                    Provider       = 'Anthropic'
+                    Response       = $responseString# There might come other stuff out here
+                    ResponseObject = $r
+                }
+            }
+            $responseString
+        }
+
+        Chat        = {
+            [CmdletBinding()]
+            param(
+                $prompt,
+                [switch]$ReturnObject,
+                [hashtable]$BodyOptions = @{},
+                [array]$messages = @()
+            )
+            $this.InvokeModel($prompt, $ReturnObject, $BodyOptions, $messages)
         }
     }
-
 }
