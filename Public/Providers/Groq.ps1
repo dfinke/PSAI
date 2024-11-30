@@ -1,75 +1,121 @@
 
 @{
-    Provider   = @{
+    Provider          = @{
         Name     = "Groq"
         Provider = "Groq"
         BaseUri  = "https://api.groq.com/openai"
         Version  = "v1"
     }
 
-    Models     = @(
+    Models            = @(
         "llama3-8b-8192"
     )
-
-    NewMessage = {
-        [outputType([hashtable])]
-        [CmdletBinding()]
-        param(
-            [ValidateSet('user', 'system')]
-            [string]$role = "user",
-            [string]$Content
-        )
-        @{
-            role    = $role
-            content = $Content
-        }
+    # This section contains the functions available on the provider
+    ProviderFunctions = @{
+        
     }
-
-    Chat       = {
-        [CmdletBinding()]
-        param(
-            $prompt,
-            [switch]$ReturnObject,
-            [hashtable]$BodyOptions = @{},
-            [array]$messages = @()
-        )
-    
-        #Initiialize a body object
-        $body = [ordered]@{
-            model = $this.Name
+    # Messeges sent to the model are configured in various ways. This section contains the configuration for the model.
+    # This section contains the functions available on the model
+    ModelFunctions    = @{
+        # The URI structure for calls to the provider
+        # The URI has minor variations or each provider. This function will return the URI for the provider.
+        GetUri     = {
+            [CmdletBinding()]
+            param(
+                [string]$APIPath
+            )
+            if ($APIPath -eq "") { $APIPath = "chat/completions" }
+            $PathClean = $APIPath.TrimStart('/').TrimEnd('?')
+            $uri = "$($this.Provider.BaseUri)/$($this.Provider.Version)/$($PathClean)"
+            $uri
         }
-    
-        #Add options to the body object
-        $BodyOptions.Keys | ForEach-Object {
-            $body[$_] = $BodyOptions[$_]
-        }
-
-        #Add prompt to messages
-        if ($prompt) {
-            $messages += $this.NewMessage("user", $prompt)
-            $body.Add('messages', $messages)
-        }
-
-        $params = @{
-            Headers     = @{ Authorization = "Bearer $($this.Provider.GetApiKey())" }
-            Uri         = "$($this.Provider.BaseUri)/$($this.Provider.Version)/chat/completions"
-            Method      = 'POST'
-            ContentType = 'application/json'
-            Body        = $body | ConvertTo-Json -Depth 10
-        }
-
-        $r = Invoke-RestMethod @params
-
-        if ($ReturnObject) {
-            [pscustomobject][ordered]@{
-                Provider       = 'Groq'
-                Response       = $r.choices[0].message.content
-                ResponseObject = $r
+        NewMessage = {
+            [outputType([hashtable])]
+            [CmdletBinding()]
+            param(
+                [ValidateSet('user', 'assistant', 'system')]
+                [string]$role = "user",
+                [string]$Content
+            )
+            @{
+                role    = $role
+                content = $Content
             }
         }
-        else {
-            $r.choices[0].message.content
+
+        InvokeModel = {
+            [CmdletBinding()]
+            param(
+                $prompt,
+                [switch]$ReturnObject,
+                $BodyOptions = @{},
+                [array]$messages = @(),
+                [string]$Uri,
+                [string]$Method = "Post",
+                [string]$ContentType = 'application/json'
+            )
+    
+            #Initiialize a body object
+            $body = $BodyOptions
+            if ($body.Keys -notcontains 'model' -and !$($BodyOptions -is [System.IO.MemoryStream])) {
+                $body.model = $this.Name
+            }
+
+            #Add prompt to messages
+            if ($prompt.Length -gt 0) {
+                $messages += $this.NewMessage("user", $prompt)
+            }
+
+            #Add messages to the body object
+            if ($messages) { $body.messages += $messages }
+
+            # Headers are special on OpenAI
+            $headers = @{
+                Authorization = "Bearer $($this.Provider.GetApiKey())"
+            }
+
+            $params = @{
+                Headers     = $headers
+                Uri         = "$($this.GetUri($Uri))"
+                Method      = $Method
+                ContentType = $ContentType
+            }
+
+            if ($BodyOptions -is [System.IO.MemoryStream]) {
+                $params['Body'] = $BodyOptions
+            }
+            else {
+                $params['Body'] = $body | ConvertTo-Json -Depth 10
+            }
+
+            try {
+                $r = Invoke-RestMethod @params -ErrorVariable InvokeRestError
+            }
+            catch {}
+
+            if ($InvokeRestError) {
+                return $InvokeRestError
+            }
+            $responseString = $r.choices[0]?.message?.content
+            if ($ReturnObject) {
+                return [pscustomobject][ordered]@{
+                    Provider       = 'OpenAI'
+                    Response       = $responseString
+                    ResponseObject = $r
+                }
+            }
+            $responseString
+        }
+
+        Chat        = {
+            [CmdletBinding()]
+            param(
+                $prompt,
+                [switch]$ReturnObject,
+                [hashtable]$BodyOptions = @{model = $this.Name },
+                [array]$messages = @()
+            )
+            $this.InvokeModel($prompt, $ReturnObject, $BodyOptions, $messages)
         }
     }
-
 }
