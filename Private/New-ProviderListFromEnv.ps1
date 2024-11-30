@@ -20,8 +20,8 @@ function New-ProviderListFromEnv
         Import-AIProvider @params
 
     }
-    if (-Not (Get-AIProvider)) {
-        Write-Warning "No provider has been set up yet. Please read the instructions for the module to set up a provider."
+    if (-Not (Get-AIProviderList)) {
+        throw "No provider has been set up yet. Please read the instructions for the module to set up a provider."
     }
     
 }

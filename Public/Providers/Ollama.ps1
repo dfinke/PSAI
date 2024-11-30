@@ -24,8 +24,9 @@
         GetUri     = {
             [CmdletBinding()]
             param(
-                [string]$APIPath = "chat/completions"
+                [string]$APIPath
             )
+            if ($APIPath -eq "") { $APIPath = "chat/completions" }
             $PathClean = $APIPath.TrimStart('/').TrimEnd('?')
             $uri = "$($this.Provider.BaseUri)/$($this.Provider.Version)/$($PathClean)"
             $uri
@@ -51,7 +52,7 @@
                 [switch]$ReturnObject,
                 $BodyOptions = @{},
                 [array]$messages = @(),
-                [string]$Uri = "chat/completions",
+                [string]$Uri,
                 [string]$Method = "Post",
                 [string]$ContentType = 'application/json'
             )
@@ -71,7 +72,7 @@
             if ($messages) { $body.messages += $messages }
 
             $params = @{
-                Uri         = $this.GetUri()
+                Uri         = $this.GetUri($Uri)
                 Method      = $Method
                 ContentType = $ContentType
             }
@@ -90,13 +91,15 @@
             if ($InvokeRestError) {
                 return $InvokeRestError
             }
+            $responseString = $r.choices[0]?.message?.content
             if ($ReturnObject) {
                 return [pscustomobject][ordered]@{
                     Provider       = 'Ollama'
+                    Response      = $responseString
                     ResponseObject = $r
                 }
             }
-            $r.choices[0].message.content
+            $responseString
         }
 
         Chat        = {

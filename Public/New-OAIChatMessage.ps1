@@ -26,11 +26,14 @@ function New-OAIChatMessage {
     param(
         $Content,
         [ValidateSet('system', 'user', 'assistant')]
-        $Role = 'user'       
+        $Role = 'user',
+        $Model
     )
-
-    [PSCustomObject]@{
-        role    = $Role
-        content = $Content
-    }
+    if ($null -eq (Get-AIProviderList)) { New-ProviderListFromEnv }
+    if ($null -eq $Model) { $Model = Get-AIModel }
+    $Model.NewMessage($Role, $Content)
+    # [PSCustomObject]@{
+    #     role    = $Role
+    #     content = $Content
+    # }
 }

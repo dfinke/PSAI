@@ -70,7 +70,7 @@
 
             $params = @{
                 Headers     = @{ 
-                    "Authorization" = "$($this.Provider.GetApiKey())"
+                    "Authorization"              = "$($this.Provider.GetApiKey())"
                     "x-ms-model-mesh-model-name" = $this.name 
                 }
                 Uri         = $this.GetUri()
@@ -84,15 +84,23 @@
                 $params['Body'] = $BodyOptions | ConvertTo-Json -Depth 10
             }
 
-            $r = Invoke-RestMethod @params
-    
+            try {
+                $r = Invoke-RestMethod @params -ErrorVariable InvokeRestError
+            }
+            catch {}
+
+            if ($InvokeRestError) {
+                return $InvokeRestError
+            }
+            $responseString = $r.choices[0]?.message?.content
             if ($ReturnObject) {
                 return [pscustomobject][ordered]@{
                     Provider       = 'GitHubAI'
+                    Response       = $responseString
                     ResponseObject = $r
                 }
             }
-            $r.choices[0].message.content
+            $responseString
         }
 
         Chat        = {

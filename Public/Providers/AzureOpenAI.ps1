@@ -25,8 +25,9 @@
         GetUri      = {
             [CmdletBinding()]
             param(
-                [string]$APIPath = "chat/completions"
+                [string]$APIPath
             )
+            if ($APIPath -eq "") { $APIPath = "chat/completions" }
             if ($APIPath -match 'chat') { $APIPath = "deployments/$($this.Name)/" + $APIPath }
             $PathClean = $APIPath.TrimStart('/').TrimEnd('?')
             if ($PathClean -match '\?') { $PathClean += "&" }else { $PathClean += "?" }
@@ -57,7 +58,7 @@
                 [switch]$ReturnObject,
                 $BodyOptions = [ordered]@{},
                 [array]$messages = @(),
-                [string]$Uri = 'chat/completions',
+                [string]$Uri,
                 [string]$Method = "Post",
                 [string]$ContentType = 'application/json'
             )
@@ -96,13 +97,15 @@
             if ($InvokeRestError) {
                 return $InvokeRestError
             }
+            $responseString = $r.choices[0]?.message?.content
             if ($ReturnObject) {
                 return [pscustomobject][ordered]@{
                     Provider       = 'AzureOpenAI'
+                    Response      = $responseString
                     ResponseObject = $r
                 }
             }
-            $r.choices[0].message.content
+            $responseString
         }
 
         # A chat method must be available for all models

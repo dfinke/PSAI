@@ -169,7 +169,7 @@ function Invoke-OAIBeta {
     Write-Verbose "Using model: $($model.Name)"
     $Response = $model.InvokeModel('', $true, $Body, @(), $Uri, $Method, $ContentType)
     if ($response.ResponseObject) {
-        return $response.ResponseObject
+        return $response
     }
     throw $Response
 }

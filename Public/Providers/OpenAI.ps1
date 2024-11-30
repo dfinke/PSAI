@@ -23,8 +23,9 @@
         GetUri      = {
             [CmdletBinding()]
             param(
-                [string]$APIPath = "chat/completions"
+                [string]$APIPath
             )
+            if ($APIPath -eq "") { $APIPath = "chat/completions" }
             $PathClean = $APIPath.TrimStart('/').TrimEnd('?')
             $uri = "$($this.Provider.BaseUri)/$($this.Provider.Version)/$($PathClean)"
             $uri
@@ -50,7 +51,7 @@
                 [switch]$ReturnObject,
                 $BodyOptions = @{},
                 [array]$messages = @(),
-                [string]$Uri = "chat/completions",
+                [string]$Uri,
                 [string]$Method = "Post",
                 [string]$ContentType = 'application/json'
             )
@@ -84,7 +85,8 @@
 
             if ($BodyOptions -is [System.IO.MemoryStream]) {
                 $params['Body'] = $BodyOptions
-            } else {
+            }
+            else {
                 $params['Body'] = $body | ConvertTo-Json -Depth 10
             }
 
@@ -96,13 +98,15 @@
             if ($InvokeRestError) {
                 return $InvokeRestError
             }
+            $responseString = $r.choices[0]?.message?.content
             if ($ReturnObject) {
                 return [pscustomobject][ordered]@{
                     Provider       = 'OpenAI'
+                    Response       = $responseString
                     ResponseObject = $r
                 }
             }
-            $r.choices[0].message.content
+            $responseString
         }
 
         Chat        = {
