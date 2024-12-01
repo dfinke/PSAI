@@ -1,5 +1,9 @@
 BeforeDiscovery {
-    $info = (netstat -an | findstr "127.0.0.1:5272")
+    if ($env:GITHUB_ACTIONS -eq 'true') {
+        $info = $null
+    } else{
+        $info = (netstat -an | findstr "127.0.0.1:5272")
+    }    
 }
 
 Describe "Test chat endpoints" -Skip:($null -eq $info) {
@@ -11,7 +15,9 @@ Describe "Test chat endpoints" -Skip:($null -eq $info) {
         Import-AIProvider @params
     }
 
-    Context "Invoke-OAIChatCompletion" {
+    
+}
+Context "Invoke-OAIChatCompletion" {
         It "Invoke-OAIChatCompletion generates an answer" -Skip:($null -eq $info) {
             $Prompt = "What is the capitol of France"
             $Message = New-OAIChatMessage -Role user -Content $Prompt
@@ -29,4 +35,3 @@ Describe "Test chat endpoints" -Skip:($null -eq $info) {
             $Answer | Should -Match "Rome"
         }
     }
-}

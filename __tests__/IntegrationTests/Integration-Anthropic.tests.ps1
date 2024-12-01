@@ -1,5 +1,9 @@
 BeforeDiscovery {
-    $info = Get-SecretInfo -Name AnthropicCAPI
+    if ($env:GITHUB_ACTIONS -eq 'true') {
+        $info = $null
+    } else{
+        $info = Get-SecretInfo -Name AnthropicCAPI
+    }
 }
 
 Describe "Test chat endpoints" -Skip:($null -eq $info) {

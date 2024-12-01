@@ -1,5 +1,9 @@
 BeforeDiscovery {
-    $info = Get-Process ollama
+    if ($env:GITHUB_ACTIONS -eq 'true') {
+        $info = $null
+    } else{
+        $info = Get-Process ollama
+    }
 }
 
 Describe "Test chat endpoints" -Skip:($null -eq $info) {

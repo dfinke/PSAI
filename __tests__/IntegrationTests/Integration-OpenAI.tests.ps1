@@ -1,6 +1,10 @@
 BeforeDiscovery {
-    $info = Get-SecretInfo -Name OpenAI
-    $env:OpenAIKey = Get-Secret OpenAI -asPlainText # replace with clear text password if Get-Secret is not setup on your system
+    if ($env:GITHUB_ACTIONS -eq 'true') {
+        $info = $null
+    } else{
+        $info = Get-SecretInfo -Name OpenAI
+        $env:OpenAIKey = Get-Secret OpenAI -asPlainText # replace with clear text password if Get-Secret is not setup on your system    
+    }
 }
 
 Describe "Test chat endpoints with Secret" -Skip:($null -eq $info) {

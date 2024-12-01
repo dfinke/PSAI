@@ -1,5 +1,9 @@
 BeforeDiscovery {
-    $info = Get-SecretInfo -Name GitHubAI
+    if ($env:GITHUB_ACTIONS -eq 'true') {
+        $info = $null
+    } else{
+        $info = Get-SecretInfo -Name GitHubAI
+    }
 }
 
 Describe "Test chat endpoints with Secret" -Skip:($null -eq $info) {

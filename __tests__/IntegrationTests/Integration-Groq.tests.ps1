@@ -1,5 +1,9 @@
 BeforeDiscovery {
-    $info = Get-SecretInfo -Name GroqAPI
+    if ($env:GITHUB_ACTIONS -eq 'true') {
+        $info = $null
+    } else{
+        $info = Get-SecretInfo -Name GroqAPI
+    }
 }
 
 Describe "Test chat endpoints" -Skip:($null -eq $info) {
