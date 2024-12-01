@@ -42,33 +42,179 @@ PSAI and Agents embody the principle of "be the automator, not the automated." B
 
 ```powershell
 Install-Module -Name PSAI
+Import-Module PSAI
 ```
 
-After installing the module, you can start working with it by getting your [OpenAI API key](#openai-api-key) or [Azure OpenAI secrets](#azure-openai). Or both.
+## Provider-Model list
 
-## OpenAI API KEY
+PSAI uses a Provider-Model list for storing multiple providers and models. The first Provider to be imported, will be the default Provider for all calls, unless a specific other Provider is requested in the call.
+
+Likewise, a Provider can have one or more models. The Model first imported to the Provider, will be set as the default Model and default model will be used in all calls, unless another specific model is requested by the cmdlet.
+
+Both default Provider and Providers default Model can be changed after import.
+
+
+## Importing Providers and Models
+
+PSAI currently supports the following Providers:
+* AIToolkit
+* Anthropic
+* AzureOpenAI
+* Gemini
+* Groq
+* Ollama
+* OpenAI
+
+You can also write your own integrations to other Providers
+
+Using the above providers usually require an API key and in some cases a baseUrl and specific model versions (Azure OpenAI) Others, usually the once running locally, do not require any additional information to be imported.
+
+In the following, we assume that [Microsoft.PowerShell.SecretManagement](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.secretmanagement/?view=ps-modules) is installed and setup on your system. If not, you can supply the secrets in any other way you prefer.
+
+<details>
+<summary><h3>Importing OpenAI</h3></summary>
 
 Get/Create your OpenAI API key from https://platform.openai.com/account/api-keys.
 
-Then set `$env:OpenAIKey` to your key.
+Import OpenAI and the default Model gpt-4o-mini like this
 
-## Azure OpenAI 
+```powershell
+$ApiKey = Get-Secret OpenAI # Or $ApiKey = "YourSecretKey" | ConvertTo-SecureString -AsPlainText -Force
+$params = @{
+    Provider = 'OpenAI'
+    ApiKey   = $ApiKey
+  }
+Import-AIProvider @params
+```
+
+If you want other models to be available, just specify the models. First model will be the default:
+```powershell
+$params = @{
+    Provider = 'OpenAI'
+    ApiKey = Get-Secret OpenAI,
+    ModelNames = 'gpt-4o', 'gpt-o1-mini'
+  }
+Import-AIProvider @params
+```
+
+Legacy settings are still supported for OpenAI. If you set `$env:OpenAIKey` to contain your clear test API key, the OpenAI provider will be loaded for you with the built-in default provider.
+</details> 
+<details>
+<summary><h3>Importing Azure OpenAI</h3></summary>
 
 After creating an [Azure OpenAI resource](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/create-resource?pivots=web-portal), you can use the `PSAI` module to interact with it. 
 
-You need to get the following secrets form the Azure Portal and Azure AI Studio - `apiURI`,`apiVersion`,`apiKey`,`deploymentName`.
+You need to get the following secrets form the Azure Portal and Azure AI Studio - `apiURI`,`apiKey`,`deploymentName`.
 
+```powershell
+$DeploymentName = '<The name of your deployment>'
+$params = @{
+    Provider   = 'AzureOpenAI'
+    BaseUri    = Get-Secret AzureOpenAIBaseUri -asPlainText
+    ModelNames = $DeploymentName
+    ApiKey     = Get-Secret AzureOpenAIKey
+  }
+Import-AIProvider @params
+```
+
+Legacy import is also supported:
 ```powershell
 $secrets = @{
     apiURI         = "<Your Azure OpenAI API URI>"
     apiVersion     = "<Your Azure OpenAI API Version>"
     apiKey         = "<Your Azure OpenAI API Key>"
     deploymentName = "<Your Azure OpenAI Deployment Name>"
-}
+  }
 
 Set-OAIProvider AzureOpenAI
 Set-AzOAISecrets @secrets
 ```
+</details>
+
+<details>
+<summary><h3>Importing AIToolkit</h3></summary>
+
+AI Toolkit is a free plugin for VS Code. Once installed, you can try out the available local models. https://learn.microsoft.com/en-us/windows/ai/toolkit covers the required installation procedures.
+
+API key is not required. Local models are free, but required reasonable specs on the system running the models.
+
+```powershell
+$params = @{
+    Provider = 'AIToolkit'
+  }
+Import-AIProvider @params
+```
+
+The default model in AI Toolkit is "Phi-3-mini-4k-directml-int4-awq-block-128-onnx". Feel free totest any of the available local Models by utilizing the -ModelNames parameter
+</details>
+
+<details>
+<summary><h3>Importing Anthropic</h3></summary>
+
+Anthropic is another paid service. You can get an API key by signing up here: https://console.anthropic.com/ You will need to connect a credit card and deposit a small amount of $ to get started.
+
+To Connect to Anthropic, run the following
+```powershell
+$params = @{
+    Provider = 'Anthropic'
+    ApiKey   = Get-Secret -Name AnthropicCAPI
+  }
+Import-AIProvider @params
+```
+
+The built-in default Model is "claude-3-5-sonnet-20240620", but you change or add other Models with the -ModelNames parameter
+</details>
+
+<details>
+<summary><h3>Importing Gemini</h3></summary>
+
+Gemini is another paid Provider. Setup an account here: https://ai.google.dev/ to get an API key. Google let's you start for free, but you have to connect with a google account with access to a credit card.
+
+Connecting to Gemini:
+```powershell
+$params = @{
+    Provider = 'Gemini'
+    ApiKey   = Get-Secret -Name GeminiApiKey
+  }
+Import-AIProvider @params
+```
+The default Model is "gemini-1.5-flash" and other Models can be loaded with the -ModuleNames parameter
+</details>
+
+<details>
+<summary><h3>Importing Groq</h3></summary>
+
+You can get an API key for Groq by setting up an account here: https://console.groq.com/ You do not need to add a credit card at the moment.
+
+Run the following to get started, once you have your API code setup:
+```powershell
+$params = @{
+    Provider = 'Groq'
+    ApiKey   = Get-Secret -Name GroqAPI
+  }
+Import-AIProvider @params
+```
+
+The default Model provided in the module is "llama3-8b-8192" Use -ModuleNames to add additional Models
+</details>
+
+<details>
+<summary><h3>Importing Ollama</h3></summary>
+
+Ollama lets you run LLMs on your own machine for free. All you need to do is install the binaries found here: https://ollama.com/ no API key is required.
+
+Once you are setup, run this to get started:
+```powershell
+$params = @{
+    Provider = 'Ollama'
+  }
+Import-AIProvider @params
+```
+
+2 Models are importet: "llama3.1" and "phi3:mini". This can be changed by using the -ModuleNames parameter
+</details>
+
+Custom Providers can be added to the module. Take a look in the Providers folder to see, how a Provider is crafted for the module.
 
 ## Usage
 
