@@ -42,81 +42,27 @@ function Invoke-OAIBeta {
         [Switch]$NotOpenAIBeta        
     )        
     
-    # $headers = @{
-    #     'OpenAI-Beta'  = 'assistants=v2'    
-    #     'Content-Type' = $ContentType
-    # }
 
-    # if ($NotOpenAIBeta) {
-    #     $headers.Remove('OpenAI-Beta')
-    # }
-
-    # Get the correct model based on input and ProviderList
-    # Make sure the Provider List exists
     $ProviderList = Get-AIProviderList
 
-    # Get the OAI variables
-    # $OAIProvider = Get-OAIProvider
-    # $OAIApiKey = $env:OpenAIKey
-    # $AzOAISecrets = Get-AzOAISecrets
-
-    # If the Provider List is empty, try to create it
+    # If the Provider List is empty, try to load legacy credentials
     if ($null -eq $ProviderList) { New-ProviderListFromEnv }
-    
 
-    # The code below is still required to run 2 tests in the test suite
-### START ###
-    # $Provider = Get-OAIProvider
-    # $AzOAISecrets = Get-AzOAISecrets
-    # switch ($Provider) {
-    #     'OpenAI' {
-    #         $headers['Authorization'] = "Bearer $env:OpenAIKey"
-    #     }
+    $ModelName = $Body['model']
+    # Remove model from body - handled by modelobject
+    try {$Body.Remove('model')} catch{} #MemoryStreams don't have a remove method
+    # Get default providers default model.
+    if ($model.pstypenames -notcontains 'AIModel'){
+        $params = @{}
+        if ($Provider){$params['ProviderName'] = $Provider}
+        if ($Model){$params['ModelName'] = $Model}
+        elseif ($ModelName){$params['ModelName'] = $ModelName}
+        $model = Get-AIModel @params
+    }
+    Write-Verbose "Using provider: $($model.Provider.Name)"
+    Write-Verbose "Using model: $($model.Name)"
 
-    #     'AzureOpenAI' {
-    #         $headers['api-key'] = "$($AzOAISecrets.apiKEY)"
-            
-    #         if ($Body -isnot [System.IO.Stream]) {
-    #             if ($null -ne $Body -and $Body.Contains("model") ) {
-    #                 $Body.model = $AzOAISecrets.deploymentName
-    #             }
-    #         }
-
-    #         $Uri = $Uri -replace $baseUrl, ''
-    #         if ($Uri.EndsWith('/')) {
-    #             $Uri = $Uri.Substring(0, $Uri.Length - 1)
-    #         }
-            
-    #         $separator = '?'
-    #         if ($Uri.Contains('?')) {
-    #             $separator = '&'
-    #         }
-    #         $Uri = "{0}/openai{1}{2}api-version={3}" -f $AzOAISecrets.apiURI, $Uri, $separator, $AzOAISecrets.apiVersion         
-    #     }
-    # }    
-
-    # $params = @{
-    #     Uri     = $Uri
-    #     Method  = $Method
-    #     Headers = $headers
-    # }
-    
-    # if ($Body) {
-    #     if ($Body -is [System.IO.Stream]) {
-    #         $params['Body'] = $Body
-    #     }
-    #     else {
-    #         $params['Body'] = $Body | ConvertTo-Json -Depth 10
-    #     }
-    # }
-
-    # if ($OutFile) {
-    #     $params['OutFile'] = $OutFile
-    # }
-### END ###
-    # Write-Verbose ($params | ConvertTo-Json -Depth 5)
-    
-    
+    # TODO remove this unit testing block - new code does it differently
     if (Test-IsUnitTestingEnabled) {
         $provider = Get-AIProvider | Select-Object -ExpandProperty Name
         Write-Host "Data saved. Use Get-UnitTestingData to retrieve the data."
@@ -133,11 +79,7 @@ function Invoke-OAIBeta {
         $script:InvokeOAIUnitTestingData = @{
             Uri           = $Uri
             Method        = $Method
-            Headers       = $headers.Clone() # @{
-                # 'OpenAI-Beta'  = 'assistants=v2'
-                # 'Content-Type' = 'application/json'
-                # 'api-key'      = (Get-AIProvider).GetApiKey()
-            #} # $headers.Clone()
+            Headers       = $headers.Clone() 
             Body          = $Body
             OAIProvider   = Get-OAIProvider
             ContentType   = $ContentType
@@ -146,27 +88,7 @@ function Invoke-OAIBeta {
         }        
         return
     }
-    $ModelName = $Body['model']
-    # Remove model from body - handled by modelobject
-    try {$Body.Remove('model')} catch{} #MemoryStreams don't have a remove method
-    # Get default providers default model.
-    ## TODO implement model passing in all functions
-    if ($model.pstypenames -notcontains 'AIModel'){
-        $params = @{}
-        if ($Provider){$params['ProviderName'] = $Provider}
-        if ($Model){$params['ModelName'] = $Model}
-        elseif ($ModelName){$params['ModelName'] = $ModelName}
-        $model = Get-AIModel @params
-    }
 
-    # Last chance to get a model if no model was found with a modelname - mainly there for hard coded models. Default functionality of the ProviderList mitigates this
-    $model = Get-AIModel
-    if ($null -eq  $model) {
-        throw "No model found"
-    }
-    
-    Write-Verbose "Using provider: $($model.Provider.Name)"
-    Write-Verbose "Using model: $($model.Name)"
     $Response = $model.InvokeModel('', $true, $Body, @(), $Uri, $Method, $ContentType)
     if ($response.ResponseObject) {
         return $response

@@ -92,7 +92,6 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
             Body          = @{
                 instructions = $null
                 name         = $null
-                model        = $ProviderParams.ModelNames[0]
             }
 
             Headers       = $expectedHeaders

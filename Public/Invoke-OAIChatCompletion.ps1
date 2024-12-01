@@ -85,7 +85,7 @@ function Invoke-OAIChatCompletion {
     param(
         [Parameter(Mandatory)]
         $Messages,
-        $Model = 'gpt-4o-mini',
+        $Model,
         $FrequencyPenalty,
         $LogitBias,
         $Logprobs,

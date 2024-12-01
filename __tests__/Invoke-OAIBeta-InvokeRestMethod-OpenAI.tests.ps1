@@ -62,7 +62,6 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
             Body          = @{
                 instructions = $null
                 name         = $null
-                model        = "gpt-4o-mini"
             }
 
             Headers       = $expectedHeaders

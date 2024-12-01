@@ -50,7 +50,7 @@ function Invoke-AIPrompt {
         $Prompt,
         [Parameter(Mandatory)]
         $Data,
-        $Model = 'gpt-4o-mini',
+        $Model,
         [Switch]$UsePowerShellPersona
     )
 
