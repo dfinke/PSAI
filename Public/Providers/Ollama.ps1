@@ -101,16 +101,5 @@
             }
             $responseString
         }
-
-        Chat        = {
-            [CmdletBinding()]
-            param(
-                $prompt,
-                [switch]$ReturnObject,
-                [hashtable]$BodyOptions = @{model = $this.Name },
-                [array]$messages = @()
-            )
-            $this.InvokeModel($prompt, $ReturnObject, $BodyOptions, $messages)
-        }
     }
 }

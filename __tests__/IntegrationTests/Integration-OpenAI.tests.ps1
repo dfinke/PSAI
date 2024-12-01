@@ -5,7 +5,7 @@ BeforeDiscovery {
 
 Describe "Test chat endpoints with Secret" -Skip:($null -eq $info) {
 
-    BeforeEach {
+    BeforeAll {
         Import-Module "$(Split-Path $(Split-Path $PSScriptRoot))/PSAI.psd1" -Force
         $params = @{
                 Provider = 'OpenAI'
@@ -22,6 +22,14 @@ Describe "Test chat endpoints with Secret" -Skip:($null -eq $info) {
             $Answer | Should -Not -BeNullOrEmpty
             $Answer | Should -BeOfType [String]
             $Answer | Should -Match "Paris"
+        }
+        It "Moniker syntax generates an answer" -Skip:($null -eq $info) {
+            $Model = Get-AIModel -ProviderName OpenAI
+            $Prompt = "What is the capitol of Italy"
+            $Answer = $Model.Chat($Prompt)
+            $Answer | Should -Not -BeNullOrEmpty
+            $Answer | Should -BeOfType [String]
+            $Answer | Should -Match "Rome"
         }
     }
 }
@@ -41,5 +49,6 @@ Describe "Test chat endpoints with Environment Variable" -Skip:($null -eq $env:O
             $Answer | Should -BeOfType [String]
             $Answer | Should -Match "Paris"
         }
+        
     }
 }

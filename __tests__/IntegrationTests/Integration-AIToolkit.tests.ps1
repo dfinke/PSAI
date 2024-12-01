@@ -1,15 +1,12 @@
 BeforeDiscovery {
-    $info = Get-SecretInfo -Name AzureOpenAIKey
+    $info = (netstat -an | findstr "127.0.0.1:5272")
 }
 
 Describe "Test chat endpoints" -Skip:($null -eq $info) {
-
     BeforeAll {
         Import-Module "$(Split-Path $(Split-Path $PSScriptRoot))/PSAI.psd1" -Force
         $params = @{
-                Provider = 'AzureOpenAI'
-                BaseUri = Get-Secret AzureOpenAIBaseUri -asPlainText
-                ApiKey = Get-Secret AzureOpenAIKey
+                Provider = 'AIToolkit'
             }
         Import-AIProvider @params
     }
@@ -23,13 +20,13 @@ Describe "Test chat endpoints" -Skip:($null -eq $info) {
             $Answer | Should -BeOfType [String]
             $Answer | Should -Match "Paris"
         }
-    }
-    It "Moniker syntax generates an answer" -Skip:($null -eq $info) {
-        $Model = Get-AIModel
-        $Prompt = "What is the capitol of Italy"
-        $Answer = $Model.Chat($Prompt)
-        $Answer | Should -Not -BeNullOrEmpty
-        $Answer | Should -BeOfType [String]
-        $Answer | Should -Match "Rome"
+        It "Moniker syntax generates an answer" -Skip:($null -eq $info) {
+            $Model = Get-AIModel -ProviderName AIToolkit
+            $Prompt = "What is the capitol of Italy"
+            $Answer = $Model.Chat($Prompt)
+            $Answer | Should -Not -BeNullOrEmpty
+            $Answer | Should -BeOfType [String]
+            $Answer | Should -Match "Rome"
+        }
     }
 }

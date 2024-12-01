@@ -66,6 +66,18 @@ function New-AIModel {
             }
         }
 
+        # Add Chat to all models
+        Add-Member -InputObject $Model -MemberType ScriptMethod -Name Chat -Value {
+            [CmdletBinding()]
+            param(
+                $prompt,
+                [switch]$ReturnObject,
+                [hashtable]$BodyOptions = @{model = $this.Name },
+                [array]$messages = @()
+            )
+            $this.InvokeModel($prompt, $ReturnObject, $BodyOptions, $messages)
+        }
+
 
         if ($ProviderName){
             [PSCustomObject]$AIProvider = Get-AIProvider -Name $ProviderName

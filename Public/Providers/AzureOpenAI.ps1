@@ -107,17 +107,5 @@
             }
             $responseString
         }
-
-        # A chat method must be available for all models
-        Chat        = {
-            [CmdletBinding()]
-            param(
-                $prompt,
-                [switch]$ReturnObject,
-                [hashtable]$BodyOptions = @{},
-                [array]$messages = @()
-            )
-            $this.InvokeModel($prompt, $ReturnObject, $BodyOptions, $messages)
-        }
     }
 }

@@ -18,10 +18,10 @@
 
     ModelFunctions    = @{
         GetUri      = {
-            [CmdletBinding()]
             param(
-                [string]$APIPath = "chat/completions"
+                [string]$APIPath
             )
+            if ($APIPath -eq "") { $APIPath = "chat/completions" }
             $PathClean = $APIPath.TrimStart('/').TrimEnd('?')
             $uri = "$($this.Provider.BaseUri)/$($this.Provider.Version)/$($PathClean)"
             $uri
@@ -48,7 +48,7 @@
                 [switch]$ReturnObject,
                 $BodyOptions = @{},
                 [array]$messages = @(),
-                [string]$Uri = "chat/completions",
+                [string]$Uri,
                 [string]$Method = "Post",
                 [string]$ContentType = 'application/json'
             )
@@ -74,7 +74,7 @@
 
             $params = @{
                 Headers     = $headers
-                Uri         = "$($this.GetUri($Uri))"
+                Uri         = $this.GetUri($Uri)
                 Method      = $Method
                 ContentType = $ContentType
             }
@@ -93,71 +93,16 @@
             if ($InvokeRestError) {
                 return $InvokeRestError
             }
+            $responseString = $r.choices[0]?.message?.content
             if ($ReturnObject) {
                 return [pscustomobject][ordered]@{
                     Provider       = 'AIToolkit'
+                    Response       = $responseString
                     ResponseObject = $r
                 }
             }
-            $r.choices[0].message.content
+            $responseString
         }
-
-        Chat        = {
-            [CmdletBinding()]
-            param(
-                $prompt,
-                [switch]$ReturnObject,
-                [hashtable]$BodyOptions = @{model = $this.Name },
-                [array]$messages = @()
-            )
-            $this.InvokeModel($prompt, $ReturnObject, $BodyOptions, $messages)
-        }
-
-        # Chat       = {
-        #     [CmdletBinding()]
-        #     param(
-        #         $prompt,
-        #         [switch]$ReturnObject,
-        #         [hashtable]$BodyOptions = @{},
-        #         [array]$messages = @()
-        #     )
-    
-        #     #Initiialize a body object
-        #     $body = [ordered]@{
-        #         model = $this.Name
-        #     }
-    
-        #     #Add options to the body object
-        #     $BodyOptions.Keys | ForEach-Object {
-        #         $body[$_] = $BodyOptions[$_]
-        #     }
-
-        #     #Add prompt to messages
-        #     if ($prompt) {
-        #         $messages += $($this.NewMessage("user", $prompt))
-        #     }
-
-
-        #     $params = @{
-        #         Uri         = "$($this.Provider.BaseUri)/$($this.Provider.Version)/chat/completions"
-        #         Method      = 'POST'
-        #         ContentType = 'application/json'
-        #         Body        = $body | ConvertTo-Json -Depth 10
-        #     }
-
-        #     $r = Invoke-RestMethod @params
-
-        #     if ($ReturnObject) {
-        #         [pscustomobject][ordered]@{
-        #             Provider       = 'AzureOpenAI'
-        #             Response       = $r.choices[0].message.content
-        #             ResponseObject = $r
-        #         }
-        #     }
-        #     else {
-        #         $r.choices[0].message.content
-        #     }
-        # }
     }
 
 }
