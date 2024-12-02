@@ -37,3 +37,7 @@ Describe "Test chat endpoints" -Skip:($null -eq $info) {
         $Answer | Should -Match "Rome"
     }
 }
+
+AfterAll {
+    Clear-AIProviderList
+}

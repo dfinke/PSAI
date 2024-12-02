@@ -37,3 +37,7 @@ Describe "Test chat endpoints with Secret" -Skip:($null -eq $info) {
         }
     }
 }
+
+AfterAll {
+    Clear-AIProviderList
+}

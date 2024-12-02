@@ -25,6 +25,7 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/Clear-OAIAllItems.ps1
 . $PSScriptRoot/Public/Clear-OAIAssistants.ps1
 . $PSScriptRoot/Public/Clear-OAIFiles.ps1
+. $PSScriptRoot/Public/Clear-AIProviderList.ps1
 . $PSScriptRoot/Public/ConvertFrom-FunctionDefinition.ps1
 . $PSScriptRoot/Public/ConvertFrom-GPTMarkdownTable.ps1
 . $PSScriptRoot/Public/ConvertFrom-OAIAssistant.ps1

@@ -34,3 +34,7 @@ Context "Invoke-OAIChatCompletion" {
         }
     }
 }
+
+AfterAll {
+    Clear-AIProviderList
+}

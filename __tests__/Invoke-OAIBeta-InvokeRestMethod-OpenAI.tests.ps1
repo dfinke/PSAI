@@ -217,4 +217,5 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
 
 AfterAll {
     $env:OpenAIKey = $env:TempOpenAIKey
+    Clear-AIProviderList
 }

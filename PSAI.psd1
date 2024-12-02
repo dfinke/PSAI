@@ -46,6 +46,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Clear-OAIAllItems'
         'Clear-OAIAssistants'
         'Clear-OAIFiles'
+        'Clear-AIProviderList'
         'ConvertFrom-FunctionDefinition'
         'ConvertFrom-GPTMarkdownTable'
         'ConvertFrom-OAIAssistant'

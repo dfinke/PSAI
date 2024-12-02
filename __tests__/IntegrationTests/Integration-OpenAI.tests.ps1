@@ -58,4 +58,7 @@ Describe "Test chat endpoints with Environment Variable" -Skip:($null -eq $env:O
     }
 }
 
-AfterAll {$env:OpenAIKey = $env:TempOpenAIKey}
+AfterAll {
+    $env:OpenAIKey = $env:TempOpenAIKey
+    Clear-AIProviderList
+}

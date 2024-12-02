@@ -36,3 +36,7 @@ Describe "Test chat endpoints" -Skip:($null -eq $info) {
         }
     }
 }
+
+AfterAll {
+    Clear-AIProviderList
+}
