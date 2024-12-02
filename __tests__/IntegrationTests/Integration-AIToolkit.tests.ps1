@@ -14,9 +14,6 @@ Describe "Test chat endpoints" -Skip:($null -eq $info) {
             }
         Import-AIProvider @params
     }
-
-    
-}
 Context "Invoke-OAIChatCompletion" {
         It "Invoke-OAIChatCompletion generates an answer" -Skip:($null -eq $info) {
             $Prompt = "What is the capitol of France"
@@ -27,11 +24,13 @@ Context "Invoke-OAIChatCompletion" {
             $Answer | Should -Match "Paris"
         }
         It "Moniker syntax generates an answer" -Skip:($null -eq $info) {
-            $Model = Get-AIModel -ProviderName AIToolkit
+            $Model = Get-AIModel
             $Prompt = "What is the capitol of Italy"
+            $model.Provider.Name | Should -Be 'AIToolkit'
             $Answer = $Model.Chat($Prompt)
             $Answer | Should -Not -BeNullOrEmpty
             $Answer | Should -BeOfType [String]
             $Answer | Should -Match "Rome"
         }
     }
+}
