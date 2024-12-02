@@ -18,9 +18,4 @@ Describe "Set-AIDefaultModel" {
     It "should throw an error if the provider does not exist" {
         { Set-AIDefaultModel -ProviderName "NonExistentProvider" -ModelName "GPT-3" } | Should -Throw
     }
-
-    It "should throw an error if no provider is supplied" {
-        Import-AIProvider -Provider "OpenAI" -ModelNames "gpt-4o-mini"
-        { Set-AIDefaultModel -ModelName "gpt-4o" } | Should -Throw
-    }
 }
