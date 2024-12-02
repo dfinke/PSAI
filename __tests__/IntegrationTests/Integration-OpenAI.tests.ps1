@@ -3,6 +3,7 @@ BeforeDiscovery {
         $info = $null
     } else{
         $info = Get-SecretInfo -Name OpenAI
+        $env:TempOpenAIKey = $env:OpenAIKey
         $env:OpenAIKey = Get-Secret OpenAI -asPlainText # replace with clear text password if Get-Secret is not setup on your system    
     }
 }
@@ -45,7 +46,7 @@ Describe "Test chat endpoints with Environment Variable" -Skip:($null -eq $env:O
     }
 
     Context "Invoke-OAIChatCompletion with Environment Variable" {
-        It "Invoke-OAIChatCompletion generates an answer" -Skip:($null -eq $envSecret) {
+        It "Invoke-OAIChatCompletion generates an answer" -Skip:($null -eq $env:OpenAIKey) {
             $Prompt = "What is the capitol of France"
             $Message = New-OAIChatMessage -Role user -Content $Prompt
             $Answer = Invoke-OAIChatCompletion -Message $Message
@@ -56,3 +57,5 @@ Describe "Test chat endpoints with Environment Variable" -Skip:($null -eq $env:O
         
     }
 }
+
+AfterAll {$env:OpenAIKey = $env:TempOpenAIKey}

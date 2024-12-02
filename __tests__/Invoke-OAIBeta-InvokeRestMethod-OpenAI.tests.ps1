@@ -1,3 +1,7 @@
+BeforeAll {
+    $env:TempOpenAIKey = $env:OpenAIKey
+}
+
 Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBetaParams-OpenAI {
     BeforeAll {
         Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
@@ -209,4 +213,8 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
 
         Test-UnitTestingData $UnitTestingData $ExpectedUnitTestingData
     }
+}
+
+AfterAll {
+    $env:OpenAIKey = $env:TempOpenAIKey
 }
