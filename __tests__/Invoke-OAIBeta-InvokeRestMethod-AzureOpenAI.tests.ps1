@@ -224,3 +224,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
         Test-UnitTestingData $UnitTestingData $ExpectedUnitTestingData
     }
 }
+
+AfterAll {
+    Clear-AIProviderList
+}
