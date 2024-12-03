@@ -105,7 +105,7 @@ function New-AIProvider {
 
         Add-Member -InputObject $ProviderObject -MemberType ScriptMethod -Name 'AddModel' -Value {
             param([PSCustomObject]$Model, [bool]$Default = $false)
-            if ($null -eq $this.AIModels) { $this.AIModels = @({}) }
+            if ($null -eq $this.AIModels) { $this.AIModels = @( {}) }
             [void]$this.AIModels.TryAdd($Model.Name, $Model)
             if ($Default) {
                 $this.SetDefaultModel($Model.Name)
@@ -116,8 +116,24 @@ function New-AIProvider {
     }
     
     end {
-        # Update tab coimpletion on Get-AIProvider
-        Update-ArgumentCompleter -Function 'Get-AIProvider', 'Set-AIDefaultProvider' -Provider
+        # Update tab completion on Get-AIProvider
+        $CommandObject = @{  
+            CommandName       = 'Get-AIProvider'
+            ProviderParameter = 'Name'
+        },
+        @{
+            CommandName       = 'Set-AIDefaultProvider'
+            ProviderParameter = 'ProviderName'
+        },
+        @{
+            CommandName       = 'New-Agent'
+            ProviderParameter = 'Provider'
+        },
+        @{
+            CommandName       = 'Get-AIModel'
+            ProviderParameter = 'ProviderName'
+        }
+        Update-ArgumentCompleter -CommandObject $CommandObject
         if ($PassThru) { $ProviderObject }
     }
 }

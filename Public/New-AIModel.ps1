@@ -56,8 +56,8 @@ function New-AIModel {
     process {
         $Model = [PSCustomObject]@{
             PSTypeName = 'AIModel'
-            Name = $Name
-            Provider = [PSCustomObject]@{}
+            Name       = $Name
+            Provider   = [PSCustomObject]@{}
         }
 
         if ($ModelFunctions) {
@@ -79,7 +79,7 @@ function New-AIModel {
         }
 
 
-        if ($ProviderName){
+        if ($ProviderName) {
             [PSCustomObject]$AIProvider = Get-AIProvider -Name $ProviderName
             if (!$AIProvider) {
                 Write-Error "Provider not found in the ProviderList. Please supply an existing Provider or ProviderName" -ErrorAction Stop
@@ -94,11 +94,19 @@ function New-AIModel {
             $AIProvider.AddModel($Model, $Default)
         }
 
-        if ($PassThru) {$Model}
+        if ($PassThru) { $Model }
     }
     
     end {
         # Update tab completion on Get-AIProvider
-        Update-ArgumentCompleter -Function 'Get-AIModel' -Provider -Model
+        $CommandObject = @{
+            CommandName    = 'Get-AIModel'
+            ModelParameter = 'ModelName'
+        }, @{
+            CommandName    = 'New-Agent'
+            ModelParameter = 'Model'
+        }
+
+        Update-ArgumentCompleter -CommandObject $CommandObject -Provider $ProviderName
     }
 }

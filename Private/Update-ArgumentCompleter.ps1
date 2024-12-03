@@ -1,9 +1,8 @@
 function Update-ArgumentCompleter {
     [CmdletBinding()]
     param (
-        $Functions,
-        [switch]$Provider,
-        [switch]$Model
+        $CommandObject,
+        $Provider
     )
     
     begin {
@@ -12,31 +11,32 @@ function Update-ArgumentCompleter {
     }
     
     process {
-        if ($Model) {
+
+        $CommandsForModelUpdate = $CommandObject | Where-Object { $_.ModelParameter }
+        if ($CommandsForModelUpdate) {
+            #TODO Write ModelParams for each function - this is tricky. Script variables dont seem to work
             $Models = (Get-AIModel -All).Name
-            $script:ModelParameters = $Models.foreach{
-                New-Object -Type System.Management.Automation.CompletionResult -ArgumentList "'$_'", $_, 'ParameterValue', $_
+            $script:ModelParameters = foreach ($Model in $Models) {
+                New-Object -Type System.Management.Automation.CompletionResult -ArgumentList "'$Model'", $Model, 'ParameterValue', $Model
             }
-            $Functions.foreach{
-                Register-ArgumentCompleter -CommandName $_ -ParameterName 'ModelName' -ScriptBlock {
+            foreach ( $Command in $CommandsForModelUpdate) {
+                Register-ArgumentCompleter -CommandName $Command.CommandName -ParameterName $Command.ModelParameter -ScriptBlock    {
                     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-                    $ModelParameters
+                    $script:ModelParameters
                 }
             }
         }
-        if ($Provider) {
+
+        $CommandsForProviderUpdate = $CommandObject | Where-Object { $_.ProviderParameter }
+        if ($CommandsForProviderUpdate) { 
             $Providers = (Get-AIProvider -All).Keys
-            $script:ProviderParameters = $Providers.foreach{
-                New-Object -Type System.Management.Automation.CompletionResult -ArgumentList "'$_'", $_, 'ParameterValue', $_
+            $script:ProviderParameters = $Providers | ForEach-Object {
+                New-Object -Type System.Management.Automation.CompletionResult -ArgumentList "'$($_)'", $_, 'ParameterValue', $_
             }
-            $Functions.foreach{
-                $parameterName = 'ProviderName'
-                if ($_ -eq 'Get-AIProvider') {
-                    $parameterName = 'Name'
-                }
-                Register-ArgumentCompleter -CommandName $_ -ParameterName $parameterName -ScriptBlock {
+            foreach ($Command in $CommandsForProviderUpdate) {
+                Register-ArgumentCompleter -CommandName $Command.CommandName -ParameterName $Command.ProviderParameter -ScriptBlock {
                     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-                    $ProviderParameters
+                    $script:ProviderParameters
                 }
             }
         }
