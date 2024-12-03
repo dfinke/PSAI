@@ -353,6 +353,6 @@ We are continuously evolving PSAI Agents to meet more diverse automation needs:
 
 ## Questions? Feedback?
 
-For questions or feedback, open an issue on GitHub or reach out via [Twitter](https://x.com/dfinke) or [LinkedIn](https://www.linkedin.com/in/douglasfinke/).
+For questions or feedback, open an issue on GitHub or reach out via [X](https://x.com/dfinke) or [LinkedIn](https://www.linkedin.com/in/douglasfinke/).
 
 Happy Automating!
