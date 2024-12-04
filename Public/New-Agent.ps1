@@ -5,9 +5,10 @@ $PrintResponse = {
     param(
         $prompt
     )
+    Write-Verbose ("{0} {1}" -f (Get-LogDate), ($this | dumpJson -Depth 15))
 
     if ($prompt -is [string]) {
-        $script:messages += @(New-ChatRequestUserMessage $prompt)
+        $script:messages += @(New-ChatRequestUserMessage -userRequest $prompt -Model $this.LLM.GetModel())
     }
     elseif ($prompt -is [array]) {
         $script:messages += $prompt
@@ -16,13 +17,12 @@ $PrintResponse = {
         throw "Invalid prompt type"
     }
 
-    Write-Verbose ("{0} {1}" -f (Get-LogDate), ($this | dumpJson -Depth 15))
-    $llmModel = $this.LLM.config.model
+
 
     $response = $null
     do {
         # Tried to use GetReducedMessages, but it was not working as expected - removed tool_calls from the response
-        $response = Invoke-OAIChatCompletion -Messages $this.GetMessages()  -Tools $this.Tools -Model $llmModel -Raw
+        $response = Invoke-OAIChatCompletion -Messages $this.GetMessages()  -Tools $this.Tools -Model $this.LLM.GetModel() -Raw
         $script:messages += @($response.choices[0].message | ConvertTo-OAIMessage)
     
         $script:messages += @(Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls)

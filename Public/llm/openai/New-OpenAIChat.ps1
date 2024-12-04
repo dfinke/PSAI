@@ -34,8 +34,14 @@ function New-OpenAIChat {
 
     $openAIConfig = [PSCustomObject]@{
         config = [PSCustomObject]@{
-            model = $model
+            model = $model.Name
+            provider = $model.Provider.Name
         }
+    }
+
+    Add-Member -InputObject $openAIConfig -MemberType ScriptMethod -Name GetModel -Value {
+        param($config = $this)
+        Get-AIModel -ModelName $config.config.model -ProviderName $config.config.provider
     }
 
     $verboseMessage = @"
