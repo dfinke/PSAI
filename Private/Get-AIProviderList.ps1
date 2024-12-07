@@ -30,10 +30,12 @@ function Get-AIProviderList {
     
     process {
         # If the user has not imported any providers yet, try to import providers from environment variables
-        New-ProviderListFromEnv
         if ($null -eq $script:ProviderList) {
-            Write-Error "No AI Providers found. You must either import AIProviders or set environment variables for AI Providers before using the PSAI module cmdlets" -ErrorAction Stop
-            return
+            New-ProviderListFromEnv
+            if ($null -eq $script:ProviderList) {
+                Write-Error "No AI Providers found. You must either import AIProviders or set environment variables for AI Providers before using the PSAI module cmdlets" -ErrorAction Stop
+                return
+            }
         }
         return $script:ProviderList
     }

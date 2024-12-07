@@ -171,8 +171,8 @@ function New-Agent {
 
     if ($null -eq $LLM) {
         $params = @{}
-        if ($Provider){$params['Provider'] = $Provider}
-        if ($Model){$params['Model'] = $Model}
+        if ($Provider){$params['ProviderName'] = $Provider}
+        if ($Model){$params['ModelName'] = $Model}
         $LLM = New-OpenAIChat @params
     }
 

@@ -58,8 +58,7 @@ function New-AIProvider {
     )
     
     begin {
-        $ExistingProviderlist = Get-AIProviderList
-        if (!$ExistingProviderlist) { New-AIProviderList }
+        if (!$script:ProviderList) { New-AIProviderList }
     }
     
     process {
@@ -131,6 +130,9 @@ function New-AIProvider {
         },
         @{
             CommandName       = 'Get-AIModel'
+            ProviderParameter = 'ProviderName'
+        }, @{
+            CommandName    = 'New-OpenAIChat'
             ProviderParameter = 'ProviderName'
         }
         Update-ArgumentCompleter -CommandObject $CommandObject

@@ -1,12 +1,9 @@
-BeforeAll {
-    Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
-}
-
-
-
 Describe 'Import-AIProvider' {
+    BeforeAll {
+        Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
+    }
     AfterEach {
-        New-AIProviderList -Force
+        Clear-AIProviderList
     }
 
     Context 'When importing by provider name' {

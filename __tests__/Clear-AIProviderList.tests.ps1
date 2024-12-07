@@ -10,7 +10,7 @@ Describe "Clear-AIProviderList" {
 
     It "should clear all providers from the list" {
         Clear-AIProviderList
-        Get-AIProviderList | Should -Be $null
+        $script:ProviderList | Should -Be $null
     }
 
 

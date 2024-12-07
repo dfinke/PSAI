@@ -105,6 +105,24 @@ function New-AIModel {
         }, @{
             CommandName    = 'New-Agent'
             ModelParameter = 'Model'
+        }, @{
+            CommandName    = 'Invoke-AIPrompt'
+            ModelParameter = 'Model'
+        }, @{
+            CommandName    = 'Invoke-OAIChatCompletion'
+            ModelParameter = 'Model'
+        }, @{
+            CommandName    = 'New-OAIAssistant'
+            ModelParameter = 'Model'
+        }, @{
+            CommandName    = 'New-OAIRun'
+            ModelParameter = 'Model'
+        }, @{
+            CommandName    = 'New-OpenAIChat'
+            ModelParameter = 'ModelName'
+        }, @{
+            CommandName    = 'Update-OAIAssistant'
+            ModelParameter = 'Model'
         }
 
         Update-ArgumentCompleter -CommandObject $CommandObject -Provider $ProviderName

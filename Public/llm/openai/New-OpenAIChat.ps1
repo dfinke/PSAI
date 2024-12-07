@@ -21,16 +21,15 @@ This example creates a new OpenAI chat configuration object using the default 'g
 function New-OpenAIChat {
     [CmdletBinding()]
     param(
-        $model,
-        $Provider
+        $ModelName,
+        $ProviderName
     )
 
     $ProviderList = Get-AIProviderList
-    if ($null -eq $ProviderList) { New-ProviderListFromEnv }
-    $params = @{}
-    if ($Provider){$params['ProviderName'] = $Provider}
-    if ($Model){$params['ModelName'] = $Model}
-    $model = Get-AIModel @params
+    if ($null -eq $script:ProviderList) { New-ProviderListFromEnv }
+    if ($PSBoundParameters) {$model = Get-AIModel @PSBoundParameters}
+    else {$model = Get-AIModel}
+    if (!$model) {Write-Error "Model not found with these parameters : $($params |ConvertTo-Json -Compress)" -ErrorAction Stop}
 
     $openAIConfig = [PSCustomObject]@{
         config = [PSCustomObject]@{

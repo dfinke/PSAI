@@ -43,10 +43,7 @@ function Invoke-OAIBeta {
     )        
     
 
-    $ProviderList = Get-AIProviderList
-
-    # If the Provider List is empty, try to load legacy credentials
-    if ($null -eq $ProviderList) { New-ProviderListFromEnv }
+    $ProviderList = Get-AIProviderList -ErrorAction Stop
 
     $ModelName = $Body['model']
     # Remove model from body - handled by modelobject
