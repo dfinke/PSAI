@@ -78,10 +78,14 @@ function Import-AIProvider {
         [string]$Version,
         [switch]$Default,
         [switch]$PassThru,
-        [switch]$Force
+        [switch]$Force,
+        [switch]$ClearExistingList
     )
 
     begin {
+        if (!$Script:ProviderList -or $ClearExistingList) {
+            New-AIProviderList
+        }
         if ($PSCmdlet.ParameterSetName -eq 'Provider') {
             $Provider | ForEach-Object {
                 $providerFile = Join-Path -Path $PSScriptRoot -ChildPath "Providers\$_.ps1"

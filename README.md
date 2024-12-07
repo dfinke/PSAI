@@ -53,6 +53,12 @@ Likewise, a Provider can have one or more models. The Model first imported to th
 
 Both default Provider and Providers default Model can be changed after import.
 
+## Provider List Requirement
+
+Before running any cmdlets in this module, it is essential to ensure that the provider list is created and populated. The provider list can be created by importing AI providers using the Import-AIProvider cmdlet or by setting environment variables for the supported providers. If no providers are found in the Provider List or the environment variables, an error will be thrown.
+
+If you are not sure you if have any providers, run the `Get-AIProvider` cmdlet.
+
 
 ## Importing Providers and Models
 

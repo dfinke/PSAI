@@ -42,9 +42,8 @@ function Add-AIProviderToList {
     )
     
     begin {
-        $ProviderList = Get-AIProviderList
-        if (-not $ProviderList) {
-            $ProviderList = New-AIProviderList -PassThru
+        if (-not $script:ProviderList) {
+            New-AIProviderList
         }
     }
     

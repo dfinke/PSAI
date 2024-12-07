@@ -26,6 +26,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Invoke-OAIBeta'
         'Get-ToolProperty'
         'Update-ArgumentCompleter'
+        'Get-AIProviderList'
 
         # Agent Tools
         'New-CalculatorTool'
@@ -67,7 +68,6 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Format-OAIFunctionCall'
         'Get-AIModel'
         'Get-AIProvider'
-        'Get-AIProviderList'
         'Get-AIToolInfo'
         'Get-AzOAISecrets'
         'Get-FunctionDefinition'

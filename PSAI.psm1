@@ -6,6 +6,7 @@
 . $PSScriptRoot/Private/Get-MultipartFormData.ps1
 . $PSScriptRoot/Private/Get-ToolProperty.ps1
 . $PSScriptRoot/Private/Update-ArgumentCompleter.ps1
+. $PSScriptRoot/Private/Get-AIProviderList.ps1
 
 # Agent Tools 
 Import-Module $PSScriptRoot/Public/Tools/CalculatorTool.psm1
@@ -44,7 +45,6 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/Format-OAIFunctionCall.ps1
 . $PSScriptRoot/Public/Get-AIModel.ps1
 . $PSScriptRoot/Public/Get-AIProvider.ps1
-. $PSScriptRoot/Public/Get-AIProviderList.ps1
 . $PSScriptRoot/Public/Get-AIToolInfo.ps1
 . $PSScriptRoot/Public/Get-AzOAISecrets.ps1
 . $PSScriptRoot/Public/Get-FunctionDefinition.ps1
