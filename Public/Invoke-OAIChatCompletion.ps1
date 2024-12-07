@@ -86,6 +86,7 @@ function Invoke-OAIChatCompletion {
         [Parameter(Mandatory)]
         $Messages,
         $Model,
+        $Provider,
         $FrequencyPenalty,
         $LogitBias,
         $Logprobs,
@@ -221,7 +222,19 @@ curl "https://openai-gpt-latest.openai.azure.com/openai/deployments/gpt-4o/chat/
     
     $Method = 'Post'
     
-    $response = Invoke-OAIBeta -Method $Method -Body $body -Model $Model
+    $params = @{
+        Method = $Method
+        Body = $body
+    }
+
+    if ($Model) {
+        $params['Model'] = $Model
+    }
+    if ($Provider) {
+        $params['Provider'] = $Provider
+    }
+
+    $response = Invoke-OAIBeta @params
     If ($Raw) {return $response.ResponseObject}
     return $response.Response
 }

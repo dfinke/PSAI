@@ -50,11 +50,15 @@ function Invoke-OAIBeta {
     try {$Body.Remove('model')} catch{} #MemoryStreams don't have a remove method
     # Get default providers default model.
     if ($model.pstypenames -notcontains 'AIModel'){
-        $params = @{}
-        if ($Provider){$params['ProviderName'] = $Provider}
-        if ($Model){$params['ModelName'] = $Model}
-        elseif ($ModelName){$params['ModelName'] = $ModelName}
-        $model = Get-AIModel @params
+        if ($Model -or $Provider -or $ModelName){
+            $params = @{}
+            if ($Provider){$params['ProviderName'] = $Provider}
+            if ($Model){$params['ModelName'] = $Model}
+            elseif ($ModelName){$params['ModelName'] = $ModelName}
+            $model = Get-AIModel @params
+        } else {
+            $model = Get-AIModel
+        }
     }
     Write-Verbose "Using provider: $($model.Provider.Name)"
     Write-Verbose "Using model: $($model.Name)"

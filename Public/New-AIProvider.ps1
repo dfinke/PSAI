@@ -134,6 +134,9 @@ function New-AIProvider {
         }, @{
             CommandName    = 'New-OpenAIChat'
             ProviderParameter = 'ProviderName'
+        }, @{
+            CommandName    = 'Invoke-OAIChatCompletion'
+            ProviderParameter = 'Provider'
         }
         Update-ArgumentCompleter -CommandObject $CommandObject
         if ($PassThru) { $ProviderObject }
