@@ -36,7 +36,7 @@
             [outputType([hashtable])]
             [CmdletBinding()]
             param(
-                [ValidateSet('user', 'assistant', 'system')]
+                [ValidateSet('user', 'assistant')]
                 [string]$role = "user",
                 $Content # Takes a string or an array of objects
             )
