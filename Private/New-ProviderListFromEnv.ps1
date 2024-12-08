@@ -21,22 +21,25 @@
 
 
 function New-ProviderListFromEnv {
+    param (
+        [switch]$Force
+    )
     if ($null -ne $env:OpenAIKey) {
         $params = @{
             Provider = 'OpenAI'
             ApiKey   = $env:OpenAIKey | ConvertTo-SecureString -AsPlainText -Force
         }
-        Import-AIProvider @params
+        Import-AIProvider @params -Force:$Force
         Write-verbose "Imported OpenAI provider"
     }
-    if ($null -ne $script:AzOAISecrets['apiKEY']) {
+    if ($null -ne $script:AzOAISecrets['apiKEY'] -and $null -ne $script:AzOAISecrets['deploymentName'] -and $null -ne $script:AzOAISecrets['apiURI'] -and  $null -ne $script:AzOAISecrets['apiVersion']) {
         $params = @{
             Provider   = 'AzureOpenAI'
             ApiKey     = $script:AzOAISecrets.apiKEY | ConvertTo-SecureString -AsPlainText -Force
             ModelNames = $script:AzOAISecrets.deploymentName
             BaseUri    = $script:AzOAISecrets.apiURI
         }
-        Import-AIProvider @params
+        Import-AIProvider @params -Force:$Force
         Write-Verbose "Imported AzureOpenAI provider"
 
     }
