@@ -98,6 +98,9 @@
                     Provider       = 'Anthropic'
                     Response       = $responseString# There might come other stuff out here
                     ResponseObject = $r
+                    Messages       = $messages + $this.NewMessage("assistant", $responseString)
+                    isStop         = $r.stop_reason -eq "end_turn"
+                    isFunctionCall = $false # not implemented yet
                 }
             }
             $responseString

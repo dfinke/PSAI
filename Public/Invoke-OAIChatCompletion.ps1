@@ -108,7 +108,8 @@ function Invoke-OAIChatCompletion {
         $ToolChoice,
         $ParallelToolCalls,
         $User,
-        [switch]$Raw
+        [switch]$Raw,
+        $Prompt
     )
     
     $body = @{}
@@ -197,6 +198,7 @@ function Invoke-OAIChatCompletion {
         $body['user'] = $User
     }
 
+
     <#
 curl "https://openai-gpt-latest.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-02-15-preview" \
 -H "Content-Type: application/json" \
@@ -247,6 +249,10 @@ curl "https://openai-gpt-latest.openai.azure.com/openai/deployments/gpt-4o/chat/
     Write-Verbose "Using provider: $($model.Provider.Name)"
     Write-Verbose "Using model: $($model.Name)"
 
+    if($Prompt){
+        $body['messages'] += $Model.NewMessage("user", $Prompt)
+    }
+
     $params = @{
         Method = $Method
         Body = $body
@@ -255,6 +261,6 @@ curl "https://openai-gpt-latest.openai.azure.com/openai/deployments/gpt-4o/chat/
 
 
     $response = Invoke-OAIBeta @params
-    If ($Raw) {return $response.ResponseObject}
+    If ($Raw) {return $response}
     return $response.Response
 }

@@ -7,28 +7,35 @@ $PrintResponse = {
     )
     Write-Verbose ("{0} {1}" -f (Get-LogDate), ($this | dumpJson -Depth 15))
 
-    if ($prompt -is [string]) {
-        $script:messages += @(New-ChatRequestUserMessage -userRequest $prompt -Model $this.LLM.GetModel())
-    }
-    elseif ($prompt -is [array]) {
-        $script:messages += $prompt
-    }
-    else {
-        throw "Invalid prompt type"
-    }
+    # if ($prompt -is [string]) {
+    #     $script:messages += @(New-ChatRequestUserMessage -userRequest $prompt -Model $this.LLM.GetModel())
+    # }
+    # elseif ($prompt -is [array]) {
+    #     $script:messages += $prompt
+    # }
+    # else {
+    #     throw "Invalid prompt type"
+    # }
 
+do {
+    $response = Invoke-OAIChatCompletion -Prompt $prompt -Messages $this.GetMessages()  -Tools $this.Tools -Model $this.LLM.GetModel() -Raw
+    $script:messages = $response.messages
+    if ($response.ResponseObject.isFunctionCall){
+        $script:messages +=  =Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls
+    }
+} until ($response.isStop)
+$response.Response
 
-
-    $response = $null
-    do {
-        # Tried to use GetReducedMessages, but it was not working as expected - removed tool_calls from the response
-        $response = Invoke-OAIChatCompletion -Messages $this.GetMessages()  -Tools $this.Tools -Model $this.LLM.GetModel() -Raw
-        $script:messages += @($response.choices[0].message | ConvertTo-OAIMessage)
+    # $response = $null
+    # do {
+    #     # Tried to use GetReducedMessages, but it was not working as expected - removed tool_calls from the response
+    #     $response = Invoke-OAIChatCompletion -Messages $this.GetMessages()  -Tools $this.Tools -Model $this.LLM.GetModel() -Raw
+    #     $script:messages += @($response.choices[0].message | ConvertTo-OAIMessage)
     
-        $script:messages += @(Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls)
-    } until ($response.choices.finish_reason -eq "stop")
+    #     $script:messages += @(Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls)
+    # } until ($response.choices.finish_reason -eq "stop")
 
-    return $response.choices[0].message.content
+    # return $response.choices[0].message.content
 }
 
 $ClearMessages = {
@@ -194,7 +201,7 @@ function New-Agent {
         LLM           = $LLM
     }
 
-    $script:messages += @(New-ChatRequestSystemMessage "You are a helpful agent. If you are configured with tools, you can use them to assist the user. They are also considered skills")
+    $script:messages += @(New-ChatRequestSystemMessage "You are a helpful agent. If you are configured with tools, you can use them to assist the user. They are also considered skills" -model $LLM.GetModel())
 
     if ($Instructions) {
         # $agent['Instructions'] = $Instructions

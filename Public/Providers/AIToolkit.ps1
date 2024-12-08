@@ -99,6 +99,9 @@
                     Provider       = 'AIToolkit'
                     Response       = $responseString
                     ResponseObject = $r
+                    Messages       = $body.messages + $this.NewMessage("assistant", $responseString)
+                    isStop         = $r.choices.finish_reason -eq "stop"
+                    isFunctionCall = $null -ne $r.choices[0].message.tool_calls
                 }
             }
             $responseString

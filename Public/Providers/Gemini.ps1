@@ -36,7 +36,7 @@
             [outputType([hashtable])]
             [CmdletBinding()]
             param(
-                [ValidateSet('user', 'model', 'system')]
+                [ValidateSet('user', 'model')]
                 [string]$role = "user",
                 [string]$Content,
                 [string]$type = "text",
@@ -108,6 +108,9 @@
                     Provider       = 'Gemini'
                     Response       = $responseString
                     ResponseObject = $r
+                    Messages       = $BodyOptions.contents + $this.NewMessage("model", $responseString)
+                    isStop         = $r.candidates?.finishReason -eq "STOP"
+                    isFunctionCall = $false # Not implemented yet
                 }
             }
             $responseString
