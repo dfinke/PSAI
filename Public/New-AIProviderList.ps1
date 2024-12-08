@@ -64,6 +64,10 @@ function New-AIProviderList {
         }
         Add-Member -InputObject $script:ProviderList -MemberType ScriptMethod -Name Add -Value {
             param([PSCustomObject]$Provider, [bool]$Default = $false)
+            if ($null -eq $Provider.Name) {
+                Write-Warning "Providers must have a Name property."
+                return
+            }
             $this.Providers.TryAdd($Provider.Name,$Provider)
             if ($this.DefaultProvider.Equals('') -or $Default) {
                 if (!$Default) {
