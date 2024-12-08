@@ -222,17 +222,37 @@ curl "https://openai-gpt-latest.openai.azure.com/openai/deployments/gpt-4o/chat/
     
     $Method = 'Post'
     
+    # Getting the correct model here and passing it to Invoke-OAIBeta to prepare for the future
+    
+    # A ProviderList must exist at this point
+    $ProviderList = Get-AIProviderList -ErrorAction Stop
+
+    # Some cmdlets add the model to the body, so we need to remove it here
+    # we let it be used to find the correct model, if no other model is supplied
+    $ModelName = $Body['model']
+    # Remove model from body - handled by modelobject
+    try {[void]$Body.Remove('model')} catch{} #MemoryStreams don't have a remove method
+    # Get default providers default model.
+    if ($model.pstypenames -notcontains 'AIModel'){
+        if ($Model -or $Provider -or $ModelName){
+            $params = @{}
+            if ($Provider){$params['ProviderName'] = $Provider}
+            if ($Model){$params['ModelName'] = $Model}
+            elseif ($ModelName){$params['ModelName'] = $ModelName}
+            $model = Get-AIModel @params
+        } else {
+            $model = Get-AIModel
+        }
+    }
+    Write-Verbose "Using provider: $($model.Provider.Name)"
+    Write-Verbose "Using model: $($model.Name)"
+
     $params = @{
         Method = $Method
         Body = $body
+        Model = $model
     }
 
-    if ($Model) {
-        $params['Model'] = $Model
-    }
-    if ($Provider) {
-        $params['Provider'] = $Provider
-    }
 
     $response = Invoke-OAIBeta @params
     If ($Raw) {return $response.ResponseObject}
