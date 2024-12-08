@@ -1,8 +1,12 @@
 . $PSScriptRoot/Private/Add-OAIToolsToList.ps1
+. $PSScriptRoot/Private/New-ProviderListFromEnv.ps1
 . $PSScriptRoot/Private/ArgumentCompletion.ps1
 . $PSScriptRoot/Private/Invoke-OAIBeta.ps1
+. $PSScriptRoot/Private/Get-AIObjectParams.ps1
 . $PSScriptRoot/Private/Get-MultipartFormData.ps1
 . $PSScriptRoot/Private/Get-ToolProperty.ps1
+. $PSScriptRoot/Private/Update-ArgumentCompleter.ps1
+. $PSScriptRoot/Private/Get-AIProviderList.ps1
 
 # Agent Tools 
 Import-Module $PSScriptRoot/Public/Tools/CalculatorTool.psm1
@@ -17,10 +21,12 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/New-Agent.ps1
 . $PSScriptRoot/Public/Get-AgentResponse.ps1
 . $PSScriptRoot/Public/Invoke-InteractiveCLI.ps1
+. $PSScriptRoot/Public/Add-AIProviderToList.ps1
 . $PSScriptRoot/Public/Add-OAIVectorStore.ps1
 . $PSScriptRoot/Public/Clear-OAIAllItems.ps1
 . $PSScriptRoot/Public/Clear-OAIAssistants.ps1
 . $PSScriptRoot/Public/Clear-OAIFiles.ps1
+. $PSScriptRoot/Public/Clear-AIProviderList.ps1
 . $PSScriptRoot/Public/ConvertFrom-FunctionDefinition.ps1
 . $PSScriptRoot/Public/ConvertFrom-GPTMarkdownTable.ps1
 . $PSScriptRoot/Public/ConvertFrom-OAIAssistant.ps1
@@ -37,6 +43,9 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/Enable-OAIFileSearchTool.ps1
 . $PSScriptRoot/Public/Export-OAIAssistant.ps1
 . $PSScriptRoot/Public/Format-OAIFunctionCall.ps1
+. $PSScriptRoot/Public/Get-AIModel.ps1
+. $PSScriptRoot/Public/Get-AIProvider.ps1
+. $PSScriptRoot/Public/Get-AIToolInfo.ps1
 . $PSScriptRoot/Public/Get-AzOAISecrets.ps1
 . $PSScriptRoot/Public/Get-FunctionDefinition.ps1
 . $PSScriptRoot/Public/Get-OAIAssistant.ps1
@@ -62,7 +71,9 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/Get-OAIVectorStoreFilesInBatch.ps1
 . $PSScriptRoot/Public/Get-OAIVectorStoreItem.ps1
 . $PSScriptRoot/Public/Get-OpenAISpecDescriptions.ps1
+. $PSScriptRoot/Public/Import-AIProvider.ps1
 . $PSScriptRoot/Public/Import-OAIAssistant.ps1
+. $PSScriptRoot/Public/Invoke-AgentChatCompletion.ps1
 . $PSScriptRoot/Public/Invoke-AIExplain.ps1
 . $PSScriptRoot/Public/Invoke-AIPrompt.ps1
 . $PSScriptRoot/Public/Invoke-FilesToPrompt.ps1
@@ -72,6 +83,11 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/Invoke-OAIUploadFile.ps1
 . $PSScriptRoot/Public/Invoke-QuickChat.ps1
 . $PSScriptRoot/Public/Invoke-SimpleQuestion.ps1
+. $PSScriptRoot/Public/New-AIAgent.ps1
+. $PSScriptRoot/Public/New-AIModel.ps1
+. $PSScriptRoot/Public/New-AIOption.ps1
+. $PSScriptRoot/Public/New-AIProvider.ps1
+. $PSScriptRoot/Public/New-AIProviderList.ps1
 . $PSScriptRoot/Public/llm/openai/New-OpenAIChat.ps1
 . $PSScriptRoot/Public/New-ChatRequestAssistantMessage.ps1
 . $PSScriptRoot/Public/New-ChatRequestSystemMessage.ps1
@@ -97,6 +113,8 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/Remove-OAIVectorStore.ps1
 . $PSScriptRoot/Public/Remove-OAIVectorStoreFile.ps1
 . $PSScriptRoot/Public/Reset-OAIProvider.ps1
+. $PSScriptRoot/Public/Set-AIDefaultModel.ps1
+. $PSScriptRoot/Public/Set-AIDefaultProvider.ps1
 . $PSScriptRoot/Public/Set-AzOAISecrets.ps1
 . $PSScriptRoot/Public/Set-OAIProvider.ps1
 . $PSScriptRoot/Public/Show-OAIAPIReferenceWebPage.ps1

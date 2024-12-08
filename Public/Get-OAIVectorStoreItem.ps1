@@ -31,7 +31,7 @@ function Get-OAIVectorStoreItem {
     )
 
     process {
-        $uri = $baseUrl + "/vector_stores/$($VectorStoreId)"
+        $uri = "/vector_stores/$($VectorStoreId)"
         $Method = "Get"
 
         Invoke-OAIBeta -Uri $uri -Method $Method 
