@@ -50,12 +50,15 @@ function Add-AIProviderToList {
     process {
         if ($ProviderList.Providers.ContainsKey($Provider.Name)) {
             if (!$Force) {
-                (Write-Error "Provider with name $($Provider.Name) already exists in the list. Use -Force to overwrite" -ErrorAction Stop)
-            } 
-            $null = $ProviderList.Remove($Provider.Name)
+                (Write-Warning "Provider with name $($Provider.Name) already exists in the list. Use -Force to overwrite")
+            } else {
+                [void]$ProviderList.Remove($Provider.Name)
+                return [void]$ProviderList.Add($Provider, $Default)
+            }
         }
-
         [void]$ProviderList.Add($Provider, $Default)
+
+        
     }
     
     end {
