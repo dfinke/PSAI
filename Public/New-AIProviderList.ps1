@@ -66,6 +66,9 @@ function New-AIProviderList {
             param([PSCustomObject]$Provider, [bool]$Default = $false)
             $this.Providers.TryAdd($Provider.Name,$Provider)
             if ($this.DefaultProvider.Equals('') -or $Default) {
+                if (!$Default) {
+                    Write-Warning "Provider '$($Provider.Name)' added as the default Provider."
+                }
                 $this.DefaultProvider = $Provider.Name
             }
         }
