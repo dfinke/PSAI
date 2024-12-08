@@ -24,11 +24,22 @@ function New-ChatRequestSystemMessage {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        $userRequest
+        $userRequest,
+        $model
     )
-
-    @{
-        'role'    = 'system'
-        'content' = $userRequest
+    if ($model) {
+        $Message = try { 
+            $model.NewMessage('system', $userRequest)
+        }
+        catch {
+            $model.NewMessage('assistant', $userRequest)
+        }
     }
+    else {
+        $Message = [ordered]@{
+            'role'    = 'system'
+            'content' = $userRequest
+        }
+    }
+    $message
 }
