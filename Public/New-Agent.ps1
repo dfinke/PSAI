@@ -7,35 +7,15 @@ $PrintResponse = {
     )
     Write-Verbose ("{0} {1}" -f (Get-LogDate), ($this | dumpJson -Depth 15))
 
-    # if ($prompt -is [string]) {
-    #     $script:messages += @(New-ChatRequestUserMessage -userRequest $prompt -Model $this.LLM.GetModel())
-    # }
-    # elseif ($prompt -is [array]) {
-    #     $script:messages += $prompt
-    # }
-    # else {
-    #     throw "Invalid prompt type"
-    # }
 
-do {
-    $response = Invoke-OAIChatCompletion -Prompt $prompt -Messages $this.GetMessages()  -Tools $this.Tools -Model $this.LLM.GetModel() -Raw
-    $script:messages = $response.messages
-    if ($response.ResponseObject.isFunctionCall){
-        $script:messages +=  =Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls
-    }
-} until ($response.isStop)
-$response.Response
-
-    # $response = $null
-    # do {
-    #     # Tried to use GetReducedMessages, but it was not working as expected - removed tool_calls from the response
-    #     $response = Invoke-OAIChatCompletion -Messages $this.GetMessages()  -Tools $this.Tools -Model $this.LLM.GetModel() -Raw
-    #     $script:messages += @($response.choices[0].message | ConvertTo-OAIMessage)
-    
-    #     $script:messages += @(Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls)
-    # } until ($response.choices.finish_reason -eq "stop")
-
-    # return $response.choices[0].message.content
+    do {
+        $response = Invoke-OAIChatCompletion -Prompt $prompt -Messages $this.GetMessages()  -Tools $this.Tools -Model $this.LLM.GetModel() -Raw
+        $script:messages = $response.messages
+        if ($response.ResponseObject.isFunctionCall) {
+            $script:messages += Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls
+        }
+    } until ($response.isStop)
+    $response.Response
 }
 
 $ClearMessages = {
@@ -178,8 +158,8 @@ function New-Agent {
 
     if ($null -eq $LLM) {
         $params = @{}
-        if ($Provider){$params['ProviderName'] = $Provider}
-        if ($Model){$params['ModelName'] = $Model}
+        if ($Provider) { $params['ProviderName'] = $Provider }
+        if ($Model) { $params['ModelName'] = $Model }
         $LLM = New-OpenAIChat @params
     }
 
@@ -188,7 +168,8 @@ function New-Agent {
         foreach ($t in $Tools) {
             if ($t.GetType().Name -eq "string") {
                 $ReadyTools += Register-Tool $t
-            } else {
+            }
+            else {
                 $ReadyTools += $t
             }
         }

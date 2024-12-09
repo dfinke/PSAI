@@ -88,7 +88,7 @@
 
             $params = @{
                 Uri         = $this.GetUri($Uri)
-                Method      = "Post"
+                Method      = $Method
                 ContentType = 'application/json'
                 Body        = $BodyOptions | ConvertTo-Json -Depth 10
             }

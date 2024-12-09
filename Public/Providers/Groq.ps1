@@ -99,10 +99,14 @@
             $responseString = $r.choices[0]?.message?.content
             if ($ReturnObject) {
                 return [pscustomobject][ordered]@{
-                    Provider       = 'OpenAI'
+                    Provider       = 'Groq'
                     Response       = $responseString
                     ResponseObject = $r
+                    Messages       = $body.messages + $this.NewMessage("assistant", $responseString)
+                    isStop         = $r.choices[0]?.finish_reason -eq "stop"
+                    isFunctionCall = $false # Not implemented yet
                 }
+                
             }
             $responseString
         }
