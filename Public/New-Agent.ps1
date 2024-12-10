@@ -187,15 +187,15 @@ function New-Agent {
     if ($Instructions) {
         # $agent['Instructions'] = $Instructions
         $agent | Add-Member -MemberType NoteProperty -Name Instructions -Value $Instructions -Force
-        $script:messages += @(New-ChatRequestSystemMessage $Instructions)
+        $script:messages += @(New-ChatRequestSystemMessage $Instructions -model $LLM.GetModel())
     }
 
     if ($Name) {
-        $script:messages += @(New-ChatRequestSystemMessage "Agent name: $Name")
+        $script:messages += @(New-ChatRequestSystemMessage "Agent name: $Name" -model $LLM.GetModel())
     }
 
     if ($Description) {
-        $script:messages += @(New-ChatRequestSystemMessage "Agent description: $Description")
+        $script:messages += @(New-ChatRequestSystemMessage "Agent description: $Description" -model $LLM.GetModel())
     }
 
     $agent.psobject.TypeNames.Clear()
