@@ -56,7 +56,7 @@ function Update-OAIAssistant {
     )
 
     Process {
-        $url = $baseUrl + "/assistants/$Id"
+        $url = "assistants/$Id"
         $Method = 'Post'
 
         $body = @{}

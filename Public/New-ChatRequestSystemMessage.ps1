@@ -24,11 +24,29 @@ function New-ChatRequestSystemMessage {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        $userRequest
+        $userRequest,
+        $model
     )
-
-    @{
-        'role'    = 'system'
-        'content' = $userRequest
+    if ($model) {
+        $Message = try { 
+            $model.NewMessage('system', $userRequest)
+        }
+        catch {
+            Write-Warning "The $($model.Name) Model from the $($model.Provider.Name) Provider does not support system messages. Adding an assistant message instead."
+            try {
+                $model.NewMessage('assistant', $userRequest)
+            }
+            catch { 
+                Write-Warning "That didn't work either. Adding a model message instead."
+                $model.NewMessage('model', $userRequest)
+            }
+        }
     }
+    else {
+        $Message = [ordered]@{
+            'role'    = 'system'
+            'content' = $userRequest
+        }
+    }
+    $message
 }

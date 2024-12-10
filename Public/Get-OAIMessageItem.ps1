@@ -40,8 +40,7 @@ function Get-OAIMessageItem {
         }
 
         $Method = 'Get'
-        $url = $baseUrl + "/threads/$ThreadId/messages/$MessageId"
-
+        $url = "/threads/$ThreadId/messages/$MessageId"
         Invoke-OAIBeta -Uri $url -Method $Method
     }
 }
