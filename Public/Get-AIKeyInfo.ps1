@@ -14,7 +14,7 @@ function Get-AIKeyInfo {
             $AIKeyInfo = @{}
             'OpenAI', 'Gemini', 'Anthropic', 'Groq' | ForEach-Object {
                 $AIKeyInfo[$_] = @{
-                    EnvKeyName     = $_ + "ApiKey"
+                    EnvKeyName     = $_ + "Key"
                     SecretName = $_ + "ApiKey"
                 }
             }
