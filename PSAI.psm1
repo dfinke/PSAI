@@ -43,6 +43,7 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/Enable-OAIFileSearchTool.ps1
 . $PSScriptRoot/Public/Export-OAIAssistant.ps1
 . $PSScriptRoot/Public/Format-OAIFunctionCall.ps1
+. $PSScriptRoot/Public/Get-AIKeyInfo.ps1
 . $PSScriptRoot/Public/Get-AIModel.ps1
 . $PSScriptRoot/Public/Get-AIProvider.ps1
 . $PSScriptRoot/Public/Get-AIToolInfo.ps1
@@ -115,6 +116,7 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/Reset-OAIProvider.ps1
 . $PSScriptRoot/Public/Set-AIDefaultModel.ps1
 . $PSScriptRoot/Public/Set-AIDefaultProvider.ps1
+. $PSScriptRoot/Public/Set-AIKeyInfo.ps1
 . $PSScriptRoot/Public/Set-AzOAISecrets.ps1
 . $PSScriptRoot/Public/Set-OAIProvider.ps1
 . $PSScriptRoot/Public/Show-OAIAPIReferenceWebPage.ps1
