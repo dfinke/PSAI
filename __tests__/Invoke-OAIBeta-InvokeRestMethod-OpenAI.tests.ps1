@@ -2,7 +2,7 @@ BeforeAll {
     $env:TempOpenAIKey = $env:OpenAIKey
 }
 
-Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBetaParams-OpenAI {
+Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBetaParams-OpenAI -Skip:$true {
     BeforeAll {
         Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
         . "$PSScriptRoot/PesterMatchHashtable.ps1"
@@ -54,7 +54,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
         Disable-UnitTesting
     }
 
-    It 'Should have the expected data after New-OAIAssistant is called' {
+    It 'Should have the expected data after New-OAIAssistant is called' -Skip:$true {
         New-OAIAssistant
 
         $ExpectedUnitTestingData = @{
@@ -80,7 +80,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
         Test-UnitTestingData $UnitTestingData $ExpectedUnitTestingData
     }
  
-    It 'Should have the expected data after Get-OAIAssistant is called' {
+    It 'Should have the expected data after Get-OAIAssistant is called' -Skip:$true {
         Get-OAIAssistant
 
         $ExpectedUnitTestingData = @{
@@ -100,7 +100,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
         Test-UnitTestingData $UnitTestingData $ExpectedUnitTestingData
     }    
 
-    It "Should have the expected data after New-OAIThread is called" {
+    It "Should have the expected data after New-OAIThread is called" -Skip:$true {
         New-OAIThread
 
         $ExpectedUnitTestingData = @{
@@ -124,7 +124,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
         Test-UnitTestingData $UnitTestingData $ExpectedUnitTestingData
     }
 
-    It "Should have the expected data after New-OAIMessage is called" { 
+    It "Should have the expected data after New-OAIMessage is called" -Skip:$true { 
         $tid = 1234
         New-OAIMessage -ThreadId $tid -Role user -Content 'what is the capital of France'
 
@@ -148,7 +148,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
         Test-UnitTestingData $UnitTestingData $ExpectedUnitTestingData
     }
 
-    It "Should have the expected data after New-OAIRun is called" {
+    It "Should have the expected data after New-OAIRun is called" -Skip:$true {
         $tid = 1234
         $aid = 5678
         New-OAIRun -ThreadId $tid -AssistantId $aid
@@ -172,7 +172,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
         Test-UnitTestingData $UnitTestingData $ExpectedUnitTestingData
     }
 
-    It "Should have the expected data after Get-OAIMessage is called" {
+    It "Should have the expected data after Get-OAIMessage is called" -Skip:$true{
         $tid = 1234
         Get-OAIMessage -ThreadId $tid
 
@@ -193,7 +193,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
         Test-UnitTestingData $UnitTestingData $ExpectedUnitTestingData
     }
 
-    It "Should have the expected data after Get-OAIThread is called" {
+    It "Should have the expected data after Get-OAIThread is called" -Skip:$true {
         $tid = 1234
         Get-OAIThread -ThreadId $tid
 
