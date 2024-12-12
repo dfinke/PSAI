@@ -65,7 +65,7 @@ function Update-OAIThread {
         $metadata
     )
 
-    $url = $baseUrl + '/threads/' + $threadId
+    $url = 'threads/' + $threadId
     $Method = 'Post'
 
     $body = @{

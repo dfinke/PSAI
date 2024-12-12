@@ -32,7 +32,7 @@ function Submit-OAIToolOutputs {
         $ToolOutputs
     )
 
-    $url = $baseUrl + "/threads/$ThreadId/runs/$RunId/submit_tool_outputs"
+    $url = "threads/$ThreadId/runs/$RunId/submit_tool_outputs"
     $Method = 'Post'
 
     $body = @{

@@ -28,7 +28,7 @@ function Stop-OAIVectorStoreFileBatch {
     )
 
     $params = @{
-        Uri    = $baseUrl + "/vector_stores/$VectorStoreId/file_batches/$BatchId/cancel"
+        Uri    = "vector_stores/$VectorStoreId/file_batches/$BatchId/cancel"
         Method = 'POST'
     }
 

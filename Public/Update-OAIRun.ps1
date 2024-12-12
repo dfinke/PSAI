@@ -47,7 +47,7 @@ function Update-OAIRun {
             return
         }
 
-        $url = $baseUrl + "/threads/$ThreadId/runs/$RunId"
+        $url = "threads/$ThreadId/runs/$RunId"
         $Method = 'Post'
 
         $body = @{}

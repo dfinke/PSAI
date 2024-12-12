@@ -69,7 +69,7 @@ function Get-OAIVectorStoreFilesInBatch {
         $filter
     )
 
-    $uri = $baseUrl + "/vector_stores/$VectorStoreId/file_batches/$BatchId/files"
+    $uri = "vector_stores/$VectorStoreId/file_batches/$BatchId/files"
     $query = @()
 
     if ($limit) {
