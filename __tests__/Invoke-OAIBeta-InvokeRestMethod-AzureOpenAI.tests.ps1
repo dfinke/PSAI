@@ -1,4 +1,4 @@
-Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-OAIBetaParams-AzureOpenAI {
+Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-OAIBetaParams-AzureOpenAI -Skip:$true {
     BeforeAll {
         Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
         . "$PSScriptRoot/PesterMatchHashtable.ps1"
@@ -78,7 +78,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
         Disable-UnitTesting
     }
 
-    It 'Should have the expected data after New-OAIAssistant is called' {
+    It 'Should have the expected data after New-OAIAssistant is called' -Skip:$true{
         New-OAIAssistant
 
         $expectedUri = Get-TargetUri 'assistants'

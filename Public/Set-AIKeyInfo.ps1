@@ -20,7 +20,7 @@ function Set-AIKeyInfo {
                 SecretName = $SecretName
             }
         }
-        if ($ApiKey) {
+        if ($EnvKeyName) {
             $AIKeyInfo[$AIProvider]['EnvKeyName'] = $EnvKeyName
         }
         if ($SecretName) {
