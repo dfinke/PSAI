@@ -26,7 +26,7 @@ function New-OpenAIChat {
     )
 
     $ProviderList = Get-AIProviderList
-    if ($null -eq $script:ProviderList) { New-ProviderListFromEnv }
+    if ($null -eq $script:ProviderList) { New-AIProviderListFromKeyInfo }
     if ($PSBoundParameters) {$model = Get-AIModel @PSBoundParameters}
     else {$model = Get-AIModel}
     if (!$model) {Write-Error "Model not found with these parameters : $($params |ConvertTo-Json -Compress)" -ErrorAction Stop}

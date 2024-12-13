@@ -15,7 +15,12 @@ function Get-AIKeyInfo {
             'OpenAI', 'Gemini', 'Anthropic', 'Groq' | ForEach-Object {
                 $AIKeyInfo[$_] = @{
                     EnvKeyName     = $_ + "Key"
-                    SecretName = $_ + "ApiKey"
+                    SecretName = ''
+                    VaultName = ''
+                    BaseUri = ''
+                    ModelNames = @()
+                    Version = ''
+                    Default = $false
                 }
             }
             $AIKeyInfo | ConvertTo-Json | Out-File $AIKeyInfoPath
@@ -24,9 +29,6 @@ function Get-AIKeyInfo {
     
     process {
         $AIKeyInfo = Get-Content $AIKeyInfoPath | ConvertFrom-Json -AsHashtable
-        [void]$AIKeyInfo.Keys | ForEach-Object {
-            $_; $AIKeyInfo[$_]
-        }
 
         if ($AsHashTable) {
             return $AIKeyInfo
@@ -37,6 +39,11 @@ function Get-AIKeyInfo {
                     AIProvider = $_
                     EnvKeyName     = $AIKeyInfo[$_].EnvKeyName
                     SecretName = $AIKeyInfo[$_].SecretName
+                    VaultName = $AIKeyInfo[$_].VaultName
+                    BaseUri = $AIKeyInfo[$_].BaseUri
+                    ModelNames = $AIKeyInfo[$_].ModelNames
+                    Version = $AIKeyInfo[$_].Version
+                    Default = $AIKeyInfo[$_].Default
                 }
             } | Where-Object { $_.AIProvider -like $AIProvider -or -not $AIProvider }
         }
