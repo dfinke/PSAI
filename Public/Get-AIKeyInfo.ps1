@@ -7,7 +7,7 @@ function Get-AIKeyInfo {
     )
     
     begin {
-        $AIKeyInfoPath = Join-Path $env:USERPROFILE 'AIKeyInfo.json'
+        $AIKeyInfoPath = Join-Path $(Split-Path $PSScriptRoot) 'AIKeyInfo.json'
 
         if (-not (Test-Path $AIKeyInfoPath)) {
             Write-Verbose "Setting built-in providers as initial AIKeyInfo"

@@ -20,7 +20,7 @@ function Set-AIKeyInfo {
     )
     
     begin {
-        $AIKeyInfoPath = Join-Path $env:USERPROFILE 'AIKeyInfo.json'
+        $AIKeyInfoPath = Join-Path $(Split-Path $PSScriptRoot) 'AIKeyInfo.json'
         $AIKeyInfo = Get-AIKeyInfo $AIKeyInfoPath -AsHashtable
 
     }

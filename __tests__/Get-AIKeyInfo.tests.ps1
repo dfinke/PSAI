@@ -1,10 +1,9 @@
 Describe "Test Set-AIKeyInfo" {
     BeforeAll {
         Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
-        $Profile = $env:USERPROFILE
-        $TestPath = Join-Path $env:TEMP 'TestProfile'
-        $env:USERPROFILE = $TestPath 
-        New-Item -Path $env:USERPROFILE -ItemType Directory -Force | Out-Null
+        $backup = Get-AIKeyInfo -AsHashTable
+        $path = Join-Path $(Split-Path $PSScriptRoot) 'AIKeyInfo.json'
+        Remove-Item $path -ErrorAction SilentlyContinue
     }
 
     It "Get a list of 4 preconfigured AIKeyInfo PSCustomObjects" {
@@ -17,9 +16,7 @@ Describe "Test Set-AIKeyInfo" {
         $AIKeyInfo | Should -BeOfType [System.Collections.Hashtable]
         $AIKeyInfo.Count | Should -Be 4
     }
-
     AfterAll {
-        $env:USERPROFILE = $Profile
-        Remove-Item -Path $TestPath -Recurse -Force
-    }
+        $backup | ConvertTo-Json | Out-File $path
+     }
 }
