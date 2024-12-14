@@ -33,7 +33,7 @@ function New-AIProviderListFromKeyInfo {
         $SecretName = $AIKeyInfo[$ProviderName]['SecretName']
         $ApiKey = try {
             if ($null -notmatch $EnvNeyName) {
-            Get-Item env:$EnvNeyName -ErrorAction Stop | ConvertTo-SecureString -AsPlainText
+            (Get-Item env:$EnvNeyName -ErrorAction Stop ).Value| ConvertTo-SecureString -AsPlainText
             }
         } catch {}
         if (!$ApiKey -and ($null -notmatch $SecretName)) {
