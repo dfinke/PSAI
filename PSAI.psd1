@@ -108,6 +108,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Invoke-OAIFunctionCall'
         'Invoke-OAIUploadFile'
         'Invoke-QuickChat'
+        'Invoke-QuickPrompt'
         'Invoke-SimpleQuestion'
         'New-AIAgent'
         'New-AIModel'
