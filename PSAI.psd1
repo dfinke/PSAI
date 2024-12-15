@@ -143,6 +143,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Reset-OAIProvider'
         'Set-AzOAISecrets'
         'Set-OAIProvider'
+        'Set-AIDefault'
         'Set-AIDefaultModel'
         'Set-AIDefaultProvider'
         'Set-AIKeyInfo'

@@ -115,6 +115,7 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/Remove-OAIVectorStore.ps1
 . $PSScriptRoot/Public/Remove-OAIVectorStoreFile.ps1
 . $PSScriptRoot/Public/Reset-OAIProvider.ps1
+. $PSScriptRoot/Public/Set-AIDefault.ps1
 . $PSScriptRoot/Public/Set-AIDefaultModel.ps1
 . $PSScriptRoot/Public/Set-AIDefaultProvider.ps1
 . $PSScriptRoot/Public/Set-AIKeyInfo.ps1
