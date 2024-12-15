@@ -18,36 +18,6 @@ This command sets "OpenAI" as the default provider and "gpt-4o" as the default m
 - If the provider or model is not found, an error is thrown.
 #>
 
-# $allProviders = Get-AIProvider -all
-# foreach ($entry in $allProviders.GetEnumerator()) {
-#     $providerName = $entry.key
-#     $provider = $entry.value
-#     $models = $provider.AIModels.keys
-#     foreach ($model in $models) {
-#         "{0}:{1}" -f $providerName, $model
-#     }
-# }
-
-<#
-Class TemplateNames : System.Management.Automation.IValidateSetValuesGenerator {
-    [String[]] GetValidValues() {
-        $templates = foreach ($template in Get-ChildItem $PSScriptRoot\..\templates) {
-            $template.BaseName
-        }
-        
-        return $templates
-    }
-}
-
-function Invoke-Advantage {
-    param (
-        $owner,
-        $reponame,
-        [ValidateSet([TemplateNames])]
-        $template,
-
-#>
-
 Class SlugNames : System.Management.Automation.IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
         # $templates = foreach ($template in Get-ChildItem $PSScriptRoot\..\templates) {
