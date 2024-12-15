@@ -174,6 +174,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'noait'
         'roaia'
         'uoaia'
+        'q'
     )
 
     PrivateData       = @{

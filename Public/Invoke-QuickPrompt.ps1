@@ -1,5 +1,7 @@
 function Invoke-QuickPrompt {
     [CmdletBinding()]
-    [Alias('q')]
-    $args
+    param(
+        $args
+    )
+    
 }
