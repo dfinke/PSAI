@@ -1,43 +1,56 @@
 function Invoke-QuickPrompt {
     [CmdletBinding()]
     param(
-        [Parameter(ValueFromPipeline)]
-        $additionalInstructions,
-        [Parameter(ValueFromRemainingArguments)]
-        [string[]]$targetPrompt
+        [string]$targetPrompt,
+        [Parameter(ValueFromPipeline = $true)]
+        [object]$pipelineInput
     )
  
+    Begin {
+        $additionalInstructions = @()
+
+    }
+
     Process {
-        $null = $additionalInstructions
+        $additionalInstructions += $pipelineInput
     }
 
     End {
     
-        $prompt = $targetPrompt -join ' '
-        $instructions = @"
-You are a terminal assistant. Turn the natural language instructions into a terminal command. 
+        $prompt = "work it"
+        if ($targetPrompt) {
+            $prompt = $targetPrompt
+        }
 
-By default use PowerShell unless otherwise specified. Always only output code, no usage, explanation or examples. 
-
-- just the code
-- no fence blocks
-
-However, if the user is clearly asking a question then answer it very briefly and well.
-
-Here is additional context for the current console session:
-
+        $instructions += @"
 <date>$(Get-Date)</date>
 <current directory>$($pwd)</current directory>
 
-<history>
-$(Get-History | Format-List | Out-String)
-</history>
+- You are a terminal assistant. You are a software and data science expert. Your preference is PowerShell, unless otherwise directed. 
 
-<errors>
-$Error
-</errors>
+for code answers:
+- do not include fence blocks around the code ``````  ``````
+- do not include explanation
+- do not include usage information
+- just code
+
 "@
-    
+
+
+        if ($additionalInstructions) {
+            $prompt += @"
+Here are the additional instructions Fthe user piped in:
+<additional instructions>
+$($additionalInstructions -join "`n")
+</additional instructions>
+"@
+        }
+
+        Write-Verbose @"
+Instructions: $instructions
+Prompt: $prompt
+"@
+
         $agent = New-Agent -Instructions $instructions
 
         While ($true) { 
