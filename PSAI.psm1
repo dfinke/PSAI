@@ -166,6 +166,7 @@ Set-Alias noaia New-OAIAssistant
 Set-Alias noait New-OAIThread
 Set-Alias uoaia Update-OAIAssistant
 Set-Alias ai Invoke-OAIChat
+Set-Alias q Invoke-QuickPrompt
 
 $targetTypes = "System.String", "System.Array"
 

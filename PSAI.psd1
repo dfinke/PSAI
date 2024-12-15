@@ -172,6 +172,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'goaia'
         'noaia'
         'noait'
+        'q'
         'roaia'
         'uoaia'
     )
