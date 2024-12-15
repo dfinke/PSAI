@@ -82,13 +82,13 @@ function New-AIModel {
         if ($ProviderName) {
             [PSCustomObject]$AIProvider = Get-AIProvider -Name $ProviderName
             if (!$AIProvider) {
-                Write-Error "Provider not found in the ProviderList. Please supply an existing Provider or ProviderName" -ErrorAction Stop
+                Write-Warning "Provider not found in the ProviderList. Please supply an existing Provider or ProviderName and try again" -ErrorAction Stop
             }
             if ($AIProvider.AIModels.Count -eq 0) {
                 $Default = $true
             }
             if ($AIProvider.AIModels?.ContainsKey($Model.Name)) {
-                Write-Error "Model already exists in the Provider. Please supply a new Model Name" -ErrorAction Stop
+                Write-Warning "Model already exists in the Provider. Please supply a new Model Name or the -Force parameter and try again" -ErrorAction Stop
             }
             $Model.Provider = $AIProvider
             $AIProvider.AddModel($Model, $Default)

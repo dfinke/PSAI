@@ -97,7 +97,7 @@
             if ($InvokeRestError) {
                 return $InvokeRestError
             }
-            $responseString = $r.choices[0]?.message?.content
+            $responseString = $r.choices?[0].message?.content
             if ($ReturnObject) {
                 return [pscustomobject][ordered]@{
                     Provider       = 'AzureOpenAI'
@@ -105,7 +105,7 @@
                     ResponseObject = $r
                     Messages       = $body.messages + $this.NewMessage("assistant", $responseString)
                     isStop         = $r.choices.finish_reason -eq "stop"
-                    isFunctionCall = $null -ne $r.choices[0].message.tool_calls
+                    isFunctionCall = $null -ne $r.choices?[0].message.tool_calls
                 }
             }
             $responseString
