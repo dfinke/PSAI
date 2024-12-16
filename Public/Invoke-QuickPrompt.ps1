@@ -3,7 +3,8 @@ function Invoke-QuickPrompt {
     param(
         [string]$targetPrompt,
         [Parameter(ValueFromPipeline = $true)]
-        [object]$pipelineInput
+        [object]$pipelineInput,
+        [switch]$OutputOnly
     )
  
     Begin {
@@ -52,6 +53,11 @@ Prompt: $prompt
 "@
 
         $agent = New-Agent -Instructions $instructions
+
+        if($OutputOnly) {
+            $agent | Get-AgentResponse -Prompt $prompt
+            return
+        } 
 
         While ($true) { 
             $agentResponse = $agent | Get-AgentResponse $prompt
