@@ -10,6 +10,7 @@
     # Model section. Several models can be configured with the same provider
     Models            = @(
         "gemini-1.5-flash"
+        "gemini-2.0-flash-exp"
     )
 
     # This section contains the functions available on the provider
