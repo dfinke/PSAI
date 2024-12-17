@@ -96,13 +96,16 @@
             if ($InvokeRestError) {
                 return $InvokeRestError
             }
-            $responseString = $r.choices[0]?.message?.content
+            if ($r.choices?.message) {
+                $responseString = $r.choices?[0].message?.content
+                $NewMessages = $body.messages + $r.choices?[0].message | ConvertTo-Json -Depth 10 | ConvertFrom-Json -AsHashtable
+            }
             if ($ReturnObject) {
                 return [pscustomobject][ordered]@{
                     Provider       = 'Groq'
                     Response       = $responseString
                     ResponseObject = $r
-                    Messages       = $body.messages + $this.NewMessage("assistant", $responseString)
+                    Messages       = $NewMessages
                     isStop         = $r.choices[0]?.finish_reason -eq "stop"
                     isFunctionCall = $false # Not implemented yet
                 }

@@ -6,13 +6,16 @@ $PrintResponse = {
         $prompt
     )
     Write-Verbose ("{0} {1}" -f (Get-LogDate), ($this | dumpJson -Depth 15))
-
+    $model = $this.LLM.GetModel()
+    $script:messages += $model.NewMessage("user", $prompt)
 
     do {
-        $response = Invoke-OAIChatCompletion -Prompt $prompt -Messages $this.GetMessages()  -Tools $this.Tools -Model $this.LLM.GetModel() -Raw
+        $response = Invoke-OAIChatCompletion -Messages $this.GetMessages()  -Tools $this.Tools -Model $this.LLM.GetModel() -Raw
         $script:messages = $response.messages
-        if ($response.ResponseObject.isFunctionCall) {
-            $script:messages += Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls
+        if ($response.isFunctionCall) {
+            #$script:messages += $response.ResponseObject.choices[0].message  | ConvertTo-Json -Depth 5 | ConvertFrom-Json -AsHashtable
+            $toolMessage = Invoke-OAIFunctionCall $response.ResponseObject -Verbose:$this.ShowToolCalls
+            $script:messages += $toolMessage
         }
     } until ($response.isStop)
     $response.Response
