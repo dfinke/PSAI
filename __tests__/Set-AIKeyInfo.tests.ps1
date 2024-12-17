@@ -16,6 +16,19 @@ Describe "Test Set-AIKeyInfo" {
         $openai.EnvKeyName | Should -Be 'OpenAISuperKeyEnv'
         $openai.SecretName | Should -Be 'OpenApiSuperSecret'
     }
+    it "Set-AIKeyInfo a Default Provider" {
+        Set-AIKeyInfo -AIProvider 'OpenAI' -Default
+        $OpenAI = Get-AIKeyInfo -AIProvider 'OpenAI'
+        $OpenAI.Default | Should -Be $True
+    }
+    it "Set a new Default Provider should remove the old Default Provider" {
+        Set-AIKeyInfo -AIProvider 'OpenAI' -Default
+        Set-AIKeyInfo -AIProvider 'Gemini' -Default
+        $OpenAI = Get-AIKeyInfo -AIProvider 'OpenAI'
+        $Gemini = Get-AIKeyInfo -AIProvider 'Gemini'
+        $OpenAI.Default | Should -Be $False
+        $Gemini.Default | Should -Be $True
+    }
 
     It "Set a new AIKeyInfo" {
         Set-AIKeyInfo -AIProvider 'Test' -EnvKeyName 'TestKey' -SecretName 'TestApiKey'
