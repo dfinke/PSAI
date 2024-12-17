@@ -58,7 +58,7 @@ function Set-AIKeyInfo {
         }
         if ($Default) {
             $AIKeyInfo.Keys | ForEach-Object {
-                $AIKeyInfo[$_] = $false
+                $AIKeyInfo[$_].Default = $false
             }
             $AIKeyInfo[$AIProvider]['Default'] = $true
         }
