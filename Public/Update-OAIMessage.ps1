@@ -40,7 +40,7 @@ function Update-OAIMessage {
         }
 
         $Method = 'Post'
-        $url = $baseUrl + "/threads/$ThreadId/messages/$MessageId"
+        $url = "threads/$ThreadId/messages/$MessageId"
 
         $body = @{}
         if ($null -ne $Metadata) {

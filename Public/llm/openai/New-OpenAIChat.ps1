@@ -21,13 +21,26 @@ This example creates a new OpenAI chat configuration object using the default 'g
 function New-OpenAIChat {
     [CmdletBinding()]
     param(
-        $model = 'gpt-4o-mini'
+        $ModelName,
+        $ProviderName
     )
+
+    $ProviderList = Get-AIProviderList
+    if ($null -eq $script:ProviderList) { New-AIProviderListFromKeyInfo }
+    if ($PSBoundParameters) {$model = Get-AIModel @PSBoundParameters}
+    else {$model = Get-AIModel}
+    if (!$model) {Write-Error "Model not found with these parameters : $($params |ConvertTo-Json -Compress)" -ErrorAction Stop}
 
     $openAIConfig = [PSCustomObject]@{
         config = [PSCustomObject]@{
-            model = $model
+            model = $model.Name
+            provider = $model.Provider.Name
         }
+    }
+
+    Add-Member -InputObject $openAIConfig -MemberType ScriptMethod -Name GetModel -Value {
+        param($config = $this)
+        Get-AIModel -ModelName $config.config.model -ProviderName $config.config.provider
     }
 
     $verboseMessage = @"

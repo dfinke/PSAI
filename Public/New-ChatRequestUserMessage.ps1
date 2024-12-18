@@ -28,9 +28,13 @@ function New-ChatRequestUserMessage {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory )]
-        $userRequest
+        $userRequest,
+        [PSCustomObject]
+        $Model
     )
-
+    if ($Model){
+        return $Model.NewMessage('user', $userRequest)
+    }
     @{
         'role'    = 'user'
         'content' = $userRequest

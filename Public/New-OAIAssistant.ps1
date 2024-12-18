@@ -51,7 +51,7 @@ function New-OAIAssistant {
         $Description,
         $Tools,
         $ToolResources,
-        $Model = 'gpt-4o-mini',
+        $Model,
         $Metadata,
         [ValidateScript({ $_ -ge 0 -and $_ -le 2 })]
         $Temperature = $null,
@@ -61,7 +61,7 @@ function New-OAIAssistant {
         $ResponseFormat = 'auto'
     )
     
-    $url = $baseUrl + '/assistants'
+    $url = 'assistants'
     $Method = 'Post'
     
     $body = @{
@@ -101,5 +101,5 @@ function New-OAIAssistant {
         $body['response_format'] = @{ 'type' = 'text' }
     }
 
-    Invoke-OAIBeta -Uri $url -Method $Method -Body $body
+    Invoke-OAIBeta -Uri $url -Method $Method -Body $body | Select-Object -ExpandProperty ResponseObject
 }
