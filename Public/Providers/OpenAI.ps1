@@ -86,7 +86,7 @@
             $body = $BodyOptions
             if ($body.Keys -notcontains 'model' -and
                 !$($BodyOptions -is [System.IO.MemoryStream]) -and
-                $Uri -notmatch "assistants|files") {
+                $MEthod -notmatch "Get|Delete") {
                 $body.model = $this.Name
             }
 
