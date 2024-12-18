@@ -72,7 +72,7 @@ function Get-OAIAssistant {
         $url = $url + $urlParams
     }
 
-    $response = Invoke-OAIBeta -Uri $url -Method $Method
+    $response = Invoke-OAIBeta -Uri $url -Method $Method |Select-Object -ExpandProperty ResponseObject
     
     if ($Raw) {
         return $response

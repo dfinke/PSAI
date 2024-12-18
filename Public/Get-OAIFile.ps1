@@ -35,7 +35,7 @@ function Get-OAIFile {
         Method = $Method
     }
     
-    $result = Invoke-OAIBeta @params
+    $result = Invoke-OAIBeta @params | Select-Object -ExpandProperty ResponseObject
 
     if ($Raw) {
         return $result

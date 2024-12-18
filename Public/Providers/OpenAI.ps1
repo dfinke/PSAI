@@ -84,7 +84,9 @@
     
             #Initiialize a body object
             $body = $BodyOptions
-            if ($body.Keys -notcontains 'model' -and !$($BodyOptions -is [System.IO.MemoryStream])) {
+            if ($body.Keys -notcontains 'model' -and
+                !$($BodyOptions -is [System.IO.MemoryStream]) -and
+                $Uri -notmatch "assistants|files") {
                 $body.model = $this.Name
             }
 
@@ -112,10 +114,9 @@
             if ($BodyOptions -is [System.IO.MemoryStream]) {
                 $params['Body'] = $BodyOptions
             }
-            else {
+            elseif ($body.Keys.Count -gt 0) {
                 $params['Body'] = $body | ConvertTo-Json -Depth 10
             }
-
             try {
                 $r = Invoke-RestMethod @params -ErrorVariable InvokeRestError
             }
@@ -135,7 +136,7 @@
                     ResponseObject = $r
                     Messages       = $NewMessages
                     isStop         = $r.choices.finish_reason -eq "stop"
-                    isFunctionCall = $null -ne $r.choices[0].message.tool_calls
+                    isFunctionCall = $null -ne $r.choices?[0].message.tool_calls
                 }
             }
             $responseString

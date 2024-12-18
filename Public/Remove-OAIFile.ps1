@@ -27,6 +27,6 @@ function Remove-OAIFile {
         $url = "files/$id"
         $Method = 'Delete'
 
-        Invoke-OAIBeta -Uri $url -Method $Method
+        Invoke-OAIBeta -Uri $url -Method $Method | Select-Object -ExpandProperty ResponseObject
     }
 }
