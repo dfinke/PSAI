@@ -9,7 +9,7 @@ Describe "Test Set-AIKeyInfo" {
     It "Update an existing AIKeyInfo" {
         $CurrentInfo = Get-AIKeyInfo
         $CurrentInfo | Should -BeOfType [PSCustomObject]
-        $CurrentInfo.Count | Should -Be 4
+        $CurrentInfo.Count | Should -Be 5
         Set-AIKeyInfo -AIProvider 'OpenAI' -EnvKeyName 'OpenAISuperKeyEnv' -SecretName 'OpenApiSuperSecret'
         $openai = Get-AIKeyInfo -AIProvider 'OpenAI'
         $openai | Should -BeOfType [PSCustomObject]
