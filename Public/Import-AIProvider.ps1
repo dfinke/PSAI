@@ -67,7 +67,7 @@ function Import-AIProvider {
             HelpMessage = 'The Provider object to import',
             ParameterSetName = 'Provider'
         )]
-        [ValidateSet('AzureOpenAI', 'OpenAI', 'Gemini', 'AIToolkit', 'Groq', 'Ollama', 'Anthropic','GitHubAI')]
+        [ValidateSet('AzureOpenAI', 'OpenAI', 'Gemini', 'AIToolkit', 'Groq', 'Ollama', 'Anthropic','GitHubAI','xAI')]
         [string[]]$Provider,
         [Parameter(
             HelpMessage = 'Optional Model name. The configuration name will be overwritten if provided'
