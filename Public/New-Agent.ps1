@@ -5,29 +5,27 @@ $PrintResponse = {
     param(
         $prompt
     )
-
-    if ($prompt -is [string]) {
-        $script:messages += @(New-ChatRequestUserMessage $prompt)
-    }
-    elseif ($prompt -is [array]) {
-        $script:messages += $prompt
-    }
-    else {
-        throw "Invalid prompt type"
-    }
-
     Write-Verbose ("{0} {1}" -f (Get-LogDate), ($this | dumpJson -Depth 15))
-    $llmModel = $this.LLM.config.model
+    $model = $this.LLM.GetModel()
+    $script:messages += $model.NewMessage("user", $prompt)
 
-    $response = $null
     do {
-        $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel
-        $script:messages += @($response.choices[0].message | ConvertTo-OAIMessage)
-    
-        $script:messages += @(Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls)
-    } until ($response.choices.finish_reason -eq "stop")
+        $response = Invoke-OAIChatCompletion -Messages $this.GetMessages()  -Tools $this.Tools -Model $this.LLM.GetModel() -Raw
+        $script:messages = $response.messages
+        if ($response.isFunctionCall) {
+            #$script:messages += $response.ResponseObject.choices[0].message  | ConvertTo-Json -Depth 5 | ConvertFrom-Json -AsHashtable
+            $toolMessage = Invoke-OAIFunctionCall $response.ResponseObject -Verbose:$this.ShowToolCalls
+            $script:messages += $toolMessage
+        }
+    } until ($response.isStop)
+    $response.Response
+}
 
-    return $response.choices[0].message.content
+$ClearMessages = {
+    [CmdletBinding()]
+    param()
+    $end = $script:messages.role.IndexOf('user')
+    $script:messages = $script:messages | Select-Object -First $end
 }
 
 $InteractiveCLI = {
@@ -147,10 +145,12 @@ function New-Agent {
         # List of instructions added to the system prompt in
         $Instructions,
         $Tools,
-        $LLM = (New-OpenAIChat),
+        $LLM,
         $Name,
         $Description,
-        [Switch]$ShowToolCalls
+        [Switch]$ShowToolCalls,
+        $Provider,
+        $Model
     )
  
     $script:messages = @()
@@ -159,26 +159,46 @@ function New-Agent {
     Write-Verbose ("{0} New-Agent was called" -f (Get-LogDate))
     Write-Verbose ("{0} Tools: {1}" -f (Get-LogDate), (ConvertTo-Json -Depth 10 -InputObject $Tools))
 
+    if ($null -eq $LLM) {
+        $params = @{}
+        if ($Provider) { $params['ProviderName'] = $Provider }
+        if ($Model) { $params['ModelName'] = $Model }
+        $LLM = New-OpenAIChat @params
+    }
+
+    if ($null -ne $Tools) {
+        $ReadyTools = @()
+        foreach ($t in $Tools) {
+            if ($t.GetType().Name -eq "string") {
+                $ReadyTools += Register-Tool $t
+            }
+            else {
+                $ReadyTools += $t
+            }
+        }
+    }
+
+
     $agent = [PSCustomObject]@{
-        Tools         = $Tools
+        Tools         = $ReadyTools
         ShowToolCalls = $ShowToolCalls
         LLM           = $LLM
     }
 
-    $script:messages += @(New-ChatRequestSystemMessage "You are a helpful agent. If you are configured with tools, you can use them to assist the user. They are also considered skills")
+    $script:messages += @(New-ChatRequestSystemMessage "You are a helpful agent. If you are configured with tools, you can use them to assist the user. They are also considered skills" -model $LLM.GetModel())
 
     if ($Instructions) {
         # $agent['Instructions'] = $Instructions
         $agent | Add-Member -MemberType NoteProperty -Name Instructions -Value $Instructions -Force
-        $script:messages += @(New-ChatRequestSystemMessage $Instructions)
+        $script:messages += @(New-ChatRequestSystemMessage $Instructions -model $LLM.GetModel())
     }
 
     if ($Name) {
-        $script:messages += @(New-ChatRequestSystemMessage "Agent name: $Name")
+        $script:messages += @(New-ChatRequestSystemMessage "Agent name: $Name" -model $LLM.GetModel())
     }
 
     if ($Description) {
-        $script:messages += @(New-ChatRequestSystemMessage "Agent description: $Description")
+        $script:messages += @(New-ChatRequestSystemMessage "Agent description: $Description" -model $LLM.GetModel())
     }
 
     $agent.psobject.TypeNames.Clear()
@@ -188,7 +208,8 @@ function New-Agent {
     Add-Member -MemberType ScriptMethod -Name "PrintResponse" -Force -Value $PrintResponse -PassThru |
     Add-Member -MemberType ScriptMethod -Name "InteractiveCLI" -Force -Value $InteractiveCLI -PassThru |
     Add-Member -MemberType ScriptMethod -Name "GetMessages" -Force -Value $GetAgentMessages -PassThru |
-    Add-Member -MemberType ScriptMethod -Name "PrettyPrintMessages" -Force -Value $PrettyPrintMessages -PassThru
+    Add-Member -MemberType ScriptMethod -Name "PrettyPrintMessages" -Force -Value $PrettyPrintMessages -PassThru |
+    Add-Member -MemberType ScriptMethod -Name "ClearMessages" -Force -Value $ClearMessages -PassThru
 }
 
 function Get-LogDate {

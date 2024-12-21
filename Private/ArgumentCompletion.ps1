@@ -50,6 +50,6 @@ if (Get-Command -ErrorAction SilentlyContinue -name Register-ArgumentCompleter) 
     )
 
     foreach ($functionName in $functionNames) {
-        Register-ArgumentCompleter -CommandName $functionName -ParameterName Model -ScriptBlock $Function:ModelArgumentCompleter
+        #Register-ArgumentCompleter -CommandName $functionName -ParameterName Model -ScriptBlock $Function:ModelArgumentCompleter
     }
 }

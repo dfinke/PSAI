@@ -34,79 +34,55 @@ function Invoke-OAIBeta {
     param(
         $Uri,
         $Method,
-        $Body,
+        $Body = [ordered]@{},
         $ContentType = 'application/json',
-        $OutFile,        
+        $OutFile,
+        $Model,
+        $Provider,
         [Switch]$NotOpenAIBeta        
     )        
     
-    $headers = @{
-        'OpenAI-Beta'  = 'assistants=v2'    
-        'Content-Type' = $ContentType
-    }
 
-    if ($NotOpenAIBeta) {
-        $headers.Remove('OpenAI-Beta')
-    }
+    $ProviderList = Get-AIProviderList -ErrorAction Stop
 
-    $Provider = Get-OAIProvider
-    $AzOAISecrets = Get-AzOAISecrets
-    switch ($Provider) {
-        'OpenAI' {
-            $headers['Authorization'] = "Bearer $env:OpenAIKey"
-        }
-
-        'AzureOpenAI' {
-            $headers['api-key'] = "$($AzOAISecrets.apiKEY)"
-            
-            if ($Body -isnot [System.IO.Stream]) {
-                if ($null -ne $Body -and $Body.Contains("model") ) {
-                    $Body.model = $AzOAISecrets.deploymentName
-                }
-            }
-
-            $Uri = $Uri -replace $baseUrl, ''
-            if ($Uri.EndsWith('/')) {
-                $Uri = $Uri.Substring(0, $Uri.Length - 1)
-            }
-            
-            $separator = '?'
-            if ($Uri.Contains('?')) {
-                $separator = '&'
-            }
-            $Uri = "{0}/openai{1}{2}api-version={3}" -f $AzOAISecrets.apiURI, $Uri, $separator, $AzOAISecrets.apiVersion         
-        }
-    }    
-
-    $params = @{
-        Uri     = $Uri
-        Method  = $Method
-        Headers = $headers
-    }
-    
-    if ($Body) {
-        if ($Body -is [System.IO.Stream]) {
-            $params['Body'] = $Body
-        }
-        else {
-            $params['Body'] = $Body | ConvertTo-Json -Depth 10
+    $ModelName = $Body['model']
+    # Remove model from body - handled by modelobject
+    try {$Body.Remove('model')} catch{} #MemoryStreams don't have a remove method
+    # Get default providers default model.
+    if ($model.pstypenames -notcontains 'AIModel'){
+        if ($Model -or $Provider -or $ModelName){
+            $params = @{}
+            if ($Provider){$params['ProviderName'] = $Provider}
+            if ($Model){$params['ModelName'] = $Model}
+            elseif ($ModelName){$params['ModelName'] = $ModelName}
+            $model = Get-AIModel @params
+        } else {
+            $model = Get-AIModel
         }
     }
+    Write-Verbose "Using provider: $($model.Provider.Name)"
+    Write-Verbose "Using model: $($model.Name)"
 
-    if ($OutFile) {
-        $params['OutFile'] = $OutFile
-    }
-
-    Write-Verbose ($params | ConvertTo-Json -Depth 5)
-    
+    # TODO remove this unit testing block - new code does it differently
     if (Test-IsUnitTestingEnabled) {
+        $provider = Get-AIProvider | Select-Object -ExpandProperty Name
         Write-Host "Data saved. Use Get-UnitTestingData to retrieve the data."
+        $headers = @{
+            'OpenAI-Beta'  = 'assistants=v2'
+            'Content-Type' = 'application/json'
+            }
+        if ($provider -eq 'OpenAI') {
+            $headers.Add('Authorization', 'Bearer ')
+        }
+        if ($provider -eq 'AzureOpenAI') {
+            $headers.Add('api-key',(Get-AIProvider).GetApiKey())
+        }
         $script:InvokeOAIUnitTestingData = @{
             Uri           = $Uri
             Method        = $Method
-            Headers       = $headers.Clone()
+            Headers       = $headers.Clone() 
             Body          = $Body
-            OAIProvider   = Get-OAIProvider            
+            OAIProvider   = Get-OAIProvider
             ContentType   = $ContentType
             OutFile       = $OutFile
             NotOpenAIBeta = $NotOpenAIBeta
@@ -114,26 +90,9 @@ function Invoke-OAIBeta {
         return
     }
 
-    try {
-        Invoke-RestMethod @params
-    } 
-    catch {
-        if ($Provider -eq 'OpenAI') {
-            $message = $_.ErrorDetails.Message
-            if (Test-JsonReplacement $message -ErrorAction SilentlyContinue) {            
-                $targetError = $message | ConvertFrom-Json
-                $targetError = $targetError.error.message
-            } 
-            else {
-                $targetError = "[{0}] - {1}" -f $Uri, $message
-            }
-        }
-
-        if ($Provider -eq 'AzureOpenAI') {
-            $targetError = $_.Exception.Message
-        }
-
-        # Write-Error $targetError
-        throw $targetError
+    $Response = $model.InvokeModel('', $true, $Body, @(), $Uri, $Method, $ContentType)
+    if ($response.ResponseObject) {
+        return $response
     }
+    throw $Response
 }

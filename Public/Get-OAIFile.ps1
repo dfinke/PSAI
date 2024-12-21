@@ -23,7 +23,7 @@ function Get-OAIFile {
         [Switch]$Raw
     )
     
-    $url = $baseUrl + "/files"
+    $url = "files"
     $Method = 'Get'
 
     if ($purpose) {
@@ -35,7 +35,7 @@ function Get-OAIFile {
         Method = $Method
     }
     
-    $result = Invoke-OAIBeta @params
+    $result = Invoke-OAIBeta @params | Select-Object -ExpandProperty ResponseObject
 
     if ($Raw) {
         return $result

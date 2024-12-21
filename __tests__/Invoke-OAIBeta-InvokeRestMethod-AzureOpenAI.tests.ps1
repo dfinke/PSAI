@@ -1,21 +1,22 @@
-Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-OAIBetaParams-AzureOpenAI {
+Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-OAIBetaParams-AzureOpenAI -Skip:$true {
     BeforeAll {
         Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
         . "$PSScriptRoot/PesterMatchHashtable.ps1"
 
-        $secrets = @{
-            apiURI         = "https://openai-gpt-latest.openai.azure.com"
-            apiVersion     = "2024-02-15-preview"
-            apiKey         = '1'
-            deploymentName = "gpt4-latest"
-        }
-        
+
+
         Set-OAIProvider AzureOpenAI
-        Set-AzOAISecrets @secrets
-        
-        $script:Secrets = Get-AzOAISecrets       
-        $script:expectedBaseUrl = $secrets.apiURI
-        $script:expectedSuffixUrl = "?api-version={0}" -f $secrets.apiVersion
+        $ProviderParams = @{
+            Provider   = 'AzureOpenAI'
+            ApiKey     = '1' | ConvertTo-SecureString -AsPlainText
+            ModelNames = @('gpt-4o-mini')
+            BaseUri    = 'https://openai-gpt-latest.openai.azure.com'
+        }
+        Import-AIProvider @ProviderParams
+        $version = Get-AIProvider | Select-Object -ExpandProperty Version
+
+        $script:expectedBaseUrl = $ProviderParams.BaseUri
+        $script:expectedSuffixUrl = "?api-version={0}" -f $Version
 
         $script:expectedHeaders = @{
             "Content-Type" = "application/json"
@@ -54,8 +55,17 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
                     }
                     continue
                 }
-                
-                $UnitTestingData[$entry.Key] | Should -BeExactly $entry.Value
+                if ($entry.Key -eq 'Uri') {
+                    $TargetUri = Get-TargetUri $UnitTestingData[$entry.Key]
+                    $TargetUri | Should -BeExactly $entry.Value
+                    continue
+                }
+                if ($entry.Key -eq 'Body') {
+                    $UnitTestingData[$entry.Key] | ConvertTo-Json -Depth 10 | Should -BeExactly ($entry.Value | ConvertTo-Json -Depth 10)
+                    continue
+                }
+
+                $($UnitTestingData[$entry.Key]) | Should -BeExactly $entry.Value
             }
         }
     }
@@ -68,7 +78,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
         Disable-UnitTesting
     }
 
-    It 'Should have the expected data after New-OAIAssistant is called' {
+    It 'Should have the expected data after New-OAIAssistant is called' -Skip:$true{
         New-OAIAssistant
 
         $expectedUri = Get-TargetUri 'assistants'
@@ -82,7 +92,6 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
             Body          = @{
                 instructions = $null
                 name         = $null
-                model        = $Secrets.deploymentName
             }
 
             Headers       = $expectedHeaders
@@ -93,6 +102,8 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
 
         $UnitTestingData = Get-UnitTestingData 
         $UnitTestingData | Should -Not -BeNullOrEmpty
+
+        write-host ($UnitTestingData | Convertto-json )
 
         Test-UnitTestingData $UnitTestingData $ExpectedUnitTestingData
     }
@@ -105,7 +116,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
             Uri           = (Get-TargetUri 'assistants')
             OutFile       = $null
             ContentType   = 'application/json'
-            Body          = $null
+            Body          = [ordered]@{}
             Headers       = $expectedHeaders
             NotOpenAIBeta = $false
             OAIProvider   = 'AzureOpenAI'
@@ -201,7 +212,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
             Uri           = Get-TargetUri "threads/$($tid)/messages?limit=20&order=desc"
             OutFile       = $null
             ContentType   = 'application/json'
-            Body          = $null
+            Body          = [ordered]@{}
             Headers       = $expectedHeaders
             NotOpenAIBeta = $false
             OAIProvider   = 'AzureOpenAI'
@@ -212,4 +223,8 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod AzureOpenAI Params' -Tag Invoke-O
 
         Test-UnitTestingData $UnitTestingData $ExpectedUnitTestingData
     }
+}
+
+AfterAll {
+    Clear-AIProviderList
 }

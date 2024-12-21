@@ -27,7 +27,7 @@ function Remove-OAIVectorStoreFile {
     )
 
     $params = @{
-        Uri    = $baseUrl + "/vector_stores/$VectorStoreId/files/$FileId"
+        Uri    = "vector_stores/$VectorStoreId/files/$FileId"
         Method = "DELETE"
     }
 
