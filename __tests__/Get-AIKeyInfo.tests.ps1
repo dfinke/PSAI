@@ -9,12 +9,12 @@ Describe "Test Set-AIKeyInfo" {
     It "Get a list of 4 preconfigured AIKeyInfo PSCustomObjects" {
         $AIKeyInfo = Get-AIKeyInfo
         $AIKeyInfo | Should -BeOfType [PSCustomObject]
-        $AIKeyInfo.Count | Should -Be 4
+        $AIKeyInfo.Count | Should -Be 5
     }
     It "Get a list of 4 preconfigured AIKeyInfo HashTable" {
         $AIKeyInfo = Get-AIKeyInfo -AsHashTable
         $AIKeyInfo | Should -BeOfType [System.Collections.Hashtable]
-        $AIKeyInfo.Count | Should -Be 4
+        $AIKeyInfo.Count | Should -Be 5
     }
     AfterAll {
         $backup | ConvertTo-Json | Out-File $path
