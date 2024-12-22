@@ -105,7 +105,7 @@
             if ($InvokeRestError) {
                 return $InvokeRestError
             }
-            $responseString = $r.candidates[0]?.content?.parts[0]?.text
+            $responseString = $r.candidates[0]?.content?.parts?.text
             if ($ReturnObject) {
                 return  [pscustomobject][ordered]@{
                     Provider       = 'Gemini'
