@@ -85,6 +85,6 @@ function Update-OAIAssistant {
             $body['metadata'] = $Metadata
         }
 
-        Invoke-OAIBeta -Uri $url -Method $Method -Body $body
+        Invoke-OAIBeta -Uri $url -Method $Method -Body $body | Select-Object -ExpandProperty ResponseObject
     }
 }

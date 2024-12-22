@@ -73,6 +73,6 @@ function Get-OAIMessage {
 
         $urlParams = "?" + ($urlParams -join '&')
 
-        Invoke-OAIBeta -Uri ($url + $urlParams) -Method $Method
+        Invoke-OAIBeta -Uri ($url + $urlParams) -Method $Method | Select-Object -ExpandProperty ResponseObject
     }
 }

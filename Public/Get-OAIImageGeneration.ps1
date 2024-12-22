@@ -162,7 +162,7 @@ function Get-OAIImageGeneration {
     $url = '/images/generations'
     $Method = 'POST'
 
-    $response = Invoke-OAIBeta -Uri $url -Method $Method -Body $body
+    $response = Invoke-OAIBeta -Uri $url -Method $Method -Body $body | Select-Object -ExpandProperty ResponseObject
 
     if ($Show) {
         Start-Process $response.data.url
