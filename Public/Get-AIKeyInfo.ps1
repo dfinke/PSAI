@@ -3,16 +3,22 @@ function Get-AIKeyInfo {
     param (
         $AIProvider,
         [switch]
-        $AsHashTable
+        $AsHashTable,
+        [switch]
+        $DoNotUpdate
     )
     
     begin {
         $AIKeyInfoPath = Join-Path $(Split-Path $PSScriptRoot) 'AIKeyInfo.json'
 
+        # Array of supported providers - need to figure out a way to get this info from the providers themselves
+        # We only want the ones that require an API key
+        $SupportedProviders = @('OpenAI', 'Gemini', 'Anthropic', 'Groq', 'xAI')
+
         if (-not (Test-Path $AIKeyInfoPath)) {
             Write-Verbose "Setting built-in providers as initial AIKeyInfo"
             $AIKeyInfo = @{}
-            'OpenAI', 'Gemini', 'Anthropic', 'Groq', 'xAI' | ForEach-Object {
+            $SupportedProviders | ForEach-Object {
                 $AIKeyInfo[$_] = @{
                     EnvKeyName = $_ + "Key"
                     SecretName = ''
@@ -25,6 +31,17 @@ function Get-AIKeyInfo {
             }
             $AIKeyInfo | ConvertTo-Json | Out-File $AIKeyInfoPath
         }
+
+        # If new providers have been added, add them to the AIKeyInfo.json file
+        $AIKeyInfo = Get-Content $AIKeyInfoPath | ConvertFrom-Json -AsHashtable
+        if (!$DoNotUpdate) {
+            $SupportedProviders | ForEach-Object {
+                if (-not $AIKeyInfo.ContainsKey($_)) {
+                    Set-AIKeyInfo -AIProvider $_ -EnvKeyName $($_ + "Key") -ModelNames @()
+                }
+            }
+        } 
+
     }
     
     process {
