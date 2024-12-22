@@ -21,7 +21,7 @@ function Set-AIKeyInfo {
     
     begin {
         $AIKeyInfoPath = Join-Path $(Split-Path $PSScriptRoot) 'AIKeyInfo.json'
-        $AIKeyInfo = Get-AIKeyInfo $AIKeyInfoPath -AsHashtable
+        $AIKeyInfo = Get-AIKeyInfo $AIKeyInfoPath -AsHashtable -DoNotUpdate
 
     }
     
@@ -29,13 +29,13 @@ function Set-AIKeyInfo {
         $key = $AIKeyInfo[$AIProvider]
         if (-not $key) {
             $AIKeyInfo[$AIProvider] = @{
-                EnvKeyName = $EnvKeyName
-                SecretName = $SecretName
-                VaultName = $VaultName
-                BaseUri = $BaseUri
-                ModelNames = $ModelNames
-                Version = $Version
-                Default = $Default
+                EnvKeyName = [string]$EnvKeyName
+                SecretName = [string]$SecretName
+                VaultName  = [string]$VaultName
+                BaseUri    = [string]$BaseUri
+                ModelNames = [string[]]$ModelNames
+                Version    = [string]$Version
+                Default    = [boolean]$Default
             }
         }
         if ($EnvKeyName) {
@@ -61,6 +61,9 @@ function Set-AIKeyInfo {
                 $AIKeyInfo[$_].Default = $false
             }
             $AIKeyInfo[$AIProvider]['Default'] = $true
+        }
+        else {
+            $AIKeyInfo[$AIProvider]['Default'] = $false
         }
     }
     
