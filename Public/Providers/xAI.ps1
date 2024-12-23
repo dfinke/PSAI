@@ -3,11 +3,12 @@
     Provider          = @{
         Name     = "xAI"
         Provider = "xAI"
-        BaseUri  = "https://api.x.ai/"
+        BaseUri  = "https://api.x.ai"
         Version  = "v1"
     }
 
     Models            = @(
+        "grok-2-1212",
         "grok-beta"
     )
 
@@ -73,7 +74,6 @@
             # Headers are special on OpenAI
             $headers = @{
                 Authorization = "Bearer $($this.Provider.GetApiKey())"
-                "OpenAI-Beta" = "assistants=v2"
             }
 
             $params = @{
