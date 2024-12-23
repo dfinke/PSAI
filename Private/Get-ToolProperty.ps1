@@ -39,7 +39,7 @@ function Get-ToolProperty {
             "System.Object" { $property.Add("type", "object") }
             "psobject[]" { $property.Add("type", "object"), $property.Add("items", @{type = "object" }) }
             "System.Object[]" { $property.Add("type", "object"), $property.Add("items", @{type = "object" }) }
-            { $_ -match 'decimal|float|single|int|long' } { $property.Add("type", "number") }
+            { $_ -match 'decimal|float|single|int|long|double' } { $property.Add("type", "number") }
             { $_ -match 'switch|bool|boolean' } { $property.Add("type", "boolean") }
             default { $property.Add("type", "object") ; Write-Verbose "Unknown type: $_ - added as object" }
         }
