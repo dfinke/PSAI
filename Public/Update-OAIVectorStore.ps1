@@ -56,5 +56,5 @@ function Update-OAIVectorStore {
         body   = $body
     }
 
-    Invoke-OAIBeta @params
+    Invoke-OAIBeta @params  | Select-Object -ExpandProperty ResponseObject
 }

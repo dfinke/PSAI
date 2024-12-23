@@ -73,7 +73,7 @@ function Get-OAIVectorStore {
             Method = $Method
         }
 
-        $response = Invoke-OAIBeta @params
+        $response = Invoke-OAIBeta @params | Select-Object -ExpandProperty ResponseObject
 
         if ($Raw) {
             return $response

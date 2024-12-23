@@ -101,7 +101,7 @@ function Get-OAIVectorStoreFilesInBatch {
         Method = 'GET'
     }
 
-    $response = Invoke-OAIBeta @params
+    $response = Invoke-OAIBeta @params | Select-Object -ExpandProperty ResponseObject
 
     if ($null -ne $response) {
         return $response.data

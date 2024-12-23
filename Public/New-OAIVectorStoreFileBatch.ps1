@@ -39,5 +39,5 @@ function New-OAIVectorStoreFileBatch {
         Body   = @{file_ids = $FileIds }
     }
 
-    Invoke-OAIBeta @params
+    Invoke-OAIBeta @params  | Select-Object -ExpandProperty ResponseObject
 }

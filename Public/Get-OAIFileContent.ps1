@@ -42,6 +42,6 @@ function Get-OAIFileContent {
             $params["OutFile"] = $OutFile
         }
  
-        Invoke-OAIBeta @params
+        Invoke-OAIBeta @params  | Select-Object -ExpandProperty ResponseObject
     }
 }

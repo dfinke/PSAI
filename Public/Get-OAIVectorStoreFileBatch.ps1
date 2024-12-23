@@ -33,5 +33,5 @@ function Get-OAIVectorStoreFileBatch {
         Method = "Get"
     }
 
-    Invoke-OAIBeta @params
+    Invoke-OAIBeta @params | Select-Object -ExpandProperty ResponseObject
 }

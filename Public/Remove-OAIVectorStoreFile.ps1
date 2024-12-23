@@ -31,5 +31,5 @@ function Remove-OAIVectorStoreFile {
         Method = "DELETE"
     }
 
-    Invoke-OAIBeta @params
+    Invoke-OAIBeta @params | Select-Object -ExpandProperty ResponseObject
 }

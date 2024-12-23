@@ -63,6 +63,6 @@ function New-OAIVectorStore {
         }
 
         $response = Invoke-OAIBeta @params
-        $response
+        $response.ResponseObject
     }
 }
