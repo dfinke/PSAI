@@ -34,6 +34,6 @@ function Get-OAIVectorStoreItem {
         $uri = "/vector_stores/$($VectorStoreId)"
         $Method = "Get"
 
-        Invoke-OAIBeta -Uri $uri -Method $Method 
+        Invoke-OAIBeta -Uri $uri -Method $Method | Select-Object -ExpandProperty ResponseObject
     }
 }

@@ -86,7 +86,7 @@
             $body = $BodyOptions
             if ($body.Keys -notcontains 'model' -and
                 !$($BodyOptions -is [System.IO.MemoryStream]) -and
-                $Method -notmatch "Get|Delete" -and $Uri -notmatch 'threads') {
+                $Method -notmatch "Get|Delete" -and $Uri -notmatch 'threads|vector_stores') {
                 $body.model = $this.Name
             }
 

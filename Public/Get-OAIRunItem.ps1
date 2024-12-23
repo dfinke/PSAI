@@ -38,6 +38,6 @@ function Get-OAIRunItem {
         $url = "/threads/$ThreadID/runs/$RunId"
         $Method = 'Get'
 
-        Invoke-OAIBeta -Uri $url -Method $Method
+        Invoke-OAIBeta -Uri $url -Method $Method | Select-Object -ExpandProperty ResponseObject
     }
 }

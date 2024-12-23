@@ -50,6 +50,7 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/Get-AzOAISecrets.ps1
 . $PSScriptRoot/Public/Get-FunctionDefinition.ps1
 . $PSScriptRoot/Public/Get-OAIAssistant.ps1
+. $PSScriptRoot/Public/Get-OAIAssistantResponse.ps1
 . $PSScriptRoot/Public/Get-OAIAssistantItem.ps1
 . $PSScriptRoot/Public/Get-OAIFile.ps1
 . $PSScriptRoot/Public/Get-OAIFileContent.ps1
