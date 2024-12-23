@@ -115,6 +115,10 @@
                 $params['Body'] = $BodyOptions
             }
             elseif ($body.Keys.Count -gt 0) {
+                # Ugly hack for o1 and newer models - neews updating when new models are added
+                if ($this.Name -match 'o1') {
+                    $body.messages = $body.messages.where{$_.role -ne 'system'}
+                }
                 $params['Body'] = $body | ConvertTo-Json -Depth 10
             }
             try {
