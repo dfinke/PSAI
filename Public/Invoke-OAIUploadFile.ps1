@@ -30,14 +30,14 @@ function Invoke-OAIUploadFile {
     )
     
     Process {
-        $url = $baseUrl + '/files'
+        $url = 'files'
         $Method = 'POST'
 
         $FormData = Get-MultipartFormData -FilePath $Path -Purpose $Purpose
 
         Write-Verbose "Uploading file '$($Path)' with purpose '$Purpose' ..."
-        Invoke-OAIBeta -Uri $url -Method $Method -Body $FormData['Stream'] -ContentType $FormData['ContentType']
-
+        $response = Invoke-OAIBeta -Uri $url -Method $Method -Body $FormData['Stream'] -ContentType $FormData['ContentType']
+        $response.ResponseObject
         $FormData['Stream'].Close()
     }
 }

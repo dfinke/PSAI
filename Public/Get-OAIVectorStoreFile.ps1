@@ -46,7 +46,7 @@ function Get-OAIVectorStoreFile {
     )
 
     $params = @{
-        Uri    = $baseUrl + "/vector_stores/$VectorStoreId/files"
+        Uri    = "vector_stores/$VectorStoreId/files"
         Method = "Get"
     }
 
@@ -76,7 +76,7 @@ function Get-OAIVectorStoreFile {
         $params.Uri += "?" + ($queryParams -join "&")
     }
 
-    $response = Invoke-OAIBeta @params
+    $response = Invoke-OAIBeta @params | Select-Object -ExpandProperty ResponseObject
 
     if ($null -ne $response) {
         return $response.data

@@ -43,7 +43,7 @@ function Get-OAIVectorStore {
     )
 
     process {
-        $uri = $baseUrl + "/vector_stores"
+        $uri = "/vector_stores"
         $Method = "Get"
 
         $queryParams = @()
@@ -73,7 +73,7 @@ function Get-OAIVectorStore {
             Method = $Method
         }
 
-        $response = Invoke-OAIBeta @params
+        $response = Invoke-OAIBeta @params | Select-Object -ExpandProperty ResponseObject
 
         if ($Raw) {
             return $response

@@ -29,9 +29,9 @@ function Get-OAIVectorStoreFileItem {
     )
 
     $params = @{
-        Uri    = $baseUrl + "/vector_stores/$VectorStoreId/files/$FileId"
+        Uri    = "vector_stores/$VectorStoreId/files/$FileId"
         Method = "Get"
     }
 
-    Invoke-OAIBeta @params
+    Invoke-OAIBeta @params | Select-Object -ExpandProperty ResponseObject
 }

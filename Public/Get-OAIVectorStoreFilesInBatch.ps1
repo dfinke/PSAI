@@ -69,7 +69,7 @@ function Get-OAIVectorStoreFilesInBatch {
         $filter
     )
 
-    $uri = $baseUrl + "/vector_stores/$VectorStoreId/file_batches/$BatchId/files"
+    $uri = "vector_stores/$VectorStoreId/file_batches/$BatchId/files"
     $query = @()
 
     if ($limit) {
@@ -101,7 +101,7 @@ function Get-OAIVectorStoreFilesInBatch {
         Method = 'GET'
     }
 
-    $response = Invoke-OAIBeta @params
+    $response = Invoke-OAIBeta @params | Select-Object -ExpandProperty ResponseObject
 
     if ($null -ne $response) {
         return $response.data

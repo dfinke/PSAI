@@ -85,7 +85,8 @@ function Invoke-OAIChatCompletion {
     param(
         [Parameter(Mandatory)]
         $Messages,
-        $Model = 'gpt-4o-mini',
+        $Model,
+        $Provider,
         $FrequencyPenalty,
         $LogitBias,
         $Logprobs,
@@ -106,7 +107,9 @@ function Invoke-OAIChatCompletion {
         $Tools,
         $ToolChoice,
         $ParallelToolCalls,
-        $User
+        $User,
+        [switch]$Raw,
+        $Prompt
     )
     
     $body = @{}
@@ -195,6 +198,7 @@ function Invoke-OAIChatCompletion {
         $body['user'] = $User
     }
 
+
     <#
 curl "https://openai-gpt-latest.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-02-15-preview" \
 -H "Content-Type: application/json" \
@@ -210,15 +214,53 @@ curl "https://openai-gpt-latest.openai.azure.com/openai/deployments/gpt-4o/chat/
 }
     #>
 
-    $url = $baseUrl + '/chat/completions'
+    #$url = 'chat/completions'
     
-    if ((Get-OAIProvider) -eq 'AzureOpenAI') {
-        $AzOAISecrets = Get-AzOAISecrets
+    # if ((Get-OAIProvider) -eq 'AzureOpenAI') {
+    #     $AzOAISecrets = Get-AzOAISecrets
 
-        $url = $baseUrl + '/deployments/' + $AzOAISecrets.deploymentName + '/chat/completions'
-    }
+    #     $url = 'deployments/' + $AzOAISecrets.deploymentName + '/chat/completions'
+    # }
     
     $Method = 'Post'
+    
+    # Getting the correct model here and passing it to Invoke-OAIBeta to prepare for the future
+    
+    # A ProviderList must exist at this point
+    $ProviderList = Get-AIProviderList -ErrorAction Stop
 
-    Invoke-OAIBeta -Uri $url -Method $Method -Body $body
+    # Some cmdlets add the model to the body, so we need to remove it here
+    # we let it be used to find the correct model, if no other model is supplied
+    $ModelName = $Body['model']
+    # Remove model from body - handled by modelobject
+    try {[void]$Body.Remove('model')} catch{} #MemoryStreams don't have a remove method
+    # Get default providers default model.
+    if ($model.pstypenames -notcontains 'AIModel'){
+        if ($Model -or $Provider -or $ModelName){
+            $params = @{}
+            if ($Provider){$params['ProviderName'] = $Provider}
+            if ($Model){$params['ModelName'] = $Model}
+            elseif ($ModelName){$params['ModelName'] = $ModelName}
+            $model = Get-AIModel @params
+        } else {
+            $model = Get-AIModel
+        }
+    }
+    Write-Verbose "Using provider: $($model.Provider.Name)"
+    Write-Verbose "Using model: $($model.Name)"
+
+    if($Prompt){
+        $body['messages'] += $Model.NewMessage("user", $Prompt)
+    }
+
+    $params = @{
+        Method = $Method
+        Body = $body
+        Model = $model
+    }
+
+
+    $response = Invoke-OAIBeta @params
+    If ($Raw) {return $response}
+    return $response.Response
 }

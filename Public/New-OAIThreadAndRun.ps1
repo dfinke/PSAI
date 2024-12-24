@@ -144,8 +144,8 @@ function New-OAIThreadAndRun {
         $body.response_format = $ResponseFormat
     }
 
-    $url = $baseUrl + '/threads/runs'
+    $url = 'threads/runs'
     $Method = 'Post'
 
-    Invoke-OAIBeta -Uri $url -Method $Method -Body $body
+    Invoke-OAIBeta -Uri $url -Method $Method -Body $body  | Select-Object -ExpandProperty ResponseObject
 }

@@ -52,7 +52,7 @@ function Get-OAIMessage {
         }
 
         $Method = 'Get'
-        $url = $baseUrl + "/threads/$ThreadId/messages"
+        $url = "threads/$ThreadId/messages"
 
         $urlParams = @()
         if ($limit) {
@@ -73,6 +73,6 @@ function Get-OAIMessage {
 
         $urlParams = "?" + ($urlParams -join '&')
 
-        Invoke-OAIBeta -Uri ($url + $urlParams) -Method $Method
+        Invoke-OAIBeta -Uri ($url + $urlParams) -Method $Method | Select-Object -ExpandProperty ResponseObject
     }
 }
