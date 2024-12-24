@@ -29,11 +29,11 @@ function New-AIProviderListFromKeyInfo {
 
     $AIKeyInfo.Keys | ForEach-Object {
         $ProviderName = $_
-        $EnvNeyName = $AIKeyInfo[$ProviderName]['EnvKeyName']
+        $EnvKeyName = $AIKeyInfo[$ProviderName]['EnvKeyName']
         $SecretName = $AIKeyInfo[$ProviderName]['SecretName']
         $ApiKey = try {
-            if ($null -notmatch $EnvNeyName) {
-            (Get-Item env:$EnvNeyName -ErrorAction Stop ).Value| ConvertTo-SecureString -AsPlainText
+            if ($null -notmatch $EnvKeyName) {
+            (Get-Item env:$EnvKeyName -ErrorAction Stop ).Value| ConvertTo-SecureString -AsPlainText
             }
         } catch {}
         if (!$ApiKey -and ($null -notmatch $SecretName)) {
