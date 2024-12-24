@@ -65,7 +65,7 @@ function New-AIProviderListFromKeyInfo {
             $params['Version'] = $AIKeyInfo[$ProviderName]['Version']
         }
         if ($null -notmatch $AIKeyInfo[$ProviderName]['Default']){
-            $params['Default'] = $true
+            $params['Default'] = $AIKeyInfo[$ProviderName]['Default']
         }
         if ($ApiKey) {
             $params['ApiKey'] = $ApiKey
