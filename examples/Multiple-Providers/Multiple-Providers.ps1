@@ -13,11 +13,18 @@ $slugs = $(
     'Gemini:gemini-2.0-flash-thinking-exp-1219'
     'Anthropic:claude-3-5-sonnet-20240620'
     'OpenAI:gpt-4o'
+    'asdf'
 )
 
 foreach ($slug in $slugs) {
-    Write-Host (Set-AIDefault $slug) -ForegroundColor Green
-    q $prompt -OutputOnly
-    ''
+    
+    try {        
+        Write-Host (Set-AIDefault $slug) -ForegroundColor Green
+        q $prompt -OutputOnly
+        ''
+    }
+    catch {
+        Write-Host -ForegroundColor Red "Error: Slug $slug not found."
+    }
 }
 
