@@ -17,7 +17,7 @@ function Get-AIKeyInfo {
 
         if (-not (Test-Path $AIKeyInfoPath)) {
             Write-Verbose "Setting built-in providers as initial AIKeyInfo"
-            $AIKeyInfo = @{}
+            $AIKeyInfo = [ordered]@{}
             $SupportedProviders | ForEach-Object {
                 $AIKeyInfo[$_] = @{
                     EnvKeyName = $_ + "Key"
