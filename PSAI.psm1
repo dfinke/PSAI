@@ -85,7 +85,6 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/Invoke-OAIUploadFile.ps1
 . $PSScriptRoot/Public/Invoke-QuickChat.ps1
 . $PSScriptRoot/Public/Invoke-SimpleQuestion.ps1
-. $PSScriptRoot/Public/New-AIAgent.ps1
 . $PSScriptRoot/Public/New-AIModel.ps1
 . $PSScriptRoot/Public/New-AIOption.ps1
 . $PSScriptRoot/Public/New-AIProvider.ps1
