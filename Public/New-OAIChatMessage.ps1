@@ -25,12 +25,11 @@ function New-OAIChatMessage {
     [CmdletBinding()]
     param(
         $Content,
-        [ValidateSet('system', 'user', 'assistant')]
-        $Role = 'user'       
+        [ValidateSet('system', 'user', 'assistant')] #This list is going to be hard to maintain here. It should be a parameter set in the provider
+        $Role = 'user',
+        $Model,
+        $LLM
     )
-
-    [PSCustomObject]@{
-        role    = $Role
-        content = $Content
-    }
+    if ($null -eq $Model) { $Model = Get-AIModel }
+    $Model.NewMessage($Role, $Content)
 }

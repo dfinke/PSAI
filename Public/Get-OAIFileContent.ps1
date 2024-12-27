@@ -33,7 +33,7 @@ function Get-OAIFileContent {
     process {
 
         $params = @{
-            Uri         = $baseUrl + "/files/$FileId/content"
+            Uri         = "files/$FileId/content"
             Method      = "Get"
             ContentType = $ContentType
         }
@@ -42,6 +42,6 @@ function Get-OAIFileContent {
             $params["OutFile"] = $OutFile
         }
  
-        Invoke-OAIBeta @params
+        Invoke-OAIBeta @params  | Select-Object -ExpandProperty ResponseObject
     }
 }

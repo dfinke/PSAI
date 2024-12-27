@@ -25,10 +25,10 @@ function Remove-OAIVectorStore {
 
     Process {
         $params = @{
-            Uri    = $baseUrl + "/vector_stores/$VectorStoreId"
+            Uri    = "vector_stores/$VectorStoreId"
             Method = 'DELETE'
         }
 
-        Invoke-OAIBeta @params
+        Invoke-OAIBeta @params | Select-Object -ExpandProperty ResponseObject
     }
 }

@@ -46,7 +46,7 @@ function New-OAIThread {
         $Metadata
     )
 
-    $url = $baseUrl + '/threads'
+    $url = 'threads'
     $Method = 'Post'
 
     # $body = (Get-OAIProvider) -eq 'OpenAI' ? @{
@@ -66,5 +66,5 @@ function New-OAIThread {
         $body = ''
     }
     
-    Invoke-OAIBeta -Uri $url -Method $Method -Body $body
+    Invoke-OAIBeta -Uri $url -Method $Method -Body $body | Select-Object -ExpandProperty ResponseObject
 }

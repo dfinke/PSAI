@@ -32,12 +32,12 @@ function Submit-OAIToolOutputs {
         $ToolOutputs
     )
 
-    $url = $baseUrl + "/threads/$ThreadId/runs/$RunId/submit_tool_outputs"
+    $url = "threads/$ThreadId/runs/$RunId/submit_tool_outputs"
     $Method = 'Post'
 
     $body = @{
         tool_outputs = $ToolOutputs
     }
 
-    Invoke-OAIBeta -Uri $url -Method $Method -Body $body
+    Invoke-OAIBeta -Uri $url -Method $Method -Body $body | Select-Object -ExpandProperty ResponseObject
 }

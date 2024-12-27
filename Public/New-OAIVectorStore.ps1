@@ -57,12 +57,12 @@ function New-OAIVectorStore {
         }
 
         $params = @{
-            Uri    = $baseUrl + "/vector_stores"
+            Uri    = "vector_stores"
             Method = "Post"
             Body   = $body
         }
 
         $response = Invoke-OAIBeta @params
-        $response
+        $response.ResponseObject
     }
 }

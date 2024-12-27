@@ -151,7 +151,7 @@ function New-OAIRun {
             break
         }
 
-        $url = $baseUrl + "/threads/$ThreadId/runs"
+        $url = "threads/$ThreadId/runs"
         $Method = 'Post'
 
         $body = @{
@@ -214,6 +214,6 @@ function New-OAIRun {
             $body['response_format'] = $ResponseFormat
         }
 
-        Invoke-OAIBeta -Uri $url -Method $Method -Body $body
+        Invoke-OAIBeta -Uri $url -Method $Method -Body $body | Select-Object -ExpandProperty ResponseObject
     }   
 }

@@ -25,8 +25,8 @@ function Remove-OAIAssistant {
   
     # Needs a confirmation and whatif etc
     Process {
-        $url = $baseUrl + "/assistants/$Id"
+        $url = "assistants/$Id"
         $Method = 'Delete'
-        Invoke-OAIBeta -Uri $url -Method $Method
+        Invoke-OAIBeta -Uri $url -Method $Method |Select-Object -ExpandProperty ResponseObject
     }
 }

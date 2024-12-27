@@ -45,7 +45,7 @@ function New-OAIMessage {
     )
 
     Process {
-        $url = $baseUrl + "/threads/$ThreadId/messages"
+        $url = "threads/$ThreadId/messages"
         $Method = 'Post'
 
         $body = @{
@@ -61,6 +61,6 @@ function New-OAIMessage {
             $body.metadata = $Metadata
         }
 
-        Invoke-OAIBeta -Uri $url -Method $Method -Body $body
+        Invoke-OAIBeta -Uri $url -Method $Method -Body $body | Select-Object -ExpandProperty ResponseObject
     }
 }

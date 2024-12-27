@@ -27,9 +27,9 @@ function Remove-OAIVectorStoreFile {
     )
 
     $params = @{
-        Uri    = $baseUrl + "/vector_stores/$VectorStoreId/files/$FileId"
+        Uri    = "vector_stores/$VectorStoreId/files/$FileId"
         Method = "DELETE"
     }
 
-    Invoke-OAIBeta @params
+    Invoke-OAIBeta @params | Select-Object -ExpandProperty ResponseObject
 }

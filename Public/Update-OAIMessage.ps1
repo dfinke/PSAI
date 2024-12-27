@@ -40,13 +40,13 @@ function Update-OAIMessage {
         }
 
         $Method = 'Post'
-        $url = $baseUrl + "/threads/$ThreadId/messages/$MessageId"
+        $url = "threads/$ThreadId/messages/$MessageId"
 
         $body = @{}
         if ($null -ne $Metadata) {
             $body.metadata = $Metadata
         }
 
-        Invoke-OAIBeta -Uri $url -Method $Method -Body $body
+        Invoke-OAIBeta -Uri $url -Method $Method -Body $body | Select-Object -ExpandProperty ResponseObject
     }
 }

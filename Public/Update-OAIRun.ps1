@@ -47,7 +47,7 @@ function Update-OAIRun {
             return
         }
 
-        $url = $baseUrl + "/threads/$ThreadId/runs/$RunId"
+        $url = "threads/$ThreadId/runs/$RunId"
         $Method = 'Post'
 
         $body = @{}
@@ -55,6 +55,6 @@ function Update-OAIRun {
             $body['metadata'] = $Metadata
         }
 
-        Invoke-OAIBeta -Uri $url -Method $Method -Body $body
+        Invoke-OAIBeta -Uri $url -Method $Method -Body $body | Select-Object -ExpandProperty ResponseObject
     }
 }

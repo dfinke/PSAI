@@ -65,7 +65,7 @@ function Update-OAIThread {
         $metadata
     )
 
-    $url = $baseUrl + '/threads/' + $threadId
+    $url = 'threads/' + $threadId
     $Method = 'Post'
 
     $body = @{
@@ -73,5 +73,5 @@ function Update-OAIThread {
         metadata       = $metadata
     }
 
-    Invoke-OAIBeta -Uri $url -Method $Method -Body $body
+    Invoke-OAIBeta -Uri $url -Method $Method -Body $body | Select-Object -ExpandProperty ResponseObject
 }
