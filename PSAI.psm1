@@ -14,6 +14,7 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeTool.psm1
 Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 
 # Public Functions
+. $PSScriptRoot/Public/Invoke-QuickPrompt.ps1
 . $PSScriptRoot/Public/New-Agent.ps1
 . $PSScriptRoot/Public/Get-AgentResponse.ps1
 . $PSScriptRoot/Public/Invoke-InteractiveCLI.ps1
@@ -145,6 +146,7 @@ Set-Alias noaia New-OAIAssistant
 Set-Alias noait New-OAIThread
 Set-Alias uoaia Update-OAIAssistant
 Set-Alias ai Invoke-OAIChat
+Set-Alias q Invoke-QuickPrompt
 
 $targetTypes = "System.String", "System.Array"
 

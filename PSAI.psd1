@@ -35,6 +35,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Get-YouTubeTop10'
 
         # Public
+        'Invoke-QuickPrompt'
         'New-Agent'
         'Get-AgentResponse'
         'Invoke-InteractiveCLI'
@@ -153,6 +154,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'noait'
         'roaia'
         'uoaia'
+        'q'
     )
 
     PrivateData       = @{
