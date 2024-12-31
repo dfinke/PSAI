@@ -1,3 +1,11 @@
+## v0.4.0
+
+- Big thank you to [Axel Andersen](https://x.com/Agazoth)
+
+Axel dove into PSAI, understood the codebase and the direction, and then added a ton of value. This is one of many PRs to come from Axel.
+
+- Updated the `Register-Tool` function to support function-calling schemas and work with built-in PowerShell functions.
+
 ## v0.3.0
 
 - Fix multi line description transpiled to Json
