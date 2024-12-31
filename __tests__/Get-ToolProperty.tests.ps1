@@ -24,7 +24,8 @@ Describe "Get-ToolProperty" -Tag Get-ToolProperty {
                 [switch]$isHappy,
                 [decimal]$money,
                 [float]$float,
-                [single]$single,                
+                [single]$single,
+                [double]$double,               
                 [bool]$bool,
                 [string[]]$stringArray,
                 [psobject]$targetObject,
@@ -52,15 +53,16 @@ Describe "Get-ToolProperty" -Tag Get-ToolProperty {
                 3 { $properties.type | Should -Be 'number' }
                 4 { $properties.type | Should -Be 'number' }
                 5 { $properties.type | Should -Be 'number' }
-                6 { $properties.type | Should -Be 'boolean' }
-                7 { $properties.type | Should -Be 'array' }
-                8 { $properties.type | Should -Be 'object' }
+                6 { $properties.type | Should -Be 'number' }
+                7 { $properties.type | Should -Be 'boolean' }
+                8 { $properties.type | Should -Be 'array' }
                 9 { $properties.type | Should -Be 'object' }
                 10 { $properties.type | Should -Be 'object' }
-                11 { $properties.type | Should -Be 'number' }
-                12 { $properties.type | Should -Be 'string' }
-                13 { $properties.type | Should -Be 'object' }
+                11 { $properties.type | Should -Be 'object' }
+                12 { $properties.type | Should -Be 'number' }
+                13 { $properties.type | Should -Be 'string' }
                 14 { $properties.type | Should -Be 'object' }
+                15 { $properties.type | Should -Be 'object' }
             }            
         }
     }

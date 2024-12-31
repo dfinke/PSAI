@@ -154,13 +154,25 @@ function New-Agent {
     )
  
     $script:messages = @()
+
+    if ($null -ne $Tools) {
+        $ReadyTools = @()
+        foreach ($t in $Tools) {
+            if ($t.GetType().Name -eq "string") {
+                $ReadyTools += Register-Tool $t
+            }
+            else {
+                $ReadyTools += $t
+            }
+        }
+    }
     
     #Write-Verbose "[$((Get-Date).ToString("yyMMdd:hhmmss"))] New-Agent was called"
     Write-Verbose ("{0} New-Agent was called" -f (Get-LogDate))
     Write-Verbose ("{0} Tools: {1}" -f (Get-LogDate), (ConvertTo-Json -Depth 10 -InputObject $Tools))
 
     $agent = [PSCustomObject]@{
-        Tools         = $Tools
+        Tools         = $ReadyTools
         ShowToolCalls = $ShowToolCalls
         LLM           = $LLM
     }
