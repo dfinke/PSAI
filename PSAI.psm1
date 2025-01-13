@@ -73,7 +73,9 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/Invoke-OAIUploadFile.ps1
 . $PSScriptRoot/Public/Invoke-QuickChat.ps1
 . $PSScriptRoot/Public/Invoke-SimpleQuestion.ps1
-. $PSScriptRoot/Public/llm/openai/New-OpenAIChat.ps1
+. $PSScriptRoot/Public/llm/New-OpenAIChat.ps1
+. $PSScriptRoot/Public/llm/New-xAIChat.ps1
+. $PSScriptRoot/Public/llm/New-AnthropicChat.ps1
 . $PSScriptRoot/Public/New-ChatRequestAssistantMessage.ps1
 . $PSScriptRoot/Public/New-ChatRequestSystemMessage.ps1
 . $PSScriptRoot/Public/New-ChatRequestToolMessage.ps1
