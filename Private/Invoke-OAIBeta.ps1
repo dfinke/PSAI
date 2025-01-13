@@ -53,7 +53,7 @@ function Invoke-OAIBeta {
     $AzOAISecrets = Get-AzOAISecrets
     switch ($Provider) {
         'OpenAI' {
-            if([string]::IsNullOrEmpty($env:OpenAIKey)) {
+            if ([string]::IsNullOrEmpty($env:OpenAIKey)) {
                 throw "OpenAIKey environment variable is not set."
             }
 
@@ -83,7 +83,7 @@ function Invoke-OAIBeta {
 
         "Anthropic" {
 
-            if([string]::IsNullOrEmpty($env:AnthropicKey)) {
+            if ([string]::IsNullOrEmpty($env:AnthropicKey)) {
                 throw "AnthropicKey environment variable is not set."
             }
 
@@ -105,17 +105,43 @@ function Invoke-OAIBeta {
         }
 
         "xAI" {
-            if([string]::IsNullOrEmpty($env:xAIKey)) {
+            if ([string]::IsNullOrEmpty($env:xAIKey)) {
                 throw "xAIKey environment variable is not set."
             }
 
             $headers = @{
                 Authorization = "Bearer $($env:xAIKey)"
-                ContentType       = $ContentType
+                ContentType   = $ContentType
             }
 
             $uri = 'https://api.x.ai/v1/chat/completions'
             $idx   
+        }
+
+        "DeepSeek" {
+            if ([string]::IsNullOrEmpty($env:DeepSeekKey)) {
+                throw "DeepSeekKey environment variable is not set."
+            }
+
+            $headers = @{
+                Authorization = "Bearer $($env:DeepSeekKey)"
+                ContentType   = $ContentType
+            }
+            
+            $uri = 'https://api.deepseek.com/chat/completions'
+            <#
+                curl https://api.deepseek.com/chat/completions \
+                -H "Content-Type: application/json" \
+                -H "Authorization: Bearer <DeepSeek API Key>" \
+                -d '{
+                        "model": "deepseek-chat",
+                        "messages": [
+                        {"role": "system", "content": "You are a helpful assistant."},
+                        {"role": "user", "content": "Hello!"}
+                        ],
+                        "stream": false
+                    }'
+            #>
         }
 
         default {
@@ -129,7 +155,7 @@ function Invoke-OAIBeta {
         Headers = $headers
     }
     
-    if($Provider -eq 'xAI') {
+    if ($Provider -eq 'xAI' -or $Provider -eq 'DeepSeek') {
         $params['ContentType'] = $ContentType
     }
 
