@@ -53,6 +53,10 @@ function Invoke-OAIBeta {
     $AzOAISecrets = Get-AzOAISecrets
     switch ($Provider) {
         'OpenAI' {
+            if([string]::IsNullOrEmpty($env:OpenAIKey)) {
+                throw "OpenAIKey environment variable is not set."
+            }
+
             $headers['Authorization'] = "Bearer $env:OpenAIKey"
         }
 
@@ -78,6 +82,11 @@ function Invoke-OAIBeta {
         }
 
         "Anthropic" {
+
+            if([string]::IsNullOrEmpty($env:AnthropicKey)) {
+                throw "AnthropicKey environment variable is not set."
+            }
+
             $headers = @{
                 'x-api-key'         = $env:AnthropicKey
                 'anthropic-version' = '2023-06-01'
@@ -95,7 +104,11 @@ function Invoke-OAIBeta {
             
         }
 
-        "xAI" {  
+        "xAI" {
+            if([string]::IsNullOrEmpty($env:xAIKey)) {
+                throw "xAIKey environment variable is not set."
+            }
+
             $headers = @{
                 Authorization = "Bearer $($env:xAIKey)"
                 ContentType       = $ContentType
