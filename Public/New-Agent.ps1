@@ -19,15 +19,24 @@ $PrintResponse = {
     Write-Verbose ("{0} {1}" -f (Get-LogDate), ($this | dumpJson -Depth 15))
     $llmModel = $this.LLM.config.model
 
+    $Provider = Get-OAIProvider
     $response = $null
-    do {
-        $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel
-        $script:messages += @($response.choices[0].message | ConvertTo-OAIMessage)
+    switch ($Provider) {
+        'OpenAI' {
+            do {
+                $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel
+                $script:messages += @($response.choices[0].message | ConvertTo-OAIMessage)
     
-        $script:messages += @(Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls)
-    } until ($response.choices.finish_reason -eq "stop")
+                $script:messages += @(Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls)
+            } until ($response.choices.finish_reason -eq "stop")
 
-    return $response.choices[0].message.content
+            return $response.choices[0].message.content
+        }
+        'Anthropic' {
+            $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel
+            return $response.content.text
+        }
+    }
 }
 
 $InteractiveCLI = {
