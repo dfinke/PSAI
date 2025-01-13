@@ -76,6 +76,33 @@ function Invoke-OAIBeta {
             }
             $Uri = "{0}/openai{1}{2}api-version={3}" -f $AzOAISecrets.apiURI, $Uri, $separator, $AzOAISecrets.apiVersion         
         }
+
+        "Anthropic" {
+            $headers = @{
+                'x-api-key'         = $env:AnthropicKey
+                'anthropic-version' = '2023-06-01'
+            }
+
+            $Uri = "https://api.anthropic.com/v1/messages"
+
+            $body.messages | % {
+                if ($_.role -eq 'system') { 
+                    $_.role = 'user'
+                }
+            }
+
+            $body['max_tokens'] = 1024
+            
+        }
+
+        "xAI" {
+            "Lets rock the xAI world"
+            return
+        }
+
+        default {
+            throw "Invalid OAI provider: $Provider"
+        }
     }    
 
     $params = @{
@@ -131,6 +158,9 @@ function Invoke-OAIBeta {
 
         if ($Provider -eq 'AzureOpenAI') {
             $targetError = $_.Exception.Message
+        }
+        else {
+            $targetError = ($_.ErrorDetails.Message | ConvertFrom-Json).error.message
         }
 
         # Write-Error $targetError
