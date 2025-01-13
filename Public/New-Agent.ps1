@@ -40,6 +40,10 @@ $PrintResponse = {
             $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel
             return $response.choices[0].message.content
         }
+        'DeepSeek' {
+            $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel
+            return $response.choices[0].message.content
+        }
     }
 }
 
