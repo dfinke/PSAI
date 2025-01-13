@@ -18,5 +18,6 @@ $($targetConfig | dumpJson)
   
     Write-Verbose $verboseMessage
     
+    Set-OAIProvider 'Anthropic'
     $targetConfig
 }

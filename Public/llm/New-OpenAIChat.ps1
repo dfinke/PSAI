@@ -37,6 +37,6 @@ $($openAIConfig | dumpJson)
 "@
   
     Write-Verbose $verboseMessage
-    
+    Set-OAIProvider 'OpenAI'
     $openAIConfig
 }

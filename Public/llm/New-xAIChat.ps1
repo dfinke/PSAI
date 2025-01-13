@@ -17,6 +17,7 @@ $($targetConfig | dumpJson)
 "@
   
     Write-Verbose $verboseMessage
-    
+ 
+    Set-OAIProvider 'xAI'
     $targetConfig
 }
