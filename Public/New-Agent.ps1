@@ -36,6 +36,10 @@ $PrintResponse = {
             $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel
             return $response.content.text
         }
+        'xAI' {
+            $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel
+            return $response.content.text
+        }
     }
 }
 
