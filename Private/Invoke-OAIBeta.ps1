@@ -56,6 +56,31 @@ function Invoke-OAIBeta {
             $headers['Authorization'] = "Bearer $env:OpenAIKey"
         }
 
+        'xAI' {
+            $headers['Authorization'] = "Bearer $env:xAIKey"
+            $Uri = "https://api.x.ai/v1/chat/completions"
+        }
+
+        'Anthropic' {
+            $headers['x-api-key'] = $env:AnthropicKey
+            $headers['anthropic-version'] = "2023-06-01"
+            $Uri = "https://api.anthropic.com/v1/messages"
+            if ($Body.Keys -notcontains 'max_tokens') {
+                $Body.Add('max_tokens', 1024)
+            }
+
+            if ($system = $body.messages.where{$_.role -eq 'system'}) {
+                $Body['system'] = $system.content
+                $Body.messages = $body.messages.where{$_.role -ne 'system'}
+            }
+
+        }
+
+        'Groq' {
+            $headers['Authorization'] = "Bearer $env:GroqKey"
+            $Uri = "https://api.groq.com/openai/v1/chat/completions"
+        }
+
         'AzureOpenAI' {
             $headers['api-key'] = "$($AzOAISecrets.apiKEY)"
             
@@ -132,6 +157,7 @@ function Invoke-OAIBeta {
         if ($Provider -eq 'AzureOpenAI') {
             $targetError = $_.Exception.Message
         }
+        # TODO Catch xAI, Groq and Anthropic errors
 
         # Write-Error $targetError
         throw $targetError
