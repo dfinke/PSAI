@@ -96,7 +96,8 @@ function Invoke-OAIBeta {
         }
 
         "xAI" {
-            "Lets rock the xAI world"
+            # "Lets rock the xAI world"
+            Write-Host -ForegroundColor red 'xAI provider is not supported yet'
             return
         }
 
