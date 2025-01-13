@@ -85,7 +85,7 @@ function Invoke-OAIBeta {
 
             $Uri = "https://api.anthropic.com/v1/messages"
 
-            $body.messages | % {
+            $body.messages | ForEach-Object {
                 if ($_.role -eq 'system') { 
                     $_.role = 'user'
                 }
@@ -95,10 +95,14 @@ function Invoke-OAIBeta {
             
         }
 
-        "xAI" {
-            # "Lets rock the xAI world"
-            Write-Host -ForegroundColor red 'xAI provider is not supported yet'
-            return
+        "xAI" {  
+            $headers = @{
+                Authorization = "Bearer $($env:xAIKey)"
+                ContentType       = $ContentType
+            }
+
+            $uri = 'https://api.x.ai/v1/chat/completions'
+            $idx   
         }
 
         default {
@@ -112,6 +116,10 @@ function Invoke-OAIBeta {
         Headers = $headers
     }
     
+    if($Provider -eq 'xAI') {
+        $params['ContentType'] = $ContentType
+    }
+
     if ($Body) {
         if ($Body -is [System.IO.Stream]) {
             $params['Body'] = $Body
@@ -161,7 +169,13 @@ function Invoke-OAIBeta {
             $targetError = $_.Exception.Message
         }
         else {
-            $targetError = ($_.ErrorDetails.Message | ConvertFrom-Json).error.message
+            if (Test-JsonReplacement $_.ErrorDetails.Message -ErrorAction SilentlyContinue) {
+                $targetError = ($_.ErrorDetails.Message | ConvertFrom-Json).error.message
+            }
+            else {
+                $targetError = $_.ErrorDetails.Message
+            }
+            # $targetError = ($_.ErrorDetails.Message | ConvertFrom-Json).error.message
         }
 
         # Write-Error $targetError
