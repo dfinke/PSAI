@@ -20,7 +20,7 @@ This example sets the provider for OpenAI to 'OpenAI'.
 function Set-OAIProvider {
     [CmdletBinding()]
     param(
-        [ValidateSet('AzureOpenAI', 'OpenAI', 'xAI', 'Anthropic', 'DeepSeek')]
+        [ValidateSet('AzureOpenAI', 'OpenAI', 'xAI', 'Anthropic', 'DeepSeek', 'Gemini')]
         $Provider = 'OpenAI'
     )
 
