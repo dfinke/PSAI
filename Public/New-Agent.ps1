@@ -44,6 +44,15 @@ $PrintResponse = {
             $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel
             return $response.choices[0].message.content
         }
+        'Gemini' {
+            $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel
+        
+            return $response.choices[0].message.content
+        }
+
+        default {
+            throw "Invalid provider -> $($Provider)"
+        }
     }
 }
 
