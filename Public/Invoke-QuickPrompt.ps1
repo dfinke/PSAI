@@ -4,6 +4,7 @@ function Invoke-QuickPrompt {
         [string]$targetPrompt,
         [Parameter(ValueFromPipeline = $true)]
         [object]$pipelineInput,
+        $LLM = (New-OpenAIChat),
         [switch]$OutputOnly
     )
  
@@ -52,17 +53,24 @@ Instructions: $instructions
 Prompt: $prompt
 "@
 
-        $agent = New-Agent -Instructions $instructions
+        $agentParams = @{Instructions = $instructions }
+        
+        if ($LLM) {
+            $agentParams["LLM"] = $LLM
+        }
 
-        if($OutputOnly) {
+        $agent = New-Agent @agentParams
+
+        if ($OutputOnly) {
             $agent | Get-AgentResponse -Prompt $prompt
             return
         } 
 
+        $modelName = $LLM.config.model
         While ($true) { 
             $agentResponse = $agent | Get-AgentResponse $prompt
 
-            Format-SpectrePanel -Data (Get-SpectreEscapedText -Text $agentResponse) -Title "Agent Response" -Border "Rounded" -Color "Blue"
+            Format-SpectrePanel -Data (Get-SpectreEscapedText -Text $agentResponse) -Title "Agent Response - $($modelName)" -Border "Rounded" -Color "Blue"
             Format-SpectrePanel -Data "Follow up, Enter to copy & quit, Ctrl+C to quit." -Title "Next Steps" -Border "Rounded" -Color "Cyan1"
 
             $prompt = Read-Host '> '
