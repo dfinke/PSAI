@@ -115,7 +115,6 @@ function Invoke-OAIBeta {
             }
 
             $uri = 'https://api.x.ai/v1/chat/completions'
-            $idx   
         }
 
         "DeepSeek" {
@@ -129,19 +128,21 @@ function Invoke-OAIBeta {
             }
             
             $uri = 'https://api.deepseek.com/chat/completions'
-            <#
-                curl https://api.deepseek.com/chat/completions \
-                -H "Content-Type: application/json" \
-                -H "Authorization: Bearer <DeepSeek API Key>" \
-                -d '{
-                        "model": "deepseek-chat",
-                        "messages": [
-                        {"role": "system", "content": "You are a helpful assistant."},
-                        {"role": "user", "content": "Hello!"}
-                        ],
-                        "stream": false
-                    }'
-            #>
+        }
+
+        'Gemini' {
+            if ([string]::IsNullOrEmpty($env:GeminiKey)) {
+                throw "GeminiKey environment variable is not set."
+            }
+
+            $headers = @{
+                Authorization = "Bearer $($env:GeminiKey)"
+                ContentType   = $ContentType
+            }
+
+            $Uri = "https://generativelanguage.googleapis.com/v1beta/models/$($body.model)"
+
+            throw "Gemini is not supported yet - needs more investigation"
         }
 
         default {
@@ -200,11 +201,14 @@ function Invoke-OAIBeta {
                 $targetError = $targetError.error.message
             } 
             else {
-                $targetError = "[{0}] - {1}" -f $Uri, $message
+                $targetError = "[{ 0 }] - { 1 }" -f $Uri, $message
             }
         }
 
         if ($Provider -eq 'AzureOpenAI') {
+            $targetError = $_.Exception.Message        
+        } 
+        elseif($Provider -eq 'Gemini') {
             $targetError = $_.Exception.Message
         }
         else {
