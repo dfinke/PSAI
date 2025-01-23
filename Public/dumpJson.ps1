@@ -39,11 +39,12 @@ function dumpJson {
     Process {
 
         $result = ConvertTo-Json $obj -Depth $Depth -Compress:$Compress
-        if ($pscExists) {
-            $result | Format-SpectreJson
-        }
-        else {
-            $result        
-        }
+        # if ($pscExists) {
+        #     $result | Format-SpectreJson
+        # }
+        # else {
+        #     $result        
+        # }
+        $result
     }
 }
