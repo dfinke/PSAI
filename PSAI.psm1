@@ -90,6 +90,7 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/New-OAIVectorStoreFile.ps1
 . $PSScriptRoot/Public/New-OAIVectorStoreFileBatch.ps1
 . $PSScriptRoot/Public/Out-OAIMessages.ps1
+. $PSScriptRoot/Public/Out-BoxedText.ps1
 . $PSScriptRoot/Public/Register-Tool.ps1
 . $PSScriptRoot/Public/Remove-OAIAssistant.ps1
 . $PSScriptRoot/Public/Remove-OAIFile.ps1
