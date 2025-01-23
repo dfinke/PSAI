@@ -24,7 +24,7 @@ jobs:
       - name: Run Continuous Integration
         shell: pwsh
         run: |
-          Install-Module -Name PwshSpectreConsole -Force
+          # Install-Module -Name PwshSpectreConsole -Force
           
           cd ./__tests__
           Invoke-Pester -Output Detailed
