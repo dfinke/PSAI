@@ -1,3 +1,7 @@
+## v0.4.1
+
+- Replaced PwshSpectreConsole for drawing the console visuals with a new module.
+
 ## v0.4.0
 
 - Big thank you to [Axel Andersen](https://x.com/Agazoth)
