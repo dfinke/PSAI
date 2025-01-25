@@ -34,7 +34,7 @@ function Out-BoxedText {
         [string]$Text,
         [string]$Title,        
         [ConsoleColor]$BoxColor = "White",
-        [ConsoleColor]$TextColor = "DarkGray"
+        [ConsoleColor]$TextColor = "Gray"
     )
 
     $textMaxWidth = ($Text.Split("`n") | Measure-Object -Maximum -Property Length).Maximum + 4
