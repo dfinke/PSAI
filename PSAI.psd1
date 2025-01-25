@@ -13,9 +13,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
     PowerShellVersion = '7.1'
 
     # Modules that must be imported into the global environment prior to importing this module
-    RequiredModules   = @(
-        # @{ModuleName = 'PwshSpectreConsole'; ModuleVersion = "2.1.1" ; GUID = "8c5ca00d-7f0f-4179-98bf-bdaebceaebc0" }
-    )
+    RequiredModules   = @()
 
     FunctionsToExport = @(
         # Private
