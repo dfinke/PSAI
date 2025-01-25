@@ -17,7 +17,7 @@ function Out-BoxedText {
     The color of the box and title. Default is White.
 
     .PARAMETER TextColor
-    The color of the text inside the box. Default is DarkGray.
+    The color of the text inside the box. Default is Gray.
 
     .EXAMPLE
     Out-BoxedText -Text "Paris" -Title "Agent" -BoxColor DarkBlue -TextColor White
