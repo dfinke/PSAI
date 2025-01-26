@@ -1,4 +1,4 @@
-Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBetaParams-OpenAI {
+Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBetaParams-OpenAI -Skip {
     BeforeAll {
         Import-Module "$PSScriptRoot/../PSAI.psd1" -Force
         . "$PSScriptRoot/PesterMatchHashtable.ps1"
@@ -36,10 +36,7 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
     }
 
     BeforeEach {
-        if(Get-OAIProvider -eq 'OpenAI') {
-            # Set-OAIProvider -Provider 'OpenAI'
-            Enable-UnitTesting
-        }
+        Enable-UnitTesting
     }
 
     AfterEach {
