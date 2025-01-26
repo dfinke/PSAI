@@ -77,7 +77,10 @@ $InteractiveCLI = {
         $message = Read-Host "$Emoji $User"
 
         if ([string]::IsNullOrEmpty($Message)) {
-            Format-SpectrePanel -Data "Copied to clipboard." -Title "Information" -Border "Rounded" -Color "Green" | Out-Host
+            # Format-SpectrePanel -Data "Copied to clipboard." -Title "Information" -Border "Rounded" -Color "Green" | Out-Host
+
+            Out-BoxedText -Text "Copied to clipboard." -Title "Information" -BoxColor "Green" | Out-Host
+
             $agentResponse | clip
             break            
         }
@@ -90,19 +93,20 @@ $InteractiveCLI = {
         $agentResponse = $this.PrintResponse($message)
         
         $formatParams = @{
-            Data   = (Get-SpectreEscapedText -Text $agentResponse)
-            Title  = "Agent Response"
-            Border = "Rounded"
-            Color  = "Blue"
+            Text     = $agentResponse
+            Title    = "Agent Response"
+            
+            BoxColor = "Blue"
         }
 
-        Format-SpectrePanel @formatParams | Out-Host
+        # Format-SpectrePanel @formatParams | Out-Host
+
+        Out-BoxedText @formatParams | Out-Host
 
         $nextStepsParams = @{
-            Data   = "Follow up, Enter to copy & quit, Ctrl+C to quit."
-            Title  = "Next Steps"
-            Border = "Rounded"
-            Color  = "Cyan1"
+            Text     = "Follow up, Enter to copy & quit, Ctrl+C to quit."
+            Title    = "Next Steps"
+            BoxColor = Cyan
         }
 
         Format-SpectrePanel @nextStepsParams | Out-Host
