@@ -1,3 +1,7 @@
+## v0.4.2
+
+- Fix word wrapping in the console visuals.
+
 ## v0.4.1
 
 - Replaced PwshSpectreConsole for drawing the console visuals with a new module.
