@@ -36,7 +36,10 @@ Describe 'Test Invoke-OAIBeta InvokeRestMethod OpenAI Params' -Tag Invoke-OAIBet
     }
 
     BeforeEach {
-        Enable-UnitTesting
+        if(Get-OAIProvider -eq 'OpenAI') {
+            # Set-OAIProvider -Provider 'OpenAI'
+            Enable-UnitTesting
+        }
     }
 
     AfterEach {
