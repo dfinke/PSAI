@@ -53,6 +53,10 @@ function Invoke-OAIBeta {
     $AzOAISecrets = Get-AzOAISecrets
     switch ($Provider) {
         'OpenAI' {
+            if ([string]::IsNullOrEmpty($env:OpenAIKey)) {
+                throw "OpenAIKey environment variable is not set."
+            }
+
             $headers['Authorization'] = "Bearer $env:OpenAIKey"
         }
 
@@ -76,6 +80,74 @@ function Invoke-OAIBeta {
             }
             $Uri = "{0}/openai{1}{2}api-version={3}" -f $AzOAISecrets.apiURI, $Uri, $separator, $AzOAISecrets.apiVersion         
         }
+
+        "Anthropic" {
+
+            if ([string]::IsNullOrEmpty($env:AnthropicKey)) {
+                throw "AnthropicKey environment variable is not set."
+            }
+
+            $headers = @{
+                'x-api-key'         = $env:AnthropicKey
+                'anthropic-version' = '2023-06-01'
+            }
+
+            $Uri = "https://api.anthropic.com/v1/messages"
+
+            $body.messages | ForEach-Object {
+                if ($_.role -eq 'system') { 
+                    $_.role = 'user'
+                }
+            }
+
+            $body['max_tokens'] = 1024
+            
+        }
+
+        "xAI" {
+            if ([string]::IsNullOrEmpty($env:xAIKey)) {
+                throw "xAIKey environment variable is not set."
+            }
+
+            $headers = @{
+                Authorization = "Bearer $($env:xAIKey)"
+                ContentType   = $ContentType
+            }
+
+            $uri = 'https://api.x.ai/v1/chat/completions'
+        }
+
+        "DeepSeek" {
+            if ([string]::IsNullOrEmpty($env:DeepSeekKey)) {
+                throw "DeepSeekKey environment variable is not set."
+            }
+
+            $headers = @{
+                Authorization = "Bearer $($env:DeepSeekKey)"
+                ContentType   = $ContentType
+            }
+            
+            $uri = 'https://api.deepseek.com/chat/completions'
+        }
+
+        'Gemini' {
+            if ([string]::IsNullOrEmpty($env:GeminiKey)) {
+                throw "GeminiKey environment variable is not set."
+            }
+
+            $headers = @{
+                Authorization = "Bearer $($env:GeminiKey)"
+                ContentType   = $ContentType
+            }
+
+            $Uri = "https://generativelanguage.googleapis.com/v1beta/models/$($body.model)"
+
+            throw "Gemini is not supported yet - needs more investigation"
+        }
+
+        default {
+            throw "Invalid OAI provider: $Provider"
+        }
     }    
 
     $params = @{
@@ -84,6 +156,10 @@ function Invoke-OAIBeta {
         Headers = $headers
     }
     
+    if ($Provider -eq 'xAI' -or $Provider -eq 'DeepSeek') {
+        $params['ContentType'] = $ContentType
+    }
+
     if ($Body) {
         if ($Body -is [System.IO.Stream]) {
             $params['Body'] = $Body
@@ -125,12 +201,24 @@ function Invoke-OAIBeta {
                 $targetError = $targetError.error.message
             } 
             else {
-                $targetError = "[{0}] - {1}" -f $Uri, $message
+                $targetError = "[{ 0 }] - { 1 }" -f $Uri, $message
             }
         }
 
         if ($Provider -eq 'AzureOpenAI') {
+            $targetError = $_.Exception.Message        
+        } 
+        elseif($Provider -eq 'Gemini') {
             $targetError = $_.Exception.Message
+        }
+        else {
+            if (Test-JsonReplacement $_.ErrorDetails.Message -ErrorAction SilentlyContinue) {
+                $targetError = ($_.ErrorDetails.Message | ConvertFrom-Json).error.message
+            }
+            else {
+                $targetError = $_.ErrorDetails.Message
+            }
+            # $targetError = ($_.ErrorDetails.Message | ConvertFrom-Json).error.message
         }
 
         # Write-Error $targetError

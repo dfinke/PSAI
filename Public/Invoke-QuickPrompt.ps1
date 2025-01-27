@@ -4,6 +4,7 @@ function Invoke-QuickPrompt {
         [string]$targetPrompt,
         [Parameter(ValueFromPipeline = $true)]
         [object]$pipelineInput,
+        $LLM = (New-OpenAIChat),
         [switch]$OutputOnly
     )
  
@@ -52,13 +53,20 @@ Instructions: $instructions
 Prompt: $prompt
 "@
 
-        $agent = New-Agent -Instructions $instructions
+        $agentParams = @{Instructions = $instructions }
+        
+        if ($LLM) {
+            $agentParams["LLM"] = $LLM
+        }
 
-        if($OutputOnly) {
+        $agent = New-Agent @agentParams
+
+        if ($OutputOnly) {
             $agent | Get-AgentResponse -Prompt $prompt
             return
         } 
 
+        $modelName = $LLM.config.model
         While ($true) { 
             $agentResponse = $agent | Get-AgentResponse $prompt
 
