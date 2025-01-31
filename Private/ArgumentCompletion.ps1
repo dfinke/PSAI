@@ -29,6 +29,7 @@ function ModelArgumentCompleter {
         "o1-mini"
         "o1-preview-2024-09-12"
         "o1-preview"
+        "o3-mini"
     )
 
     foreach ($model in $models) {
