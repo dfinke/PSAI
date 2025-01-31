@@ -166,3 +166,18 @@ foreach ($targetType in $targetTypes) {
         Invoke-AIPrompt -Prompt $Prompt -Data $this -UsePowerShellPersona
     }
 }
+
+[System.Collections.ArrayList]$script:customGPTPath = @("$PSScriptRoot\Public\CustomGPT")
+
+function InstructionPromptCompleter {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
+
+    Get-ChildItem $customGPTPath *.txt | ForEach-Object {
+        $completion = $_.BaseName -replace '-instructions', ''
+
+        New-Object -TypeName System.Management.Automation.CompletionResult -ArgumentList "$completion",
+        $completion , 'ParameterValue' , $completion
+    }
+}
+
+Register-ArgumentCompleter -CommandName Invoke-QuickPrompt -ParameterName InstructionPrompt -ScriptBlock $Function:InstructionPromptCompleter
