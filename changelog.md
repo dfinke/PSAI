@@ -1,3 +1,7 @@
+## v0.4.3
+
+- Support for o3-mini reasoning model
+
 ## v0.4.2
 
 - Fix word wrapping in the console visuals.
