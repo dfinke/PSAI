@@ -2,6 +2,7 @@ function Invoke-QuickPrompt {
     [CmdletBinding()]
     param(
         [string]$targetPrompt,
+        [string]$instructionPrompt='powershell',
         [Parameter(ValueFromPipeline = $true)]
         [object]$pipelineInput,
         [switch]$OutputOnly
@@ -17,30 +18,35 @@ function Invoke-QuickPrompt {
     }
 
     End {
-    
+
         $prompt = "work it"
         if ($targetPrompt) {
             $prompt = $targetPrompt
         }
 
-        $instructions += @"
+        $baseName = $instructionPrompt
+        $instructionFile = "$($customGPTPath)\$($baseName)-instructions.txt"
+        $instructionFileContent = Get-Content $instructionFile -Raw
+
+        Write-Verbose @"
+Base Name: $baseName
+Instruction File: $instructionFile
+Instruction File Content: $instructionFileContent
+"@
+
+        $instructions = @"
 <date>$(Get-Date)</date>
 <current directory>$($pwd)</current directory>
 
-- You are a terminal assistant. You are a software and data science expert. Your preference is PowerShell, unless otherwise directed. 
-
-for code answers:
-- do not include fence blocks around the code ``````  ``````
-- do not include explanation
-- do not include usage information
-- just code
+$($instructionFileContent)
 
 "@
 
-
         if ($additionalInstructions) {
             $prompt += @"
-Here are the additional instructions Fthe user piped in:
+
+Here are the additional instructions the user piped in:
+
 <additional instructions>
 $($additionalInstructions -join "`n")
 </additional instructions>
@@ -54,7 +60,7 @@ Prompt: $prompt
 
         $agent = New-Agent -Instructions $instructions
 
-        if($OutputOnly) {
+        if ($OutputOnly) {
             $agent | Get-AgentResponse -Prompt $prompt
             return
         } 
