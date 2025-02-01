@@ -36,54 +36,39 @@ $InteractiveCLI = {
         $Message,
         $User = 'User',
         $Emoji = '😎'
-        # $ExitOn
     )
 
     if ($Message) {
         $this.PrintResponse($Message) | Out-Host
     }
 
-    # if ($null -eq $ExitOn) {
-    #     $ExitOn = @("exit", "quit", "bye")
-    # }
-
     while ($true) {
         $message = Read-Host "$Emoji $User"
 
         if ([string]::IsNullOrEmpty($Message)) {
-            # Format-SpectrePanel -Data "Copied to clipboard." -Title "Information" -Border "Rounded" -Color "Green" | Out-Host
-
             Out-BoxedText -Text "Copied to clipboard." -Title "Information" -BoxColor "Green" | Out-Host
 
             $agentResponse | clip
             break            
         }
 
-        # if ($message -in $ExitOn) {
-        #     break
-        # }
-        
-        # $this.PrintResponse($message) | Out-Host
         $agentResponse = $this.PrintResponse($message)
         
         $formatParams = @{
             Text     = $agentResponse
             Title    = "Agent Response"
-            
             BoxColor = "Blue"
         }
-
-        # Format-SpectrePanel @formatParams | Out-Host
 
         Out-BoxedText @formatParams | Out-Host
 
         $nextStepsParams = @{
             Text     = "Follow up, Enter to copy & quit, Ctrl+C to quit."
             Title    = "Next Steps"
-            BoxColor = Cyan
+            BoxColor = "Cyan"
         }
-
-        Format-SpectrePanel @nextStepsParams | Out-Host
+        
+        Out-BoxedText @nextStepsParams | Out-Host
     }
 }
 
