@@ -61,16 +61,13 @@ Prompt: $prompt
 
         While ($true) { 
             $agentResponse = $agent | Get-AgentResponse $prompt
-
-            # Format-SpectrePanel -Data (Get-SpectreEscapedText -Text $agentResponse) -Title "Agent Response" -Border "Rounded" -Color "Blue"
-            # Format-SpectrePanel -Data "Follow up, Enter to copy & quit, Ctrl+C to quit." -Title "Next Steps" -Border "Rounded" -Color "Cyan1"
+            
 
             Out-BoxedText -Text $agentResponse -Title "Agent Response" -BoxColor "Blue" 
             Out-BoxedText -Text "Follow up, Enter to copy & quit, Ctrl+C to quit." -Title "Next Steps" -BoxColor Cyan 
 
             $prompt = Read-Host '> '
-            if ([string]::IsNullOrEmpty($prompt)) {            
-                # Format-SpectrePanel -Data "Copied to clipboard." -Title "Information" -Border "Rounded" -Color "Green"
+            if ([string]::IsNullOrEmpty($prompt)) {                
                 Out-BoxedText -Text "Copied to clipboard." -Title "Information" -BoxColor "Green"
 
                 $agentResponse | Set-Clipboard
