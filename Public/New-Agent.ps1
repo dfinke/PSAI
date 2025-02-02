@@ -22,12 +22,21 @@ $PrintResponse = {
     $response = $null
     do {
         $response = Invoke-OAIChatCompletion -Messages $script:messages -Tools $this.Tools -Model $llmModel
-        $script:messages += @($response.choices[0].message | ConvertTo-OAIMessage)
-    
-        $script:messages += @(Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls)
-    } until ($response.choices.finish_reason -eq "stop")
+        if ($response.choices) {
+            $script:messages += @($response.choices[0].message | ConvertTo-OAIMessage)
+            $return = $response.choices[0].message.content
+        }
+        elseif ($response.content) {
+            $obj = @{role = 'model';content = $response.content[0].text}
+            $script:messages += @($obj | ConvertTo-OAIMessage)
+            $return = $obj.content
+        }
+        if ($Response.choices){
+            $script:messages += @(Invoke-OAIFunctionCall $response -Verbose:$this.ShowToolCalls)
+        }
+    } until ($response.choices.finish_reason -eq "stop" -or $response.stop_reason -eq "end_turn")
 
-    return $response.choices[0].message.content
+    return $return
 }
 
 $InteractiveCLI = {
