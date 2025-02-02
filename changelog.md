@@ -1,3 +1,7 @@
+## v0.4.4
+
+- Ensure consistency for using Out-BoxedText
+
 ## v0.4.3
 
 - Support for o3-mini reasoning model
