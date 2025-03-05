@@ -19,6 +19,7 @@ function ModelArgumentCompleter {
         "gpt-4-turbo-preview"
         "gpt-4-turbo"
         "gpt-4-vision-preview"
+        "gpt-4.5-preview"
         "gpt-4"
         "gpt-4o-2024-05-13"
         "gpt-4o-2024-08-06"
