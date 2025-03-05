@@ -1,3 +1,8 @@
+## v0.4.5
+
+- Added `Tools` and `ShowToolCalls` to `Invoke-QuickPrompt` aka `q`
+- Added gpt-4.5-preview to argument completion
+
 ## v0.4.4
 
 - Ensure consistency for using Out-BoxedText
