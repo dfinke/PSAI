@@ -24,6 +24,17 @@
 
 Imagine empowering your PowerShell scripts with the intelligence of OpenAI. With PSAI, I’ve transformed how we interact with AI, making it as simple as running a command. PSAI bridges the gap between PowerShell and AI, enabling seamless integration for file searches, data analysis, and more. It's not just about automation; it's about revolutionizing what we can achieve with just a few lines of code. This module opens a world of possibilities, making AI accessible directly from your console and your scripts.
 
+## New Invoke-QuickPrompt feature
+
+Invoke-QuickPrompt now supports two new parameters
+Tools and ShowToolCalls.
+
+Pass in PowerShell functions, builtin or your own, to the Tools parameter. Use ShowToolCalls to see the tools used in the response to your prompts.
+
+### See it In Action
+
+<a href="https://youtu.be/B5Z1aLN1Yrg"><img src="https://img.youtube.com/vi/B5Z1aLN1Yrg/0.jpg" width="200">
+
 ## Autonomous Agents
 
 **PSAI** brings the power of autonomous agents to PowerShell, allowing you to seamlessly integrate AI capabilities into your scripts and terminal workflows. PSAI Agents enable you to build powerful, interactive tools that handle a variety of tasks, all powered by OpenAI's models. From quick calculations to detailed web searches, PSAI offers a flexible and intuitive way to create agents that can autonomously solve complex problems.

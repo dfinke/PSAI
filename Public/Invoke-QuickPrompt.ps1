@@ -4,7 +4,9 @@ function Invoke-QuickPrompt {
         [string]$targetPrompt,
         [Parameter(ValueFromPipeline = $true)]
         [object]$pipelineInput,
-        [switch]$OutputOnly
+        $Tools,
+        [switch]$OutputOnly,
+        [switch]$ShowToolCalls
     )
  
     Begin {
@@ -52,9 +54,9 @@ Instructions: $instructions
 Prompt: $prompt
 "@
 
-        $agent = New-Agent -Instructions $instructions
+        $agent = New-Agent -Instructions $instructions -Tools $Tools -ShowToolCalls:$ShowToolCalls
 
-        if($OutputOnly) {
+        if ($OutputOnly) {
             $agent | Get-AgentResponse -Prompt $prompt
             return
         } 
