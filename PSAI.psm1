@@ -26,6 +26,7 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/ConvertFrom-GPTMarkdownTable.ps1
 . $PSScriptRoot/Public/ConvertFrom-OAIAssistant.ps1
 . $PSScriptRoot/Public/ConvertFrom-UnixTimestamp.ps1
+. $PSScriptRoot/Public/ConvertTo-AIPrompt.ps1
 . $PSScriptRoot/Public/ConvertTo-OAIAssistant.ps1
 . $PSScriptRoot/Public/ConvertTo-OAIMessage.ps1
 . $PSScriptRoot/Public/ConvertTo-OpenAIFunctionSpec.ps1
