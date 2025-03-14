@@ -1,3 +1,7 @@
+## v0.4.6
+
+- Added `ConvertTo-AIPrompt` - Converts a GitHub repository into a single XML file optimized for AI tools.
+
 ## v0.4.5
 
 - Added `Tools` and `ShowToolCalls` to `Invoke-QuickPrompt` aka `q`
