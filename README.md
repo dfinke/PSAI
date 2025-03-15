@@ -24,17 +24,6 @@
 
 Imagine empowering your PowerShell scripts with the intelligence of OpenAI. With PSAI, I’ve transformed how we interact with AI, making it as simple as running a command. PSAI bridges the gap between PowerShell and AI, enabling seamless integration for file searches, data analysis, and more. It's not just about automation; it's about revolutionizing what we can achieve with just a few lines of code. This module opens a world of possibilities, making AI accessible directly from your console and your scripts.
 
-## New Invoke-QuickPrompt feature
-
-Invoke-QuickPrompt now supports two new parameters
-Tools and ShowToolCalls.
-
-Pass in PowerShell functions, builtin or your own, to the Tools parameter. Use ShowToolCalls to see the tools used in the response to your prompts.
-
-### See it In Action
-
-<a href="https://youtu.be/B5Z1aLN1Yrg"><img src="https://img.youtube.com/vi/B5Z1aLN1Yrg/0.jpg" width="200">
-
 ## Autonomous Agents
 
 **PSAI** brings the power of autonomous agents to PowerShell, allowing you to seamlessly integrate AI capabilities into your scripts and terminal workflows. PSAI Agents enable you to build powerful, interactive tools that handle a variety of tasks, all powered by OpenAI's models. From quick calculations to detailed web searches, PSAI offers a flexible and intuitive way to create agents that can autonomously solve complex problems.
@@ -207,6 +196,45 @@ $tools = $(
 $agent = New-Agent -Tools $tools -ShowToolCalls
 $agent | Get-AgentResponse 'What did Microsoft close at and the latest news for them?'
 ```
+
+## Convert Your Repositories to AI-Ready Format
+
+The `ConvertTo-AIPrompt` function packages any GitHub repository into an AI-optimized XML format, making it easy to feed your codebase to AI tools like ChatGPT, Claude, or Gemini.
+
+### Key Features
+
+- **AI-Optimized**: Formats your codebase in a way that's easy for AI to understand and process.
+- **Simple to Use**: You need just one command to pack your entire repository.
+- **Customizable**: Easily configure what to include or exclude.
+
+### Basic Example
+
+```powershell
+# Export a repository to a single file
+ConvertTo-AIPrompt -RepoSlug "dfinke/ImportExcel" -OutputPath "D:\ImportExcel.txt"
+
+# Include only specific file types
+ConvertTo-AIPrompt -RepoSlug "dfinke/ImportExcel" -Include "*.ps1","*.md" -OutputPath "D:\ImportExcel-docs-and-code.txt"
+
+# Exclude specific file types
+# Look at a single directory in the repo
+ConvertTo-AIPrompt -RepoSlug "dfinke/ImportExcel/Examples" -Exclude "*.xlsx" -OutputPath "D:\ImportExcel-examples.txt"
+
+# Return as string instead of saving to file
+$repoContent = ConvertTo-AIPrompt -RepoSlug "username/repo"
+
+## New Invoke-QuickPrompt feature
+
+Invoke-QuickPrompt now supports two new parameters
+Tools and ShowToolCalls.
+
+Pass in PowerShell functions, builtin or your own, to the Tools parameter. Use ShowToolCalls to see the tools used in the response to your prompts.
+
+### See it In Action
+
+<a href="https://youtu.be/B5Z1aLN1Yrg"><img src="https://img.youtube.com/vi/B5Z1aLN1Yrg/0.jpg" width="200">
+
+
 
 ## Future Roadmap
 
