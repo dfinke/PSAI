@@ -222,6 +222,7 @@ ConvertTo-AIPrompt -RepoSlug "dfinke/ImportExcel/Examples" -Exclude "*.xlsx" -Ou
 
 # Return as string instead of saving to file
 $repoContent = ConvertTo-AIPrompt -RepoSlug "username/repo"
+```
 
 ## New Invoke-QuickPrompt feature
 
@@ -232,7 +233,7 @@ Pass in PowerShell functions, builtin or your own, to the Tools parameter. Use S
 
 ### See it In Action
 
-<a href="https://youtu.be/B5Z1aLN1Yrg"><img src="https://img.youtube.com/vi/B5Z1aLN1Yrg/0.jpg" width="200">
+<a href="https://youtu.be/B5Z1aLN1Yrg"><img src="https://img.youtube.com/vi/B5Z1aLN1Yrg/0.jpg" width="550" height="275" /></a>
 
 
 
