@@ -119,8 +119,10 @@ function ConvertTo-AIPrompt {
     
     # Check if a specific subfolder was requested
     $subfolder = ""
+    $originalSubfolder = ""
     if ($repoInfo.Count -gt 2) {
-        $subfolder = [string]::Join('/', $repoInfo[2..$($repoInfo.Count - 1)])
+        $originalSubfolder = [string]::Join('/', $repoInfo[2..$($repoInfo.Count - 1)])
+        $subfolder = $originalSubfolder
     }
 
     Write-Verbose "Processing repository: $owner/$repo, subfolder: $($subfolder ? $subfolder : '(root)')"
@@ -165,11 +167,48 @@ function ConvertTo-AIPrompt {
         Write-Verbose "Using repository with correct case: $owner/$repo"
     }
     catch {
-        Write-Progress -Activity "Verifying Repository" -Completed
+        Write-Progress -Activity "Verifying Repository" -Status "Repository not found, trying case-insensitive search" -PercentComplete 50
+        
         if ($_ -match "404") {
-            throw "Repository not found: $owner/$repo. Please check that the repository exists and is spelled correctly."
+            Write-Verbose "Repository not found with exact case. Attempting case-insensitive search..."
+            
+            # Try to search for the repository using the GitHub search API
+            try {
+                # Use the search API to find repositories case-insensitively
+                $searchUrl = "https://api.github.com/search/repositories?q=$repo+user:$owner"
+                Write-Verbose "Searching for repository: $searchUrl"
+                $searchResult = Invoke-RestMethod -Uri $searchUrl -Headers $headers -ErrorAction Stop
+                
+                # Check if any repositories were found
+                if ($searchResult.total_count -gt 0) {
+                    # Find the repository that matches case-insensitively
+                    $matchedRepo = $searchResult.items | Where-Object { $_.name -ieq $repo -and $_.owner.login -ieq $owner } | Select-Object -First 1
+                    
+                    if ($matchedRepo) {
+                        # Use the correct case from the search results
+                        $owner = $matchedRepo.owner.login
+                        $repo = $matchedRepo.name
+                        
+                        Write-Verbose "Found repository with correct case: $owner/$repo"
+                        Write-Progress -Activity "Verifying Repository" -Completed
+                    }
+                    else {
+                        Write-Progress -Activity "Verifying Repository" -Completed
+                        throw "Repository not found: $owner/$repo. Please check that the repository exists and is spelled correctly."
+                    }
+                }
+                else {
+                    Write-Progress -Activity "Verifying Repository" -Completed
+                    throw "Repository not found: $owner/$repo. Please check that the repository exists and is spelled correctly."
+                }
+            }
+            catch {
+                Write-Progress -Activity "Verifying Repository" -Completed
+                throw "Repository not found: $owner/$repo. Please check that the repository exists and is spelled correctly. Error: $_"
+            }
         }
         else {
+            Write-Progress -Activity "Verifying Repository" -Completed
             throw "Error accessing repository information: $_"
         }
     }
@@ -304,7 +343,105 @@ function ConvertTo-AIPrompt {
     $allFiles = @()
     try {
         Write-Progress -Activity "Discovering Files" -Status "Scanning repository structure" -PercentComplete 0
-        $allFiles = Get-RepoContents -Path $subfolder -Headers $headers -Owner $owner -Repo $repo
+        
+        # First try with the original subfolder case
+        $errorActionPreference = $ErrorActionPreference
+        try {
+            # Temporarily suppress errors during the first attempt
+            $ErrorActionPreference = 'SilentlyContinue'
+            $firstAttemptError = $null
+            
+            # Capture any error that occurs
+            try {
+                $allFiles = Get-RepoContents -Path $subfolder -Headers $headers -Owner $owner -Repo $repo -ErrorVariable firstAttemptError -ErrorAction SilentlyContinue
+            }
+            catch {
+                $firstAttemptError = $_
+            }
+            
+            # If there was an error and it's a 404, try case-insensitive approach
+            if ($firstAttemptError -and $firstAttemptError.ToString() -match "404" -and -not [string]::IsNullOrEmpty($originalSubfolder)) {
+                Write-Verbose "Subfolder not found with provided case. Attempting case-insensitive subfolder search..."
+                
+                # Try to find the correct case for the subfolder by navigating case-insensitively
+                $foundSubfolderPath = ""
+                $pathParts = $originalSubfolder -split '/'
+                $currentPath = ""
+                
+                # Iterate through each level of the path to find correct case
+                foreach ($part in $pathParts) {
+                    try {
+                        # Get the current directory contents
+                        $parentUrl = if ([string]::IsNullOrEmpty($currentPath)) {
+                            "https://api.github.com/repos/$owner/$repo/contents"
+                        }
+                        else {
+                            "https://api.github.com/repos/$owner/$repo/contents/$currentPath"
+                        }
+                        
+                        Write-Verbose "Checking directory: $parentUrl"
+                        $parentContents = Invoke-RestMethod -Uri $parentUrl -Headers $headers
+                        
+                        # Handle case when response is a single item (not an array)
+                        if ($parentContents -isnot [System.Array]) {
+                            $parentContents = @($parentContents)
+                        }
+                        
+                        # Find a case-insensitive match for this directory part
+                        $found = $false
+                        foreach ($item in $parentContents) {
+                            if ($item.type -eq "dir" -and $item.name -ieq $part) {
+                                # Use the correct case from the response
+                                if ([string]::IsNullOrEmpty($foundSubfolderPath)) {
+                                    $foundSubfolderPath = $item.name
+                                }
+                                else {
+                                    $foundSubfolderPath = "$foundSubfolderPath/$($item.name)"
+                                }
+                                
+                                $currentPath = $foundSubfolderPath
+                                $found = $true
+                                Write-Verbose "Found case-insensitive match for '$part': $($item.name)"
+                                break
+                            }
+                        }
+                        
+                        if (-not $found) {
+                            # If we can't find a match for this part, the subfolder doesn't exist
+                            throw "Subfolder part '$part' not found in path '$currentPath'"
+                        }
+                    }
+                    catch {
+                        Write-Verbose "Error finding subfolder: $_"
+                        throw "Subfolder not found: $originalSubfolder. Check that the folder exists and is spelled correctly."
+                    }
+                }
+                
+                if ($foundSubfolderPath) {
+                    Write-Verbose "Using subfolder with correct case: $foundSubfolderPath (original: $originalSubfolder)"
+                    $subfolder = $foundSubfolderPath
+                    # Try again with the correct case path
+                    # Restore error action preference for the final attempt with correct case
+                    $ErrorActionPreference = $errorActionPreference
+                    $allFiles = Get-RepoContents -Path $subfolder -Headers $headers -Owner $owner -Repo $repo
+                }
+                else {
+                    # Restore error action preference before throwing
+                    $ErrorActionPreference = $errorActionPreference
+                    throw "Subfolder not found: $originalSubfolder. Check that the folder exists and is spelled correctly."
+                }
+            }
+            elseif ($firstAttemptError) {
+                # Restore error action preference before re-throwing
+                $ErrorActionPreference = $errorActionPreference
+                throw $firstAttemptError
+            }
+        }
+        finally {
+            # Ensure error action preference is restored
+            $ErrorActionPreference = $errorActionPreference
+        }
+        
         Write-Progress -Activity "Discovering Files" -Completed
     }
     catch {
