@@ -322,6 +322,16 @@ function ConvertTo-AIPrompt {
                                 return Get-RepoContents -Path $item.path -Headers $Headers -Owner $Owner -Repo $Repo
                             }
                         }
+
+                        # If we're looking for a file (not a directory), check for case-insensitive file matches
+                        # This is needed for direct file access like owner/repo/path/to/file.ps1
+                        foreach ($item in $parentContents) {
+                            if ($item.type -eq "file" -and $item.name -ieq $leafName) {
+                                Write-Verbose "Found case-insensitive file match: $($item.name) instead of $leafName"
+                                # Return just this file as an array with one item
+                                return @($item)
+                            }
+                        }
                     }
                     catch {
                         # If we can't check parent, just show the original error
@@ -404,21 +414,47 @@ function ConvertTo-AIPrompt {
                                 Write-Verbose "Found case-insensitive match for '$part': $($item.name)"
                                 break
                             }
+                            # Check if this is the last part of the path and might be a file
+                            elseif ($part -eq $pathParts[-1] -and $item.type -eq "file" -and $item.name -ieq $part) {
+                                # This is a direct file reference, return just this file
+                                Write-Verbose "Found direct file reference with case-insensitive match: $($item.name)"
+                                # Set the correct path for display
+                                if ([string]::IsNullOrEmpty($foundSubfolderPath)) {
+                                    $foundSubfolderPath = $item.name
+                                }
+                                else {
+                                    $foundSubfolderPath = "$foundSubfolderPath/$($item.name)"
+                                }
+                                
+                                # Restore error action preference
+                                $ErrorActionPreference = $errorActionPreference
+                                
+                                # Return just this file
+                                $allFiles = @($item)
+                                $found = $true
+                                break
+                            }
                         }
                         
                         if (-not $found) {
                             # If we can't find a match for this part, the subfolder doesn't exist
                             throw "Subfolder part '$part' not found in path '$currentPath'"
                         }
+                        
+                        # If we found a direct file match, break out of the loop
+                        if ($found -and $allFiles.Count -gt 0) {
+                            break
+                        }
                     }
                     catch {
-                        Write-Verbose "Error finding subfolder: $_"
-                        throw "Subfolder not found: $originalSubfolder. Check that the folder exists and is spelled correctly."
+                        Write-Verbose "Error finding path: $_"
+                        throw "Path not found: $originalSubfolder. Check that it exists and is spelled correctly."
                     }
                 }
                 
-                if ($foundSubfolderPath) {
-                    Write-Verbose "Using subfolder with correct case: $foundSubfolderPath (original: $originalSubfolder)"
+                # If we found a path but haven't already retrieved a direct file
+                if ($foundSubfolderPath -and $allFiles.Count -eq 0) {
+                    Write-Verbose "Using path with correct case: $foundSubfolderPath (original: $originalSubfolder)"
                     $subfolder = $foundSubfolderPath
                     # Try again with the correct case path
                     # Restore error action preference for the final attempt with correct case
@@ -428,7 +464,7 @@ function ConvertTo-AIPrompt {
                 else {
                     # Restore error action preference before throwing
                     $ErrorActionPreference = $errorActionPreference
-                    throw "Subfolder not found: $originalSubfolder. Check that the folder exists and is spelled correctly."
+                    throw "Path not found: $originalSubfolder. Check that it exists and is spelled correctly."
                 }
             }
             elseif ($firstAttemptError) {
