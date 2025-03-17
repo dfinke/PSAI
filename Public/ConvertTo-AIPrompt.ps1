@@ -518,11 +518,15 @@ function ConvertTo-AIPrompt {
             
             $fileContent = Invoke-RestMethod -Uri $fileUrl -Headers $headers -ErrorAction Stop
             
+            # HTML decode the file content
+            Add-Type -AssemblyName System.Web
+            $decodedContent = [System.Web.HttpUtility]::HtmlDecode($fileContent)
+            
             # Add document entry to XML
             [void]$xmlOutput.AppendLine("    <document index='$fileIndex'>")
             [void]$xmlOutput.AppendLine("        <source>$($file.path)</source>")
             [void]$xmlOutput.AppendLine("        <document_content>")
-            [void]$xmlOutput.AppendLine("            $([System.Security.SecurityElement]::Escape($fileContent))")
+            [void]$xmlOutput.AppendLine("            $([System.Security.SecurityElement]::Escape($decodedContent))")
             [void]$xmlOutput.AppendLine("        </document_content>")
             [void]$xmlOutput.AppendLine("    </document>")
             
