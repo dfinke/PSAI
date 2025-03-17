@@ -1,3 +1,7 @@
+## v0.4.7
+
+- `ConvertTo-AIPrompt` updated to be case insensitive for the repo and directory names
+
 ## v0.4.6
 
 - Added `ConvertTo-AIPrompt` - Converts a GitHub repository into a single XML file optimized for AI tools.
