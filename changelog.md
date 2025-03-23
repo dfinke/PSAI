@@ -1,3 +1,7 @@
+## v0.4.8
+
+- Added `Invoke-YouTubeAIAssistant`. Includes two tools `Get-YouTubeTranscript` and `Search-YouTube`
+
 ## v0.4.7
 
 - `ConvertTo-AIPrompt` updated to be case insensitive for the repo and directory names
