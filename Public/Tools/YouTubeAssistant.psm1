@@ -156,7 +156,7 @@ function Invoke-YouTubeAIAssistant {
 
     $instructions = @"
 Date: $(Get-Date)
-- ** Include YouTube link **
+- ** Mist include all video YouTube links **
 - Read transcripts
 - Include title
 - Include date published
