@@ -51,7 +51,7 @@ Get-YouTubeTranscript -videoId "dQw4w9WgXcQ"
 .NOTES
 Requires an external 'Get-Transcript' function (not defined in this module) to retrieve the actual transcript data.
 #>
-function Search-YouTube {
+function Global:Search-YouTube {
     [CmdletBinding()]
     param(
         [string]$Query,
@@ -124,7 +124,7 @@ function Search-YouTube {
     }
 }
 
-function Get-YouTubeTranscript {
+function Global:Get-YouTubeTranscript {
     <#
         .SYNOPSIS
         Retrieves the transcript for a YouTube video.
