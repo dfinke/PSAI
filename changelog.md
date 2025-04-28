@@ -1,3 +1,7 @@
+## v0.4.9
+
+- Made  `Search-YouTube` and `Get-YouTubeTranscript` global functions
+
 ## v0.4.8
 
 - Added `Invoke-YouTubeAIAssistant`. Includes two tools `Get-YouTubeTranscript` and `Search-YouTube`
