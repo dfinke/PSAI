@@ -118,22 +118,53 @@ function Invoke-OAIBeta {
         Invoke-RestMethod @params
     } 
     catch {
+        $targetError = $null
+        $message = $null
+    
         if ($Provider -eq 'OpenAI') {
-            $message = $_.ErrorDetails.Message
-            if (Test-JsonReplacement $message -ErrorAction SilentlyContinue) {            
-                $targetError = $message | ConvertFrom-Json
-                $targetError = $targetError.error.message
-            } 
+            if ($null -ne $_.ErrorDetails) {
+                $message = $_.ErrorDetails.Message
+            }
+    
+            if ($null -ne $message -and (Test-JsonReplacement $message -ErrorAction SilentlyContinue)) {
+                try {
+                    $parsed = $message | ConvertFrom-Json
+                    $targetError = $parsed.error.message
+                }
+                catch {
+                    $targetError = "Failed to parse OpenAI error JSON: $message"
+                }
+            }
+            elseif ($null -ne $_.Exception.Response) {
+                try {
+                    $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
+                    $responseBody = $reader.ReadToEnd()
+    
+                    if ($responseBody | Test-JsonReplacement -ErrorAction SilentlyContinue) {
+                        $json = $responseBody | ConvertFrom-Json
+                        $targetError = $json.error.message
+                    }
+                    else {
+                        $targetError = "Raw OpenAI response: $responseBody"
+                    }
+                }
+                catch {
+                    $targetError = "Unable to read HTTP error response: $_"
+                }
+            }
             else {
-                $targetError = "[{0}] - {1}" -f $Uri, $message
+                $fallbackMessage = if ($null -ne $message) { $message } else { $_.Exception.Message }
+                $targetError = "[{0}] - {1}" -f $Uri, $fallbackMessage
             }
         }
-
-        if ($Provider -eq 'AzureOpenAI') {
+        elseif ($Provider -eq 'AzureOpenAI') {
             $targetError = $_.Exception.Message
         }
-
-        # Write-Error $targetError
+        else {
+            $targetError = "Unhandled provider or unknown error: $($_.Exception.Message)"
+        }
+    
+        Write-Error "OpenAI API call failed: $targetError"
         throw $targetError
-    }
+    }    
 }
