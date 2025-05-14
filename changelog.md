@@ -1,3 +1,8 @@
+## v0.4.10
+
+- Big thank you to [Kenny White](https://github.com/whiteken)
+    - Added much needed message info for the user "You exceeded your current quota, please check your plan and billing details" 
+
 ## v0.4.9
 
 - Made  `Search-YouTube` and `Get-YouTubeTranscript` global functions
