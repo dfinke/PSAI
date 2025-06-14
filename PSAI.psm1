@@ -37,6 +37,7 @@ Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 . $PSScriptRoot/Public/Enable-AIShortCutKey.ps1
 . $PSScriptRoot/Public/Enable-OAICodeInterpreter.ps1
 . $PSScriptRoot/Public/Enable-OAIFileSearchTool.ps1
+. $PSScriptRoot/Public/Enable-OAIRetrievalTool
 . $PSScriptRoot/Public/Export-OAIAssistant.ps1
 . $PSScriptRoot/Public/Format-OAIFunctionCall.ps1
 . $PSScriptRoot/Public/Get-AzOAISecrets.ps1
