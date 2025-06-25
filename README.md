@@ -61,8 +61,8 @@ You need to get the following secrets form the Azure Portal and Azure AI Studio 
 ```powershell
 $secrets = @{
     apiURI         = "<Your Azure OpenAI API URI>"
-    apiVersion     = "<Your Azure OpenAI API Version>"
     apiKey         = "<Your Azure OpenAI API Key>"
+    apiVersion     = "<Your Azure OpenAI API Version>"
     deploymentName = "<Your Azure OpenAI Deployment Name>"
 }
 
