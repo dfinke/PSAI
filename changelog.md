@@ -1,3 +1,9 @@
+
+## v0.4.11
+
+- Bump module version to 0.4.11
+- Added 'Start-Conversation' alias
+
 ## v0.4.10
 
 - Big thank you to [Kenny White](https://github.com/whiteken)
