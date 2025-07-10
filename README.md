@@ -44,7 +44,10 @@ PSAI and Agents embody the principle of "be the automator, not the automated." B
 Install-Module -Name PSAI
 ```
 
+
 After installing the module, you can start working with it by getting your [OpenAI API key](#openai-api-key) or [Azure OpenAI secrets](#azure-openai). Or both.
+
+You can now use the `Start-Conversation` alias to quickly begin a chat session.
 
 ## OpenAI API KEY
 
