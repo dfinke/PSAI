@@ -31,7 +31,9 @@ This example invokes the interactive CLI for the specified PSAIAgent with the me
 The function checks if the provided Agent is a valid PSAIAgent object before invoking the interactive CLI.
 If the Agent is not valid, an error is written and the function returns without further execution.
 #>
+
 function Invoke-InteractiveCLI {
+    [Alias('Start-Conversation')]
     [CmdletBinding()]
     param(
         [Parameter(ValueFromPipeline)]
