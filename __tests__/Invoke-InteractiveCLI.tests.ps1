@@ -16,4 +16,10 @@ Describe "Invoke-InteractiveCLI" -Tag Invoke-InteractiveCLI {
         $keyArray[3] | Should -BeExactly 'Emoji'
         $keyArray[4] | Should -BeExactly 'ExitOn'
     }
+    
+    It "should have 'Start-Conversation' as an alias for Invoke-InteractiveCLI" {
+        $alias = Get-Alias Start-Conversation -ErrorAction SilentlyContinue
+        $alias | Should -Not -BeNullOrEmpty
+        $alias.Definition | Should -BeExactly 'Invoke-InteractiveCLI'
+    }
 }
