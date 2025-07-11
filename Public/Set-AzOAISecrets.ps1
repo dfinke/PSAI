@@ -39,7 +39,8 @@ function Set-AzOAISecrets {
         $apiVersion,
         [Parameter(Mandatory)]
         $deploymentName,
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
         $organizationId = $null
     )
 
