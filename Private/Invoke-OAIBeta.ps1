@@ -58,6 +58,12 @@ function Invoke-OAIBeta {
 
         'AzureOpenAI' {
             $headers['api-key'] = "$($AzOAISecrets.apiKEY)"
+            if($AzOAISecrets.organizationId) {
+                $headers['OpenAI-Organization'] = "$($AzOAISecrets.organizationId)"
+            }
+            else {
+                $headers.Remove('OpenAI-Organization')
+            }
             
             if ($Body -isnot [System.IO.Stream]) {
                 if ($null -ne $Body -and $Body.Contains("model") ) {
