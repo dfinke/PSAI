@@ -58,7 +58,7 @@ function Invoke-OAIBeta {
 
         'AzureOpenAI' {
             $headers['api-key'] = "$($AzOAISecrets.apiKEY)"
-            if($AzOAISecrets.organizationId) {
+            if (-not [string]::IsNullOrEmpty($AzOAISecrets.organizationId)) {
                 $headers['OpenAI-Organization'] = "$($AzOAISecrets.organizationId)"
             }
             else {
