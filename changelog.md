@@ -1,3 +1,9 @@
+## v0.4.12
+
+Thank you to https://github.com/jmkloz for the PR!
+
+- Added optional `organizationId` parameter to `Set-AzOAISecrets` for Azure OpenAI support
+- `Invoke-OAIBeta` now sets the `OpenAI-Organization` header when `organizationId` is provided
 
 ## v0.4.11
 
