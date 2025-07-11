@@ -59,7 +59,13 @@ Then set `$env:OpenAIKey` to your key.
 
 After creating an [Azure OpenAI resource](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/create-resource?pivots=web-portal), you can use the `PSAI` module to interact with it. 
 
-You need to get the following secrets form the Azure Portal and Azure AI Studio - `apiURI`,`apiVersion`,`apiKey`,`deploymentName`.
+
+You need to get the following secrets from the Azure Portal and Azure AI Studio:
+- `apiURI`
+- `apiVersion`
+- `apiKey`
+- `deploymentName`
+- *(Optional)* `organizationId` (if your Azure OpenAI resource requires the `OpenAI-Organization` header)
 
 ```powershell
 $secrets = @{
@@ -67,11 +73,14 @@ $secrets = @{
     apiKey         = "<Your Azure OpenAI API Key>"
     apiVersion     = "<Your Azure OpenAI API Version>"
     deploymentName = "<Your Azure OpenAI Deployment Name>"
+    organizationId = "<Your Organization ID>" # Optional
 }
 
 Set-OAIProvider AzureOpenAI
 Set-AzOAISecrets @secrets
 ```
+
+If your Azure OpenAI implementation requires the `OpenAI-Organization` header, provide the `organizationId` value. Otherwise, you can omit it.
 
 ## Usage
 
