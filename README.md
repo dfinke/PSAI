@@ -209,6 +209,24 @@ $agent = New-Agent -Tools $tools -ShowToolCalls
 $agent | Get-AgentResponse 'What did Microsoft close at and the latest news for them?'
 ```
 
+## Slash Commands
+
+PSAI Agents now support slash commands in interactive sessions, allowing you to perform quick actions without leaving the conversation flow.
+
+### Available Commands
+
+- **`/clear`**: Clears the console screen, providing a clean slate for your interaction.
+
+### Usage
+
+In an interactive agent session, simply type a slash command at the prompt:
+
+```
+/clear
+```
+
+This will execute the command immediately. Unknown commands will display an error message, and normal input continues the conversation with the agent.
+
 ## Convert Your Repositories to AI-Ready Format
 
 The `ConvertTo-AIPrompt` function packages any GitHub repository into an AI-optimized XML format, making it easy to feed your codebase to AI tools like ChatGPT, Claude, or Gemini.
