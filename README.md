@@ -117,16 +117,16 @@ Run either of these commands in PowerShell to output all files in a directory.
 Autonomous agents are AI-driven entities capable of making decisions and completing tasks without continuous human guidance. PSAI Agents combine the scripting power of PowerShell with the intelligence of OpenAI’s models to automate workflows that require both information processing and decision-making capabilities.
 
 ### Features of PSAI Agents
-- **Modular Tools Integration**: Agents can leverage various specialized tools, such as:
+<!-- - **Modular Tools Integration**: Agents can leverage various specialized tools, such as:
   - **CalculatorTool**: Handles arithmetic and mathematical operations.
   - **WebSearchTool**: Retrieves information from the web.
-  - **StockTickerTool**: Fetches stock information in real time.  
+  - **StockTickerTool**: Fetches stock information in real time.   -->
 
 - **Customizable Agents**: Create agents that use predefined tools or add custom ones. Easily expand agent capabilities by registering new tools tailored to specific needs.
 
 - **Natural Language Interaction**: Utilize OpenAI models to interpret complex prompts and provide contextual, intelligent responses using natural language.
 
-### Creating Your First Agent
+<!-- ### Creating Your First Agent
 
 Here’s how to create a simple agent using the **CalculatorTool**:
 
@@ -147,7 +147,7 @@ The agent will respond with step-by-step calculations, such as:
 Multiplying 3 and 5 to get 15
 Adding 15 and 6 to get 21
 The result of (3 * 5 + 6) is 21, and 21 is not a prime number.
-```
+``` -->
 
 ### Examples: What PSAI Agents Can Do
 
@@ -161,7 +161,7 @@ $SecretAgent = New-Agent -Instructions "Recipes should be under 5 ingredients"
 $SecretAgent | Get-AgentResponse 'Share a breakfast recipe.'
 ```
 
-#### **Calculator Tool**
+<!-- #### **Calculator Tool**
 A calculator agent can solve arithmetic problems and check properties like primality:
 
 ```powershell
@@ -207,7 +207,7 @@ $tools = $(
 
 $agent = New-Agent -Tools $tools -ShowToolCalls
 $agent | Get-AgentResponse 'What did Microsoft close at and the latest news for them?'
-```
+``` -->
 
 ## Slash Commands
 
