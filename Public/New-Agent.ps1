@@ -35,7 +35,8 @@ $InteractiveCLI = {
     param(
         $Message,
         $User = 'User',
-        $Emoji = '😎'
+        $Emoji = '😎',
+        $InputReader = { $host.UI.ReadLine() }
     )
 
     $agentResponse = $null
@@ -45,11 +46,11 @@ $InteractiveCLI = {
     }
 
     while ($true) {
-        $message = Read-Host "$Emoji $User"
+        $message = & $InputReader
 
         if ([string]::IsNullOrEmpty($message)) {
             Out-BoxedText -Text "Copied to clipboard." -Title "Information" -BoxColor "Green" | Out-Host
-            $agentResponse | clip
+            Set-Clipboard -Value $agentResponse
             break            
         }
         elseif ($message.StartsWith("/")) {
