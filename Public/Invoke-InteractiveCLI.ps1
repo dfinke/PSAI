@@ -41,7 +41,7 @@ function Invoke-InteractiveCLI {
         $Message,
         $User,
         $Emoji = '😎',
-        $ExitOn
+        [Alias('InputReader')] $ExitOn
     )
 
     Process {
@@ -50,6 +50,19 @@ function Invoke-InteractiveCLI {
             return
         }
 
-        $agent.InteractiveCLI($Message, $User, $Emoji, $ExitOn)
+        # Only pass the 4th arg if explicitly provided and valid. Passing $null would override
+        # the default InputReader in the ScriptMethod and cause '& $InputReader' to fail.
+        if ($PSBoundParameters.ContainsKey('ExitOn') -and $null -ne $ExitOn) {
+            if ($ExitOn -is [scriptblock]) {
+                $agent.InteractiveCLI($Message, $User, $Emoji, $ExitOn)
+            }
+            else {
+                Write-Warning "Parameter -ExitOn should be a script block that returns the next input string (acts as InputReader). Using the default input reader instead."
+                $agent.InteractiveCLI($Message, $User, $Emoji)
+            }
+        }
+        else {
+            $agent.InteractiveCLI($Message, $User, $Emoji)
+        }
     }
 }

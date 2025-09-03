@@ -36,7 +36,8 @@ $InteractiveCLI = {
         $Message,
         $User = 'User',
         $Emoji = '😎',
-        $InputReader = { $host.UI.ReadLine() }
+        # Default reader uses Read-Host so we can display a prompt string
+        $InputReader = { param($prompt) Read-Host -Prompt $prompt }
     )
 
     $agentResponse = $null
@@ -46,7 +47,8 @@ $InteractiveCLI = {
     }
 
     while ($true) {
-        $message = & $InputReader
+        $promptText = "${Emoji} ${User}"
+        $message = & $InputReader $promptText
 
         if ([string]::IsNullOrEmpty($message)) {
             Out-BoxedText -Text "Copied to clipboard." -Title "Information" -BoxColor "Green" | Out-Host
