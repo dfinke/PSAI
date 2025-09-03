@@ -1,3 +1,8 @@
+## v0.5.1
+
+- Bump module version to 0.5.1
+- Comment out agent tool and assistant imports for cleanup and restructuring
+
 ## v0.4.12
 
 Thank you to https://github.com/jmkloz for the PR!
