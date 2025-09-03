@@ -35,40 +35,48 @@ $InteractiveCLI = {
     param(
         $Message,
         $User = 'User',
-        $Emoji = '😎'
+        $Emoji = '😎',
+        $InputReader = { $host.UI.ReadLine() }
     )
 
+    $agentResponse = $null
     if ($Message) {
-        $this.PrintResponse($Message) | Out-Host
+        $agentResponse = $this.PrintResponse($Message)
+        $agentResponse | Out-Host
     }
 
     while ($true) {
-        $message = Read-Host "$Emoji $User"
+        $message = & $InputReader
 
-        if ([string]::IsNullOrEmpty($Message)) {
+        if ([string]::IsNullOrEmpty($message)) {
             Out-BoxedText -Text "Copied to clipboard." -Title "Information" -BoxColor "Green" | Out-Host
-
-            $agentResponse | clip
+            Set-Clipboard -Value $agentResponse
             break            
         }
-
-        $agentResponse = $this.PrintResponse($message)
-        
-        $formatParams = @{
-            Text     = $agentResponse
-            Title    = "Agent Response"
-            BoxColor = "Blue"
+        elseif ($message.StartsWith("/")) {
+            switch ($message.ToLower()) {
+                "/clear" { Clear-Host }
+                default { Write-Host "Unknown command: $message" }
+            }
         }
+        else {
+            $agentResponse = $this.PrintResponse($message)
+            
+            $formatParams = @{
+                Text     = $agentResponse
+                Title    = "Agent Response"
+                BoxColor = "Blue"
+            }
+            Out-BoxedText @formatParams | Out-Host
 
-        Out-BoxedText @formatParams | Out-Host
-
-        $nextStepsParams = @{
-            Text     = "Follow up, Enter to copy & quit, Ctrl+C to quit."
-            Title    = "Next Steps"
-            BoxColor = "Cyan"
+            $nextStepsParams = @{
+                Text     = "Follow up, Enter to copy & quit, Ctrl+C to quit."
+                Title    = "Next Steps"
+                BoxColor = "Cyan"
+            }
+            
+            Out-BoxedText @nextStepsParams | Out-Host
         }
-        
-        Out-BoxedText @nextStepsParams | Out-Host
     }
 }
 

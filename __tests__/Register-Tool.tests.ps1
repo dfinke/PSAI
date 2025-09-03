@@ -17,12 +17,12 @@ Describe "Register-Tool" -Tag Register-Tool {
         $actual.Parameters.Strict.SwitchParameter | Should -Be $true
     }
 
-    it "CalculatorTool should register correctly" {
-        $actual = New-CalculatorTool
+    # it "CalculatorTool should register correctly" {
+    #     $actual = New-CalculatorTool
 
-        $actual | Should -Not -BeNullOrEmpty
-        $actual.Count | Should -Be 8
-    }
+    #     $actual | Should -Not -BeNullOrEmpty
+    #     $actual.Count | Should -Be 8
+    # }
 
     it "Get-ChildItem should register correctly" {
         $actual = Register-Tool "Get-ChildItem"

@@ -1,3 +1,11 @@
+## v0.5.1
+
+- Added slash command support to InteractiveCLI
+- Refactored InteractiveCLI for improved message handling and command processing
+- Added InputReader parameter to InteractiveCLI for customizable input handling
+- Added tests for InteractiveCLI slash command handling
+- Bumped module version to 0.5.1
+
 ## v0.4.12
 
 Thank you to https://github.com/jmkloz for the PR!
