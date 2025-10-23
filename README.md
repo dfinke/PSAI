@@ -111,6 +111,92 @@ This command will recursively list all files in the specified directory and its 
 
 Run either of these commands in PowerShell to output all files in a directory.
 
+## PSAI Skills
+
+**PSAI Skills** bring the Anthropic Claude Skills architecture pattern to PowerShell, enabling modular, reusable capabilities that extend AI agent functionality with domain-specific expertise. Skills use progressive disclosure to load only the information needed at each stage, making agents more efficient and focused.
+
+### What are Skills?
+
+Skills are filesystem-based resources that provide AI agents with:
+- **Domain-specific workflows** and best practices
+- **On-demand loading** (progressive disclosure pattern)
+- **Structured guidance** through YAML frontmatter and markdown content
+
+### Three-Level Loading Architecture
+
+Skills implement a three-level loading pattern inspired by Anthropic Claude:
+
+1. **Level 1: Metadata (always loaded)** - YAML frontmatter with `name` and `description` for skill discovery
+2. **Level 2: Instructions (loaded on-demand)** - Full skill content with workflows and code examples
+3. **Level 3: Resources (loaded as needed)** - Additional files, scripts, and reference materials
+
+### Quick Start with Skills
+
+Discover available skills:
+
+```powershell
+# Get all skills as JSON
+Get-PSAISkillFrontmatter -SkillsRoot "./skills"
+
+# Get skills as PowerShell objects
+Get-PSAISkillFrontmatter -SkillsRoot "./skills" -AsPSCustomObject
+```
+
+Read full skill content:
+
+```powershell
+$skills = Get-PSAISkillFrontmatter -SkillsRoot "./skills" -AsPSCustomObject
+$readSkill = $skills | Where-Object { $_.name -eq "Read File" }
+Read-PSAISkill -Fullname $readSkill.fullname
+```
+
+### Creating a Skills-Enabled Agent
+
+```powershell
+$instructions = @"
+You are a PowerShell Skills AI Assistant. 
+
+When a user provides a request, analyze it to determine which skills are relevant.
+
+**ONLY USE** Read-PSAISkill to read SKILL.md files. 
+
+You have access to these skills:
+$(Get-PSAISkillFrontmatter -SkillsRoot "./skills" -Compress)
+"@
+
+$tools = @('Invoke-Expression', 'Read-PSAISkill')
+
+$agent = New-Agent -Tools $tools -Instructions $instructions -Name 'PSSkillsAgent'
+
+# Use the agent
+$agent | Get-AgentResponse "How do I read a file in PowerShell?"
+```
+
+### Creating Custom Skills
+
+Each skill is a directory containing a `SKILL.md` file with YAML frontmatter:
+
+```markdown
+---
+name: Your Skill Name
+description: What this skill does and when to use it
+---
+
+# Your Skill Name
+
+## Quick start
+[Step-by-step guidance with code examples]
+
+## Best practices
+[Tips and recommendations]
+```
+
+For more information, see the [Skills README](skills/README.md) and the example script [Use-PSAISkills.ps1](examples/Use-PSAISkills.ps1).
+
+### References
+
+- [Anthropic Claude Skills Documentation](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview)
+- [Anthropic Skills GitHub Repository](https://github.com/anthropics/skills)
 
 ## What Are Autonomous Agents?
 
