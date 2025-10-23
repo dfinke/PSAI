@@ -11,29 +11,6 @@ This toolbox is automatically discovered when $env:PSAI_TOOLBOX_PATH is set
 or when using the default toolbox path.
 #>
 
-function FileSystemTools {
-    [CmdletBinding()]
-    param()
-    
-    # Check if we should register tools based on environment variable
-    # This follows the Sourcegraph Toolbox pattern
-    if ($env:PSAI_ENABLE_TOOLBOX -eq $false) {
-        Write-Verbose "Toolbox registration skipped (PSAI_ENABLE_TOOLBOX is false)"
-        return @()
-    }
-    
-    Write-Verbose "Registering FileSystem toolbox tools"
-    
-    # Register the tools using PSAI's Register-Tool function
-    $tools = @(
-        Register-Tool -FunctionName Get-DirectoryListing
-        Register-Tool -FunctionName Read-FileContent
-        Register-Tool -FunctionName Test-FileExists
-    )
-    
-    return $tools
-}
-
 <#
 .SYNOPSIS
 Gets a listing of files and directories.
@@ -55,7 +32,7 @@ If specified, recursively lists subdirectories.
 Get-DirectoryListing -Path "C:\Scripts" -Filter "*.ps1"
 Lists all PowerShell scripts in C:\Scripts.
 #>
-function Get-DirectoryListing {
+function Global:Get-DirectoryListing {
     [CmdletBinding()]
     param(
         [Parameter()]
@@ -117,7 +94,7 @@ The encoding to use (default: UTF8).
 Read-FileContent -Path "C:\Scripts\script.ps1"
 Reads the content of script.ps1.
 #>
-function Read-FileContent {
+function Global:Read-FileContent {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
@@ -170,7 +147,7 @@ The path to test.
 Test-FileExists -Path "C:\Scripts\script.ps1"
 Checks if script.ps1 exists.
 #>
-function Test-FileExists {
+function Global:Test-FileExists {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
@@ -206,5 +183,26 @@ function Test-FileExists {
     }
 }
 
-# Return the toolbox registration function
-return FileSystemTools
+# Registration function - called by Get-PSAIToolbox
+function FileSystemTools {
+    [CmdletBinding()]
+    param()
+    
+    # Check if we should register tools based on environment variable
+    # This follows the Sourcegraph Toolbox pattern
+    if ($env:PSAI_ENABLE_TOOLBOX -eq $false) {
+        Write-Verbose "Toolbox registration skipped (PSAI_ENABLE_TOOLBOX is false)"
+        return @()
+    }
+    
+    Write-Verbose "Registering FileSystem toolbox tools"
+    
+    # Register the tools using PSAI's Register-Tool function
+    $tools = @(
+        Register-Tool -FunctionName Get-DirectoryListing
+        Register-Tool -FunctionName Read-FileContent
+        Register-Tool -FunctionName Test-FileExists
+    )
+    
+    return $tools
+}

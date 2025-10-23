@@ -11,28 +11,6 @@ This toolbox is automatically discovered when $env:PSAI_TOOLBOX_PATH is set
 or when using the default toolbox path.
 #>
 
-function TextTools {
-    [CmdletBinding()]
-    param()
-    
-    # Check if we should register tools based on environment variable
-    if ($env:PSAI_ENABLE_TOOLBOX -eq $false) {
-        Write-Verbose "Toolbox registration skipped (PSAI_ENABLE_TOOLBOX is false)"
-        return @()
-    }
-    
-    Write-Verbose "Registering Text toolbox tools"
-    
-    # Register the tools using PSAI's Register-Tool function
-    $tools = @(
-        Register-Tool -FunctionName Get-TextStatistics
-        Register-Tool -FunctionName Convert-TextCase
-        Register-Tool -FunctionName Search-TextPattern
-    )
-    
-    return $tools
-}
-
 <#
 .SYNOPSIS
 Gets statistics about text content.
@@ -47,7 +25,7 @@ The text to analyze.
 Get-TextStatistics -Text "Hello world! This is a test."
 Returns statistics about the text.
 #>
-function Get-TextStatistics {
+function Global:Get-TextStatistics {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
@@ -99,7 +77,7 @@ The target case: Upper, Lower, Title, or Sentence.
 Convert-TextCase -Text "hello world" -Case Title
 Converts to "Hello World".
 #>
-function Convert-TextCase {
+function Global:Convert-TextCase {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
@@ -166,7 +144,7 @@ If specified, search is case-sensitive.
 Search-TextPattern -Text "Hello world 123" -Pattern "\d+"
 Finds all numeric sequences in the text.
 #>
-function Search-TextPattern {
+function Global:Search-TextPattern {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
@@ -213,5 +191,25 @@ function Search-TextPattern {
     }
 }
 
-# Return the toolbox registration function
-return TextTools
+# Registration function - called by Get-PSAIToolbox
+function TextTools {
+    [CmdletBinding()]
+    param()
+    
+    # Check if we should register tools based on environment variable
+    if ($env:PSAI_ENABLE_TOOLBOX -eq $false) {
+        Write-Verbose "Toolbox registration skipped (PSAI_ENABLE_TOOLBOX is false)"
+        return @()
+    }
+    
+    Write-Verbose "Registering Text toolbox tools"
+    
+    # Register the tools using PSAI's Register-Tool function
+    $tools = @(
+        Register-Tool -FunctionName Get-TextStatistics
+        Register-Tool -FunctionName Convert-TextCase
+        Register-Tool -FunctionName Search-TextPattern
+    )
+    
+    return $tools
+}

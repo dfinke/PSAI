@@ -11,28 +11,6 @@ This toolbox is automatically discovered when $env:PSAI_TOOLBOX_PATH is set
 or when using the default toolbox path.
 #>
 
-function DateTimeTools {
-    [CmdletBinding()]
-    param()
-    
-    # Check if we should register tools based on environment variable
-    if ($env:PSAI_ENABLE_TOOLBOX -eq $false) {
-        Write-Verbose "Toolbox registration skipped (PSAI_ENABLE_TOOLBOX is false)"
-        return @()
-    }
-    
-    Write-Verbose "Registering DateTime toolbox tools"
-    
-    # Register the tools using PSAI's Register-Tool function
-    $tools = @(
-        Register-Tool -FunctionName Get-CurrentDateTime
-        Register-Tool -FunctionName Format-DateTime
-        Register-Tool -FunctionName Get-DateDifference
-    )
-    
-    return $tools
-}
-
 <#
 .SYNOPSIS
 Gets the current date and time.
@@ -50,7 +28,7 @@ Optional timezone name (e.g., "UTC", "Eastern Standard Time").
 Get-CurrentDateTime -Format ISO8601
 Returns current time in ISO8601 format.
 #>
-function Get-CurrentDateTime {
+function Global:Get-CurrentDateTime {
     [CmdletBinding()]
     param(
         [Parameter()]
@@ -123,7 +101,7 @@ The desired output format.
 Format-DateTime -DateTime "2025-01-01" -OutputFormat "yyyy-MM-dd HH:mm:ss"
 Formats the date in the specified format.
 #>
-function Format-DateTime {
+function Global:Format-DateTime {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
@@ -173,7 +151,7 @@ The unit to return: Days, Hours, Minutes, Seconds, or All (default).
 Get-DateDifference -StartDate "2025-01-01" -Unit Days
 Returns the number of days between the start date and now.
 #>
-function Get-DateDifference {
+function Global:Get-DateDifference {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
@@ -224,5 +202,25 @@ function Get-DateDifference {
     }
 }
 
-# Return the toolbox registration function
-return DateTimeTools
+# Registration function - called by Get-PSAIToolbox
+function DateTimeTools {
+    [CmdletBinding()]
+    param()
+    
+    # Check if we should register tools based on environment variable
+    if ($env:PSAI_ENABLE_TOOLBOX -eq $false) {
+        Write-Verbose "Toolbox registration skipped (PSAI_ENABLE_TOOLBOX is false)"
+        return @()
+    }
+    
+    Write-Verbose "Registering DateTime toolbox tools"
+    
+    # Register the tools using PSAI's Register-Tool function
+    $tools = @(
+        Register-Tool -FunctionName Get-CurrentDateTime
+        Register-Tool -FunctionName Format-DateTime
+        Register-Tool -FunctionName Get-DateDifference
+    )
+    
+    return $tools
+}
