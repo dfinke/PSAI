@@ -18,6 +18,8 @@
 . $PSScriptRoot/Public/New-Agent.ps1
 . $PSScriptRoot/Public/Get-AgentResponse.ps1
 . $PSScriptRoot/Public/Invoke-InteractiveCLI.ps1
+. $PSScriptRoot/Public/Get-PSAISkillFrontmatter.ps1
+. $PSScriptRoot/Public/Read-PSAISkill.ps1
 . $PSScriptRoot/Public/Add-OAIVectorStore.ps1
 . $PSScriptRoot/Public/Clear-OAIAllItems.ps1
 . $PSScriptRoot/Public/Clear-OAIAssistants.ps1

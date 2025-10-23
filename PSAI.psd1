@@ -39,6 +39,8 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'New-Agent'
         'Get-AgentResponse'
         'Invoke-InteractiveCLI'
+        'Get-PSAISkillFrontmatter'
+        'Read-PSAISkill'
         'Add-OAIVectorStore'
         'Clear-OAIAllItems'
         'Clear-OAIAssistants'
