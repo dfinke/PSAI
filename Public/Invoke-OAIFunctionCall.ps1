@@ -26,7 +26,12 @@ function Invoke-OAIFunctionCall {
         Write-Verbose "$toolFunctionName $($toolFunctionArgs | ConvertTo-Json -Compress)"
 
         if (Get-Command $toolFunctionName -ErrorAction SilentlyContinue) {
-            $result = & $toolFunctionName @toolFunctionArgs
+            try {
+                $result = & $toolFunctionName @toolFunctionArgs
+            }
+            catch {
+                $result = "Error invoking function $($toolFunctionName) with arguments $($toolCall.function.arguments): $_"
+            }
         } 
         else {
             $result = "Function $toolFunctionName not found"
