@@ -14,6 +14,11 @@
 # Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 
 # Public Functions
+
+## Load PSSkills Functions
+. $PSScriptRoot/Public/PSSkills/Invoke-PSSkills.ps1
+
+## Load Public Functions
 . $PSScriptRoot/Public/Invoke-QuickPrompt.ps1
 . $PSScriptRoot/Public/New-Agent.ps1
 . $PSScriptRoot/Public/Get-AgentResponse.ps1

@@ -33,6 +33,9 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         # 'Search-YouTube'
         # 'Get-YouTubeTranscript'
 
+        # PSSkills
+        'Invoke-PSSkills'
+        
         # Public
         'Out-BoxedText'
         'Invoke-QuickPrompt'
