@@ -33,9 +33,12 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         # 'Search-YouTube'
         # 'Get-YouTubeTranscript'
 
+        'Invoke-Arc'
         # PSSkills
         'Invoke-PSSkills'
-        
+        # ToolboxAI
+        'Invoke-PSToolBoxAI'
+
         # Public
         'Out-BoxedText'
         'Invoke-QuickPrompt'
@@ -103,6 +106,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Invoke-OAIUploadFile'
         'Invoke-QuickChat'
         'Invoke-SimpleQuestion'
+        'Invoke-PSToolBoxAI'
         'New-ChatRequestAssistantMessage'
         'New-ChatRequestSystemMessage'
         'New-ChatRequestToolMessage'
@@ -161,6 +165,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'uoaia'
         'q'
         'Start-Conversation'
+        'arc'
     )
 
     PrivateData       = @{
