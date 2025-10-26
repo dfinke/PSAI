@@ -76,6 +76,53 @@ function Read-PSSkill {
     Get-Content -Path $Fullname -Raw
 }
 
+function Invoke-PSSkillCode {
+    <#
+        .SYNOPSIS
+        Executes PowerShell code or invokes a script from a SKILL.md file.
+
+        .DESCRIPTION
+        The Invoke-PSSkillCode function executes the provided code. If the code is a single line ending with .ps1, it treats it as a script path and invokes it, resolving relative paths relative to the SKILL.md file's directory. Otherwise, it runs the code using Invoke-Expression.
+
+        .PARAMETER SkillFullname
+        The full path to the SKILL.md file.
+
+        .PARAMETER Code
+        The code content to execute.
+    #>
+    [CmdletBinding()]
+    param(
+        [string]$SkillFullname,
+        [string]$Code
+    )
+
+    Write-Verbose "[Invoke-PSSkillCode] Executing code for skill: $SkillFullname"
+    $trimmedCode = $Code.Trim()
+    if ($trimmedCode -match '\.ps1$' -and $trimmedCode -notmatch '\n') {
+        # Treat as script path
+        Write-Verbose "[Invoke-PSSkillCode] Treating as script path: $trimmedCode"
+        $path = $trimmedCode
+        if ($path -notmatch '^[A-Za-z]:' -and $path -notmatch '^/') {
+            # Relative path, resolve relative to skill directory
+            $skillDir = Split-Path $SkillFullname
+            $fullPath = Join-Path $skillDir $path
+            $resolvedPath = Resolve-Path $fullPath
+            Write-Verbose "[Invoke-PSSkillCode] Resolved path: $resolvedPath"
+            & $resolvedPath
+        }
+        else {
+            # Absolute path
+            Write-Verbose "[Invoke-PSSkillCode] Invoking absolute path: $path"
+            & $path
+        }
+    }
+    else {
+        # Treat as code
+        Write-Verbose "[Invoke-PSSkillCode] Executing as code"
+        Invoke-Expression $Code
+    }
+}
+
 function Invoke-PSSkills {
     [CmdletBinding()]
     param(
@@ -88,7 +135,7 @@ function Invoke-PSSkills {
     Write-Verbose "[Invoke-PSSkills] Called with Prompt: $Prompt, Model: $Model, Tools: $Tools, ShowToolCalls: $ShowToolCalls"
     $targetTools = @(
         'Read-PSSkill'
-        'Invoke-Expression'
+        'Invoke-PSSkillCode'
     )
 
     if ($tools.count -gt 0) {
@@ -101,14 +148,13 @@ function Invoke-PSSkills {
 You are a PowerShell Skills AI Assistant. 
 
 When a user provides a request, analyze the request to determine which skills are relevant.
-If you 
 
-**ONLY USE** Read-PSSKill to read the SKILL.md file. 
-**DO NOT USE** Read-PSSKill to read any other type of file. 
+If you need to read a skill, **ONLY USE** Read-PSSkill to read the SKILL.md file. 
+**DO NOT USE** Read-PSSkill to read any other type of file. 
 
-Use and code blocks in the SKILL.md file as examples to form your response. 
+Use code blocks and examples in the SKILL.md file as examples to form your response. 
 
-Use Invoke-Expression to run PowerShell code found in the SKILL.md file.
+Extract and run all PowerShell code inside fenced code blocks (enclosed in ``````powershell ... ``````, which can be multi-line) from the SKILL.md file using Invoke-PSSkillCode with the fullname of the SKILL.md and the code content. Run the code blocks sequentially if there are multiple.
 
 Do one task at a time, then move on to the next, reading the SKILL.md files as needed.
 
