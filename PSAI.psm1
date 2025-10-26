@@ -13,11 +13,6 @@
 # # Agent Assistants
 # Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 
-# Public Functions
-
-## Load PSSkills Functions
-. $PSScriptRoot/Public/PSSkills/Invoke-PSSkills.ps1
-
 ## Load Public Functions
 . $PSScriptRoot/Public/Invoke-QuickPrompt.ps1
 . $PSScriptRoot/Public/New-Agent.ps1
@@ -53,6 +48,11 @@
 . $PSScriptRoot/Public/Get-OAIFileContent.ps1
 . $PSScriptRoot/Public/Get-OAIFileItem.ps1
 . $PSScriptRoot/Public/Get-OAIFunctionCallSpec.ps1
+
+. $PSScriptRoot/Public/Arc/Invoke-Arc.ps1
+. $PSScriptRoot/Public/Arc/PSToolBoxAI.ps1
+. $PSScriptRoot/Public/Arc/Invoke-PSSkills.ps1
+
 . $PSScriptRoot/Public/Get-OAIImageGeneration.ps1
 . $PSScriptRoot/Public/Get-OAIMessage.ps1
 . $PSScriptRoot/Public/Get-OAIMessageItem.ps1
