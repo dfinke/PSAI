@@ -5,14 +5,15 @@ function Invoke-Arc {
         [string]$prompt,
         [string]$model = 'gpt-4.1',
         [ValidateSet('skill', 'tool')]
-        [string]$Type = 'skill'
+        [string]$Type = 'skill',
+        [switch]$ShowToolCalls
     )
 
     Write-Verbose "[Invoke-Arc] Called with Type: $Type, Model: $model, Prompt: $prompt"
     switch ($Type) {
         'skill' {
             Write-Verbose "[Invoke-Arc] Invoking PSSkills"
-            Invoke-PSSkills -Prompt $prompt -Model $model
+            Invoke-PSSkills -Prompt $prompt -Model $model -ShowToolCalls:$ShowToolCalls
         }
         'tool' {
             Write-Verbose "[Invoke-Arc] Invoking PSToolBoxAI"
