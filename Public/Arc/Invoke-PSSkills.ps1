@@ -13,36 +13,38 @@ function Get-SkillFrontmatter {
     foreach ($file in $skillFiles) {
         Write-Verbose "[Get-SkillFrontmatter] Importing skill $($file.FullName)"
         $lines = Get-Content $file.FullName
-        $start = $lines.IndexOf('---')
-        if ($start -ge 0) {
-            Write-Verbose "[Get-SkillFrontmatter] Found frontmatter start at line $start"
-            # Find the next '---' after $start
-            $end = -1
-            for ($i = $start + 1; $i -lt $lines.Count; $i++) {
-                if ($lines[$i] -eq '---') {
-                    $end = $i
-                    break
-                }
-            }
-            if ($end -gt $start) {
-                Write-Verbose "[Get-SkillFrontmatter] Found frontmatter end at line $end"
-                $frontmatter = $lines[$start..$end]
-                $name = $null
-                $description = $null
-                foreach ($line in $frontmatter) {
-                    if ($line -match '^name:\s*(.+)$') {
-                        $name = $matches[1]
-                        Write-Verbose "[Get-SkillFrontmatter] Found name: $name"
-                    }
-                    if ($line -match '^description:\s*(.+)$') {
-                        $description = $matches[1]
-                        Write-Verbose "[Get-SkillFrontmatter] Found description: $description"
+        if ($lines) {
+            $start = $lines.IndexOf('---')
+            if ($start -ge 0) {
+                Write-Verbose "[Get-SkillFrontmatter] Found frontmatter start at line $start"
+                # Find the next '---' after $start
+                $end = -1
+                for ($i = $start + 1; $i -lt $lines.Count; $i++) {
+                    if ($lines[$i] -eq '---') {
+                        $end = $i
+                        break
                     }
                 }
-                $results += [PSCustomObject]@{
-                    fullname    = $file.FullName
-                    name        = $name
-                    description = $description
+                if ($end -gt $start) {
+                    Write-Verbose "[Get-SkillFrontmatter] Found frontmatter end at line $end"
+                    $frontmatter = $lines[$start..$end]
+                    $name = $null
+                    $description = $null
+                    foreach ($line in $frontmatter) {
+                        if ($line -match '^name:\s*(.+)$') {
+                            $name = $matches[1]
+                            Write-Verbose "[Get-SkillFrontmatter] Found name: $name"
+                        }
+                        if ($line -match '^description:\s*(.+)$') {
+                            $description = $matches[1]
+                            Write-Verbose "[Get-SkillFrontmatter] Found description: $description"
+                        }
+                    }
+                    $results += [PSCustomObject]@{
+                        fullname    = $file.FullName
+                        name        = $name
+                        description = $description
+                    }
                 }
             }
         }
@@ -132,6 +134,7 @@ function Invoke-PSSkills {
         [switch]$ShowToolCalls
     )
 
+    Write-Host "Model: $Model`nCalled with Prompt:`n$Prompt`n" -ForegroundColor Cyan
     Write-Verbose "[Invoke-PSSkills] Called with Prompt: $Prompt, Model: $Model, Tools: $Tools, ShowToolCalls: $ShowToolCalls"
     $targetTools = @(
         'Read-PSSkill'
@@ -176,6 +179,6 @@ $(Get-SkillFrontmatter -Compress)
     }
     else {
         Write-Verbose "[Invoke-PSSkills] Starting agent conversation"
-        $agent | Start-Conversation
+        $agent | Start-Conversation -Emoji '🛠️🧬'
     }
 }
