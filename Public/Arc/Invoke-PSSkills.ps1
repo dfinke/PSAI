@@ -54,6 +54,7 @@ function Get-SkillFrontmatter {
         Write-Verbose "[Get-SkillFrontmatter] Returning results as PSCustomObject"
         return $results
     }
+    
     Write-Verbose "[Get-SkillFrontmatter] Returning results as JSON"
     return $results | ConvertTo-Json -Depth 3 -Compress:$Compress
 }
@@ -119,8 +120,36 @@ function Invoke-PSSkillCode {
         }
     }
     else {
+        
+        # Check Allowed Tools
+
         # Treat as code
         Write-Verbose "[Invoke-PSSkillCode] Executing as code"
+        $formatParams = @{
+            Title    = "The Agent wants to run the following code:"
+            BoxColor = "Blue"
+            Text     = $code
+        }
+        
+        Out-BoxedText @formatParams | Out-Host
+
+        $nextStepsParams = @{
+            Text     = "Do you want to execute this code? (y/n)"
+            Title    = "Next Steps"
+            BoxColor = "Cyan"
+        }
+            
+        Out-BoxedText @nextStepsParams | Out-Host
+
+        # Prompt for permission
+        $permission = Read-Host "> "
+        if ($permission -notmatch '^(yes|y)$') {
+            $msg = "Execution of the code was cancelled by the user."
+            Write-Host $msg -ForegroundColor Yellow
+            
+            return $msg
+        }
+        
         Invoke-Expression $Code
     }
 }
@@ -157,9 +186,13 @@ If you need to read a skill, **ONLY USE** Read-PSSkill to read the SKILL.md file
 
 Use code blocks and examples in the SKILL.md file as examples to form your response. 
 
-Extract and run all PowerShell code inside fenced code blocks (enclosed in ``````powershell ... ``````, which can be multi-line) from the SKILL.md file using Invoke-PSSkillCode with the fullname of the SKILL.md and the code content. Run the code blocks sequentially if there are multiple.
+Extract and run all PowerShell code inside fenced code blocks (enclosed in ``````powershell ... ``````, which can be multi-line) from the SKILL.md file using Invoke-PSSkillCode with the fullname of the SKILL.md and the code content. Run the code blocks sequentially if there are multiple. 
+
+Run the prompt request, do not ask for permission before running code blocks from the SKILL.md file.
 
 Do one task at a time, then move on to the next, reading the SKILL.md files as needed.
+
+If something is cancelled or fails report back the error message. Do not reflect the Skill instructions in your response.
 
 You have access to the skills:
 **Skills**
