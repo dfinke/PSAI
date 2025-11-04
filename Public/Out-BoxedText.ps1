@@ -22,7 +22,7 @@ function Out-BoxedText {
     The color of the text inside the box. Default is Gray.
 
     .PARAMETER MaxWidth
-    The maximum width for the text wrapping and box. Default is 80.
+    The maximum width for the text wrapping and box. Default is 96.
 
     .EXAMPLE
     Out-BoxedText -Text "Paris" -Title "Agent" -BoxColor DarkBlue -TextColor White
@@ -40,7 +40,7 @@ function Out-BoxedText {
         [string]$Title,
         [ConsoleColor]$BoxColor = "White",
         [ConsoleColor]$TextColor = "Gray",
-        [int]$MaxWidth = 80
+        [int]$MaxWidth = 96
     )
 
     function Wrap-Text {
@@ -80,9 +80,10 @@ function Out-BoxedText {
 
     # Draw text lines
     foreach ($line in $wrappedText) {
-        Write-Host "│" -NoNewline -ForegroundColor $BoxColor
-        Write-Host " $line" -NoNewline -ForegroundColor $TextColor
-        Write-Host (" " * ($boxInnerWidth - $line.Length)) -NoNewline -ForegroundColor $TextColor
+        Write-Host "│ " -NoNewline -ForegroundColor $BoxColor
+        Write-Host $line -NoNewline -ForegroundColor $TextColor
+        $padding = $boxInnerWidth - $line.Length
+        Write-Host (" " * $padding) -NoNewline -ForegroundColor $TextColor
         Write-Host " │" -ForegroundColor $BoxColor
     }
 
