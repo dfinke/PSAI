@@ -4,6 +4,8 @@ $null = $defaultPermissions.Add("Get-Content:*")
 $null = $defaultPermissions.Add("Get-ChildItem:*")
 $null = $defaultPermissions.Add("Select-String:*")
 
+$tempPermissions = $null
+
 $allowedToolsList = @{}
 
 function Get-SkillFrontmatter {
