@@ -1,12 +1,10 @@
-$baseSet = [System.Collections.Generic.HashSet[string]]::new()
+$defaultPermissions = [System.Collections.Generic.HashSet[string]]::new()
 
-$null = $baseSet.Add("git status")
-$null = $baseSet.Add("Get-Date -Format:*")
-$null = $baseSet.Add("Set-Content:*")
+$null = $defaultPermissions.Add("Get-Content:*")
+$null = $defaultPermissions.Add("Get-ChildItem:*")
+$null = $defaultPermissions.Add("Select-String:*")
 
-$tempSet = [System.Collections.Generic.HashSet[string]]::new()
-
-$unionSet = [System.Collections.Generic.HashSet[string]]::new($baseSet)
+$allowedToolsList = @{}
 
 function Get-SkillFrontmatter {
     [CmdletBinding()]
@@ -55,11 +53,13 @@ function Get-SkillFrontmatter {
                             Write-Verbose "[Get-SkillFrontmatter] Found allowed-tools: $allowedTools"
                         }
                     }
+
+                    $allowedToolsList[$file.FullName] = $allowedTools
+
                     $results += [PSCustomObject]@{
-                        fullname     = $file.FullName
-                        name         = $name
-                        description  = $description
-                        allowedTools = $allowedTools
+                        fullname    = $file.FullName
+                        name        = $name
+                        description = $description                        
                     }
                 }
             }
@@ -85,29 +85,21 @@ function Read-PSSkill {
 
         .PARAMETER Fullname
         The full path to the file to read.
-
-        .PARAMETER allowedTools
-        A string representing allowed tools for the skill (optional).
     #>
     [CmdletBinding()]
     param(
-        [string]$Fullname,
-        [string]$allowedTools
+        [string]$Fullname
     )
 
     Write-Verbose "[Read-PSSkill] Reading file: $Fullname"
+    $allowedTools = $allowedToolsList[$Fullname]
     if ([string]::IsNullOrEmpty($allowedTools) -eq $false) {
-        Write-Host "[Read-PSSkill] Allowed tools provided: $($allowedTools)" -ForegroundColor Yellow
+        Write-Host "[Read-PSSkill $Fullname] Allowed tools provided: $($allowedTools)" -ForegroundColor Yellow
         
-        $tempSet.Clear()
-        $null = $tempSet.Add($allowedTools)
-        
-        $unionSet.Clear()
-        $null = $unionSet.UnionWith($baseSet)
-        $null = $unionSet.UnionWith($tempSet)
+        $null = $tempPermissions.Add($allowedTools)
     }
     else {
-        Write-Host "[Read-PSSkill] No allowed tools provided." -ForegroundColor Yellow
+        Write-Host "[Read-PSSkill $Fullname] No allowed tools provided." -ForegroundColor Yellow
     }
 
     Get-Content -Path $Fullname -Raw
@@ -191,7 +183,7 @@ function Invoke-PSSkillCode {
     else {
         
         # Check Allowed Tools
-        if (!(Test-CodeAllowed $code $unionSet)) {
+        if (!(Test-CodeAllowed $code $tempPermissions)) {
             # Treat as code
             Write-Verbose "[Invoke-PSSkillCode] Executing as code"
             $formatParams = @{
@@ -235,7 +227,16 @@ function Invoke-PSSkills {
         [switch]$ShowToolCalls
     )
 
-    Write-Host "Model: $Model`nCalled with Prompt:`n$Prompt`n" -ForegroundColor Cyan
+    if ([string]::IsNullOrEmpty($Prompt) -eq $false) {
+        Write-Host "Invoking PSSkills with Prompt:" -ForegroundColor Green
+        Write-Host $Prompt -ForegroundColor White
+    }
+    else {
+        Write-Host "Invoking PSSkills in interactive mode." -ForegroundColor Green
+    }
+    #Write-Host "Model: $Model`nCalled with Prompt:`n$Prompt`n" -ForegroundColor Cyan
+
+
     Write-Verbose "[Invoke-PSSkills] Called with Prompt: $Prompt, Model: $Model, Tools: $Tools, ShowToolCalls: $ShowToolCalls"
     $targetTools = @(
         'Read-PSSkill'
@@ -284,6 +285,9 @@ $(Get-SkillFrontmatter -Compress)
 "@
 
     Write-Verbose "[Invoke-PSSkills] Creating agent"
+    
+    $tempPermissions = (New-Object System.Collections.Generic.HashSet[string])::new($defaultPermissions)
+
     $agent = New-Agent -ShowToolCalls:$ShowToolCalls -LLM (New-OpenAIChat $Model) -Tools $targetTools -Instructions $instructions
 
     if ($Prompt) {
