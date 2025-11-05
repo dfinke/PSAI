@@ -1,3 +1,13 @@
+$baseSet = [System.Collections.Generic.HashSet[string]]::new()
+
+$null = $baseSet.Add("git status")
+$null = $baseSet.Add("Get-Date -Format:*")
+$null = $baseSet.Add("Set-Content:*")
+
+$tempSet = [System.Collections.Generic.HashSet[string]]::new()
+
+$unionSet = [System.Collections.Generic.HashSet[string]]::new($baseSet)
+
 function Get-SkillFrontmatter {
     [CmdletBinding()]
     param(
@@ -30,6 +40,7 @@ function Get-SkillFrontmatter {
                     $frontmatter = $lines[$start..$end]
                     $name = $null
                     $description = $null
+                    $allowedTools = $null
                     foreach ($line in $frontmatter) {
                         if ($line -match '^name:\s*(.+)$') {
                             $name = $matches[1]
@@ -39,11 +50,16 @@ function Get-SkillFrontmatter {
                             $description = $matches[1]
                             Write-Verbose "[Get-SkillFrontmatter] Found description: $description"
                         }
+                        if ($line -match '^allowed-tools:\s*(.+)$') {
+                            $allowedTools = $matches[1]
+                            Write-Verbose "[Get-SkillFrontmatter] Found allowed-tools: $allowedTools"
+                        }
                     }
                     $results += [PSCustomObject]@{
-                        fullname    = $file.FullName
-                        name        = $name
-                        description = $description
+                        fullname     = $file.FullName
+                        name         = $name
+                        description  = $description
+                        allowedTools = $allowedTools
                     }
                 }
             }
@@ -69,14 +85,67 @@ function Read-PSSkill {
 
         .PARAMETER Fullname
         The full path to the file to read.
+
+        .PARAMETER allowedTools
+        A string representing allowed tools for the skill (optional).
     #>
     [CmdletBinding()]
     param(
-        [string]$Fullname
+        [string]$Fullname,
+        [string]$allowedTools
     )
 
     Write-Verbose "[Read-PSSkill] Reading file: $Fullname"
+    if ([string]::IsNullOrEmpty($allowedTools) -eq $false) {
+        Write-Host "[Read-PSSkill] Allowed tools provided: $($allowedTools)" -ForegroundColor Yellow
+        
+        $tempSet.Clear()
+        $null = $tempSet.Add($allowedTools)
+        
+        $unionSet.Clear()
+        $null = $unionSet.UnionWith($baseSet)
+        $null = $unionSet.UnionWith($tempSet)
+    }
+    else {
+        Write-Host "[Read-PSSkill] No allowed tools provided." -ForegroundColor Yellow
+    }
+
     Get-Content -Path $Fullname -Raw
+}
+
+function Test-CodeAllowed {
+    param(
+        [string]$code,
+        [System.Collections.Generic.HashSet[string]]$allowedTools
+    )
+
+    if ([string]::IsNullOrEmpty($code) -and $allowedTools.Count -eq 0) {
+        return $false
+    }
+
+    $returnCode = $false
+
+    foreach ($tool in $allowedTools) {
+        if ($tool.EndsWith(':*')) {
+            # Remove :* and use prefix match
+            $prefix = $tool.Substring(0, $tool.Length - 2)
+            
+            # For :*, we match the prefix and anything that follows
+            $returnCode = $code.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)
+            if ($returnCode) {
+                break
+            }
+        }
+        else {
+            # For exact patterns, require exact match (including trailing slash)
+            $returnCode = $code.Equals($tool, [System.StringComparison]::OrdinalIgnoreCase)
+            if ($returnCode) {
+                break
+            }
+        }
+    }
+
+    return $returnCode
 }
 
 function Invoke-PSSkillCode {
@@ -122,34 +191,37 @@ function Invoke-PSSkillCode {
     else {
         
         # Check Allowed Tools
-
-        # Treat as code
-        Write-Verbose "[Invoke-PSSkillCode] Executing as code"
-        $formatParams = @{
-            Title    = "The Agent wants to run the following code:"
-            BoxColor = "Blue"
-            Text     = $code
-        }
+        if (!(Test-CodeAllowed $code $unionSet)) {
+            # Treat as code
+            Write-Verbose "[Invoke-PSSkillCode] Executing as code"
+            $formatParams = @{
+                Title    = "The Agent wants to run the following code:"
+                BoxColor = "Blue"
+                Text     = $code
+            }
         
-        Out-BoxedText @formatParams | Out-Host
+            Out-BoxedText @formatParams | Out-Host
 
-        $nextStepsParams = @{
-            Text     = "Do you want to execute this code? (y/n)"
-            Title    = "Next Steps"
-            BoxColor = "Cyan"
-        }
+            $nextStepsParams = @{
+                Text     = "Do you want to execute this code? (y/n)"
+                Title    = "Next Steps"
+                BoxColor = "Cyan"
+            }
             
-        Out-BoxedText @nextStepsParams | Out-Host
+            Out-BoxedText @nextStepsParams | Out-Host
 
-        # Prompt for permission
-        $permission = Read-Host "> "
-        if ($permission -notmatch '^(yes|y)$') {
-            $msg = "Execution of the code was cancelled by the user."
-            Write-Host $msg -ForegroundColor Yellow
+            # Prompt for permission
+            $permission = Read-Host "> "
+            if ($permission -notmatch '^(yes|y)$') {
+                $msg = "Execution of the code was cancelled by the user."
+                Write-Host $msg -ForegroundColor Yellow
             
-            return $msg
+                return $msg
+            }
         }
-        
+
+        Out-BoxedText -Title "Executing Code..." -BoxColor Magenta -Text $code | Out-Host
+
         Invoke-Expression $Code
     }
 }
