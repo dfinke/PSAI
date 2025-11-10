@@ -16,6 +16,10 @@ function Get-SkillFrontmatter {
         [switch]$Compress
     )
 
+    if (-not (Test-Path $SkillsRoot)) {
+        Write-Warning "[Get-SkillFrontmatter] SkillsRoot path '$SkillsRoot' does not exist"
+    }
+
     Write-Verbose "[Get-SkillFrontmatter] Searching for SKILL.md files in $SkillsRoot"
     $skillFiles = Get-ChildItem -Path $SkillsRoot -Recurse -Filter "SKILL.md"
     $results = @()
@@ -94,11 +98,19 @@ function Read-PSSkill {
     )
 
     Write-Verbose "[Read-PSSkill] Reading file: $Fullname"
-    $allowedTools = $allowedToolsList[$Fullname]
-    if ([string]::IsNullOrEmpty($allowedTools) -eq $false) {
-        Write-Host "[Read-PSSkill $Fullname] Allowed tools provided: $($allowedTools)" -ForegroundColor Yellow
+    $allowedToolsString = $allowedToolsList[$Fullname]
+    if ([string]::IsNullOrEmpty($allowedToolsString) -eq $false) {
+        Write-Host "[Read-PSSkill $Fullname] Allowed tools provided: $($allowedToolsString)" -ForegroundColor Yellow
         
-        $null = $tempPermissions.Add($allowedTools)
+        # Parse comma-separated tools and add each one to tempPermissions
+        $tools = $allowedToolsString -split ',\s*'
+        foreach ($tool in $tools) {
+            $tool = $tool.Trim()
+            if ([string]::IsNullOrEmpty($tool) -eq $false) {
+                Write-Verbose "[Read-PSSkill] Adding tool to permissions: $tool"
+                $null = $tempPermissions.Add($tool)
+            }
+        }
     }
     else {
         Write-Host "[Read-PSSkill $Fullname] No allowed tools provided." -ForegroundColor Yellow
@@ -148,7 +160,7 @@ function Invoke-PSSkillCode {
         Executes PowerShell code or invokes a script from a SKILL.md file.
 
         .DESCRIPTION
-        The Invoke-PSSkillCode function executes the provided code. If the code is a single line ending with .ps1, it treats it as a script path and invokes it, resolving relative paths relative to the SKILL.md file's directory. Otherwise, it runs the code using Invoke-Expression.
+        The Invoke-PSSkillCode function executes the provided code. If the code starts with a .ps1 file, it treats it as a script invocation and resolves relative paths relative to the SKILL.md file's directory. Otherwise, it runs the code using Invoke-Expression.
 
         .PARAMETER SkillFullname
         The full path to the SKILL.md file.
@@ -164,30 +176,57 @@ function Invoke-PSSkillCode {
 
     Write-Verbose "[Invoke-PSSkillCode] Executing code for skill: $SkillFullname"
     $trimmedCode = $Code.Trim()
-    if ($trimmedCode -match '\.ps1$' -and $trimmedCode -notmatch '\n') {
-        # Treat as script path
-        Write-Verbose "[Invoke-PSSkillCode] Treating as script path: $trimmedCode"
-        $path = $trimmedCode
-        if ($path -notmatch '^[A-Za-z]:' -and $path -notmatch '^/') {
-            # Relative path, resolve relative to skill directory
+    
+    # Check if code contains a .ps1 file reference (handles scripts with arguments)
+    if ($trimmedCode -match '(?<script>[^\s]+\.ps1)(?<args>.*)$') {
+        $scriptPath = $matches['script']
+        $scriptArgs = $matches['args'].Trim()
+        
+        Write-Verbose "[Invoke-PSSkillCode] Treating as script path: $scriptPath with args: $scriptArgs"
+        
+        if ($scriptPath -notmatch '^[A-Za-z]:' -and $scriptPath -notmatch '^/' -and $scriptPath -notmatch '^\\\\') {
+            # Relative path without drive letter, resolve relative to skill directory
             $skillDir = Split-Path $SkillFullname
-            $fullPath = Join-Path $skillDir $path
-            $resolvedPath = Resolve-Path $fullPath
-            Write-Verbose "[Invoke-PSSkillCode] Resolved path: $resolvedPath"
-            & $resolvedPath
+            
+            # Handle ./ or .\ prefixes
+            if ($scriptPath -match '^\.[\\/]') {
+                $cleanPath = $scriptPath -replace '^\.[\\/]', ''
+            }
+            else {
+                $cleanPath = $scriptPath
+            }
+            
+            $fullPath = Join-Path $skillDir $cleanPath
         }
         else {
             # Absolute path
-            Write-Verbose "[Invoke-PSSkillCode] Invoking absolute path: $path"
-            & $path
+            $fullPath = $scriptPath
+        }
+        
+        try {
+            $resolvedPath = Resolve-Path $fullPath -ErrorAction Stop
+            Write-Verbose "[Invoke-PSSkillCode] Resolved script path: $resolvedPath"
+            
+            if ($scriptArgs) {
+                Write-Verbose "[Invoke-PSSkillCode] Invoking with arguments: $scriptArgs"
+                & $resolvedPath $scriptArgs
+            }
+            else {
+                & $resolvedPath
+            }
+        }
+        catch {
+            Write-Host "Error resolving script path: $fullPath`nError: $_" -ForegroundColor Red
+            throw
         }
     }
     else {
+        # Treat as code
+        Write-Verbose "[Invoke-PSSkillCode] Executing as PowerShell code"
         
         # Check Allowed Tools
         if (!(Test-CodeAllowed $code $tempPermissions)) {
-            # Treat as code
-            Write-Verbose "[Invoke-PSSkillCode] Executing as code"
+            Write-Verbose "[Invoke-PSSkillCode] Code not in allowed tools, requesting permission"
             $formatParams = @{
                 Title    = "The Agent wants to run the following code:"
                 BoxColor = "Blue"
@@ -267,7 +306,8 @@ When a user provides a request, analyze the request to determine which skills ar
    - Execute the code from the skill EXACTLY as it appears
    - Do not create wrapper scripts or multi-line PowerShell constructs
    - Do not pre-process data or create intermediate variables
-   - If the skill contains a single-line command like 'git status', execute ONLY that line
+   - If the skill contains a single-line command like 'git status' or './scripts/hello.ps1 -name "value"', execute ONLY that line as-is
+   - Do NOT attempt to make relative paths absolute; pass relative paths like './scripts/...' as-is
 
 4. Use Invoke-PSSkillCode with the fullname of the SKILL.md and the EXACT code content to execute skills.
 
@@ -278,6 +318,11 @@ When a user provides a request, analyze the request to determine which skills ar
 7. Do one task at a time, reading SKILL.md files as needed, and move to the next task.
 
 8. If something is cancelled or fails, report back the error message. Do not reflect the Skill instructions in your response.
+
+**Important:** When executing scripts from SKILL.md files:
+- The Invoke-PSSkillCode tool automatically resolves relative paths (like './scripts/hello.ps1') relative to the SKILL.md file's location
+- You do not need to modify the script path; pass it exactly as it appears in the SKILL.md file
+- Script arguments should be passed as-is (e.g., './scripts/hello.ps1 -name "John"')
 
 You have access to the skills:
 **Skills**
