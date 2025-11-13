@@ -302,14 +302,13 @@ When a user provides a request, analyze the request to determine which skills ar
 
 2. After reading a SKILL.md file, immediately identify and extract the PowerShell code blocks (enclosed in ``````powershell ... ``````).
 
-3. **Extract and execute the EXACT code from the SKILL.md file.** Do NOT modify, wrap, or create additional code around it.
-   - Execute the code from the skill EXACTLY as it appears
-   - Do not create wrapper scripts or multi-line PowerShell constructs
-   - Do not pre-process data or create intermediate variables
-   - If the skill contains a single-line command like 'git status' or './scripts/hello.ps1 -name "value"', execute ONLY that line as-is
-   - Do NOT attempt to make relative paths absolute; pass relative paths like './scripts/...' as-is
+3. **Replace placeholder values in the code with appropriate values from the user's request:**
+   - Placeholders like <path>, <file>, <directory>, <name>, <value>, etc. should be replaced with actual values derived from the user's request
+   - Example: If the skill has 'Get-ChildItem -Path <path>' and the user asks 'list files in C:\Users', replace <path> with 'C:\Users'
+   - Use the current directory '.' if no specific path is provided
+   - Do NOT include the angle brackets in the replaced values
 
-4. Use Invoke-PSSkillCode with the fullname of the SKILL.md and the EXACT code content to execute skills.
+4. Execute the substituted code using Invoke-PSSkillCode with the fullname of the SKILL.md and the code with placeholders replaced.
 
 5. Run code blocks sequentially if multiple skills are needed.
 
@@ -321,7 +320,6 @@ When a user provides a request, analyze the request to determine which skills ar
 
 **Important:** When executing scripts from SKILL.md files:
 - The Invoke-PSSkillCode tool automatically resolves relative paths (like './scripts/hello.ps1') relative to the SKILL.md file's location
-- You do not need to modify the script path; pass it exactly as it appears in the SKILL.md file
 - Script arguments should be passed as-is (e.g., './scripts/hello.ps1 -name "John"')
 
 You have access to the skills:
