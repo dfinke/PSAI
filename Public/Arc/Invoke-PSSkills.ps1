@@ -1,3 +1,13 @@
+$defaultPermissions = [System.Collections.Generic.HashSet[string]]::new()
+
+$null = $defaultPermissions.Add("Get-Content:*")
+$null = $defaultPermissions.Add("Get-ChildItem:*")
+$null = $defaultPermissions.Add("Select-String:*")
+
+$tempPermissions = $null
+
+$allowedToolsList = @{}
+
 function Get-SkillFrontmatter {
     [CmdletBinding()]
     param(
@@ -5,6 +15,10 @@ function Get-SkillFrontmatter {
         [switch]$AsPSCustomObject,
         [switch]$Compress
     )
+
+    if (-not (Test-Path $SkillsRoot)) {
+        Write-Warning "[Get-SkillFrontmatter] SkillsRoot path '$SkillsRoot' does not exist"
+    }
 
     Write-Verbose "[Get-SkillFrontmatter] Searching for SKILL.md files in $SkillsRoot"
     $skillFiles = Get-ChildItem -Path $SkillsRoot -Recurse -Filter "SKILL.md"
@@ -30,6 +44,7 @@ function Get-SkillFrontmatter {
                     $frontmatter = $lines[$start..$end]
                     $name = $null
                     $description = $null
+                    $allowedTools = $null
                     foreach ($line in $frontmatter) {
                         if ($line -match '^name:\s*(.+)$') {
                             $name = $matches[1]
@@ -39,11 +54,18 @@ function Get-SkillFrontmatter {
                             $description = $matches[1]
                             Write-Verbose "[Get-SkillFrontmatter] Found description: $description"
                         }
+                        if ($line -match '^allowed-tools:\s*(.+)$') {
+                            $allowedTools = $matches[1]
+                            Write-Verbose "[Get-SkillFrontmatter] Found allowed-tools: $allowedTools"
+                        }
                     }
+
+                    $allowedToolsList[$file.FullName] = $allowedTools
+
                     $results += [PSCustomObject]@{
                         fullname    = $file.FullName
                         name        = $name
-                        description = $description
+                        description = $description                        
                     }
                 }
             }
@@ -76,7 +98,60 @@ function Read-PSSkill {
     )
 
     Write-Verbose "[Read-PSSkill] Reading file: $Fullname"
+    $allowedToolsString = $allowedToolsList[$Fullname]
+    if ([string]::IsNullOrEmpty($allowedToolsString) -eq $false) {
+        Write-Host "[Read-PSSkill $Fullname] Allowed tools provided: $($allowedToolsString)" -ForegroundColor Yellow
+        
+        # Parse comma-separated tools and add each one to tempPermissions
+        $tools = $allowedToolsString -split ',\s*'
+        foreach ($tool in $tools) {
+            $tool = $tool.Trim()
+            if ([string]::IsNullOrEmpty($tool) -eq $false) {
+                Write-Verbose "[Read-PSSkill] Adding tool to permissions: $tool"
+                $null = $tempPermissions.Add($tool)
+            }
+        }
+    }
+    else {
+        Write-Host "[Read-PSSkill $Fullname] No allowed tools provided." -ForegroundColor Yellow
+    }
+
     Get-Content -Path $Fullname -Raw
+}
+
+function Test-CodeAllowed {
+    param(
+        [string]$code,
+        [System.Collections.Generic.HashSet[string]]$allowedTools
+    )
+
+    if ([string]::IsNullOrEmpty($code) -and $allowedTools.Count -eq 0) {
+        return $false
+    }
+
+    $returnCode = $false
+
+    foreach ($tool in $allowedTools) {
+        if ($tool.EndsWith(':*')) {
+            # Remove :* and use prefix match
+            $prefix = $tool.Substring(0, $tool.Length - 2)
+            
+            # For :*, we match the prefix and anything that follows
+            $returnCode = $code.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)
+            if ($returnCode) {
+                break
+            }
+        }
+        else {
+            # For exact patterns, require exact match (including trailing slash)
+            $returnCode = $code.Equals($tool, [System.StringComparison]::OrdinalIgnoreCase)
+            if ($returnCode) {
+                break
+            }
+        }
+    }
+
+    return $returnCode
 }
 
 function Invoke-PSSkillCode {
@@ -85,7 +160,7 @@ function Invoke-PSSkillCode {
         Executes PowerShell code or invokes a script from a SKILL.md file.
 
         .DESCRIPTION
-        The Invoke-PSSkillCode function executes the provided code. If the code is a single line ending with .ps1, it treats it as a script path and invokes it, resolving relative paths relative to the SKILL.md file's directory. Otherwise, it runs the code using Invoke-Expression.
+        The Invoke-PSSkillCode function executes the provided code. If the code starts with a .ps1 file, it treats it as a script invocation and resolves relative paths relative to the SKILL.md file's directory. Otherwise, it runs the code using Invoke-Expression.
 
         .PARAMETER SkillFullname
         The full path to the SKILL.md file.
@@ -101,55 +176,85 @@ function Invoke-PSSkillCode {
 
     Write-Verbose "[Invoke-PSSkillCode] Executing code for skill: $SkillFullname"
     $trimmedCode = $Code.Trim()
-    if ($trimmedCode -match '\.ps1$' -and $trimmedCode -notmatch '\n') {
-        # Treat as script path
-        Write-Verbose "[Invoke-PSSkillCode] Treating as script path: $trimmedCode"
-        $path = $trimmedCode
-        if ($path -notmatch '^[A-Za-z]:' -and $path -notmatch '^/') {
-            # Relative path, resolve relative to skill directory
+    
+    # Check if code contains a .ps1 file reference (handles scripts with arguments)
+    if ($trimmedCode -match '(?<script>[^\s]+\.ps1)(?<args>.*)$') {
+        $scriptPath = $matches['script']
+        $scriptArgs = $matches['args'].Trim()
+        
+        Write-Verbose "[Invoke-PSSkillCode] Treating as script path: $scriptPath with args: $scriptArgs"
+        
+        if ($scriptPath -notmatch '^[A-Za-z]:' -and $scriptPath -notmatch '^/' -and $scriptPath -notmatch '^\\\\') {
+            # Relative path without drive letter, resolve relative to skill directory
             $skillDir = Split-Path $SkillFullname
-            $fullPath = Join-Path $skillDir $path
-            $resolvedPath = Resolve-Path $fullPath
-            Write-Verbose "[Invoke-PSSkillCode] Resolved path: $resolvedPath"
-            & $resolvedPath
+            
+            # Handle ./ or .\ prefixes
+            if ($scriptPath -match '^\.[\\/]') {
+                $cleanPath = $scriptPath -replace '^\.[\\/]', ''
+            }
+            else {
+                $cleanPath = $scriptPath
+            }
+            
+            $fullPath = Join-Path $skillDir $cleanPath
         }
         else {
             # Absolute path
-            Write-Verbose "[Invoke-PSSkillCode] Invoking absolute path: $path"
-            & $path
+            $fullPath = $scriptPath
+        }
+        
+        try {
+            $resolvedPath = Resolve-Path $fullPath -ErrorAction Stop
+            Write-Verbose "[Invoke-PSSkillCode] Resolved script path: $resolvedPath"
+            
+            if ($scriptArgs) {
+                Write-Verbose "[Invoke-PSSkillCode] Invoking with arguments: $scriptArgs"
+                & $resolvedPath $scriptArgs
+            }
+            else {
+                & $resolvedPath
+            }
+        }
+        catch {
+            Write-Host "Error resolving script path: $fullPath`nError: $_" -ForegroundColor Red
+            throw
         }
     }
     else {
+        # Treat as code
+        Write-Verbose "[Invoke-PSSkillCode] Executing as PowerShell code"
         
         # Check Allowed Tools
-
-        # Treat as code
-        Write-Verbose "[Invoke-PSSkillCode] Executing as code"
-        $formatParams = @{
-            Title    = "The Agent wants to run the following code:"
-            BoxColor = "Blue"
-            Text     = $code
-        }
+        if (!(Test-CodeAllowed $code $tempPermissions)) {
+            Write-Verbose "[Invoke-PSSkillCode] Code not in allowed tools, requesting permission"
+            $formatParams = @{
+                Title    = "The Agent wants to run the following code:"
+                BoxColor = "Blue"
+                Text     = $code
+            }
         
-        Out-BoxedText @formatParams | Out-Host
+            Out-BoxedText @formatParams | Out-Host
 
-        $nextStepsParams = @{
-            Text     = "Do you want to execute this code? (y/n)"
-            Title    = "Next Steps"
-            BoxColor = "Cyan"
-        }
+            $nextStepsParams = @{
+                Text     = "Do you want to execute this code? (y/n)"
+                Title    = "Next Steps"
+                BoxColor = "Cyan"
+            }
             
-        Out-BoxedText @nextStepsParams | Out-Host
+            Out-BoxedText @nextStepsParams | Out-Host
 
-        # Prompt for permission
-        $permission = Read-Host "> "
-        if ($permission -notmatch '^(yes|y)$') {
-            $msg = "Execution of the code was cancelled by the user."
-            Write-Host $msg -ForegroundColor Yellow
+            # Prompt for permission
+            $permission = Read-Host "> "
+            if ($permission -notmatch '^(yes|y)$') {
+                $msg = "Execution of the code was cancelled by the user."
+                Write-Host $msg -ForegroundColor Yellow
             
-            return $msg
+                return $msg
+            }
         }
-        
+
+        Out-BoxedText -Title "Executing Code..." -BoxColor Magenta -Text $code | Out-Host
+
         Invoke-Expression $Code
     }
 }
@@ -163,7 +268,16 @@ function Invoke-PSSkills {
         [switch]$ShowToolCalls
     )
 
-    Write-Host "Model: $Model`nCalled with Prompt:`n$Prompt`n" -ForegroundColor Cyan
+    if ([string]::IsNullOrEmpty($Prompt) -eq $false) {
+        Write-Host "Invoking PSSkills with Prompt:" -ForegroundColor Green
+        Write-Host $Prompt -ForegroundColor White
+    }
+    else {
+        Write-Host "Invoking PSSkills in interactive mode." -ForegroundColor Green
+    }
+    #Write-Host "Model: $Model`nCalled with Prompt:`n$Prompt`n" -ForegroundColor Cyan
+
+
     Write-Verbose "[Invoke-PSSkills] Called with Prompt: $Prompt, Model: $Model, Tools: $Tools, ShowToolCalls: $ShowToolCalls"
     $targetTools = @(
         'Read-PSSkill'
@@ -179,20 +293,34 @@ function Invoke-PSSkills {
     $instructions = @"
 You are a PowerShell Skills AI Assistant. 
 
-When a user provides a request, analyze the request to determine which skills are relevant.
+When a user provides a request, analyze the request to determine which skills are relevant and read them first.
 
-If you need to read a skill, **ONLY USE** Read-PSSkill to read the SKILL.md file. 
-**DO NOT USE** Read-PSSkill to read any other type of file. 
+**CRITICAL RULES:**
 
-Use code blocks and examples in the SKILL.md file as examples to form your response. 
+1. If you need to read a skill, **ONLY USE** Read-PSSkill to read the SKILL.md file. 
+   **DO NOT USE** Read-PSSkill to read any other type of file. 
 
-Extract and run all PowerShell code inside fenced code blocks (enclosed in ``````powershell ... ``````, which can be multi-line) from the SKILL.md file using Invoke-PSSkillCode with the fullname of the SKILL.md and the code content. Run the code blocks sequentially if there are multiple. 
+2. After reading a SKILL.md file, immediately identify and extract the PowerShell code blocks (enclosed in ``````powershell ... ``````).
 
-Run the prompt request, do not ask for permission before running code blocks from the SKILL.md file.
+3. **Replace placeholder values in the code with appropriate values from the user's request:**
+   - Placeholders like <path>, <file>, <directory>, <name>, <value>, etc. should be replaced with actual values derived from the user's request
+   - Example: If the skill has 'Get-ChildItem -Path <path>' and the user asks 'list files in C:\Users', replace <path> with 'C:\Users'
+   - Use the current directory '.' if no specific path is provided
+   - Do NOT include the angle brackets in the replaced values
 
-Do one task at a time, then move on to the next, reading the SKILL.md files as needed.
+4. Execute the substituted code using Invoke-PSSkillCode with the fullname of the SKILL.md and the code with placeholders replaced.
 
-If something is cancelled or fails report back the error message. Do not reflect the Skill instructions in your response.
+5. Run code blocks sequentially if multiple skills are needed.
+
+6. Do not ask for permission before running code blocks from SKILL.md files.
+
+7. Do one task at a time, reading SKILL.md files as needed, and move to the next task.
+
+8. If something is cancelled or fails, report back the error message. Do not reflect the Skill instructions in your response.
+
+**Important:** When executing scripts from SKILL.md files:
+- The Invoke-PSSkillCode tool automatically resolves relative paths (like './scripts/hello.ps1') relative to the SKILL.md file's location
+- Script arguments should be passed as-is (e.g., './scripts/hello.ps1 -name "John"')
 
 You have access to the skills:
 **Skills**
@@ -202,6 +330,9 @@ $(Get-SkillFrontmatter -Compress)
 "@
 
     Write-Verbose "[Invoke-PSSkills] Creating agent"
+    
+    $tempPermissions = (New-Object System.Collections.Generic.HashSet[string])::new($defaultPermissions)
+
     $agent = New-Agent -ShowToolCalls:$ShowToolCalls -LLM (New-OpenAIChat $Model) -Tools $targetTools -Instructions $instructions
 
     if ($Prompt) {

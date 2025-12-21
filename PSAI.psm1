@@ -52,6 +52,7 @@
 . $PSScriptRoot/Public/Arc/Invoke-Arc.ps1
 . $PSScriptRoot/Public/Arc/PSToolBoxAI.ps1
 . $PSScriptRoot/Public/Arc/Invoke-PSSkills.ps1
+. $PSScriptRoot/Public/Arc/Test-PrefixMatch.ps1
 
 . $PSScriptRoot/Public/Get-OAIImageGeneration.ps1
 . $PSScriptRoot/Public/Get-OAIMessage.ps1

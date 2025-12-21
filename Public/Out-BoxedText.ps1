@@ -22,7 +22,7 @@ function Out-BoxedText {
     The color of the text inside the box. Default is Gray.
 
     .PARAMETER MaxWidth
-    The maximum width for the text wrapping and box. Default is 80.
+    The maximum width for the text wrapping and box. Default is 120.
 
     .EXAMPLE
     Out-BoxedText -Text "Paris" -Title "Agent" -BoxColor DarkBlue -TextColor White
@@ -40,8 +40,17 @@ function Out-BoxedText {
         [string]$Title,
         [ConsoleColor]$BoxColor = "White",
         [ConsoleColor]$TextColor = "Gray",
-        [int]$MaxWidth = 80
+        [int]$MaxWidth = 120
     )
+
+    function Get-VisibleLength {
+        param ([string]$Text)
+        # Remove ANSI escape sequences and other non-visible characters
+        $cleanText = $Text -replace '\x1b\[[0-9;]*m', ''  # ANSI color codes
+        $cleanText = $cleanText -replace '\x1b\[0m', ''   # Reset code
+        $cleanText = $cleanText -replace '\x1b\[.*?m', '' # Other ANSI sequences
+        return $cleanText.Length
+    }
 
     function Wrap-Text {
         param (
@@ -50,21 +59,56 @@ function Out-BoxedText {
         )
         $wrappedLines = @()
         foreach ($line in $Text -split "`n") {
-            while ($line.Length -gt $Width) {
-                $wrappedLines += $line.Substring(0, $Width)
-                $line = $line.Substring($Width)
+            while ((Get-VisibleLength -Text $line) -gt $Width) {
+                # Find the break point based on visible length, not string length
+                $visibleCount = 0
+                $breakPoint = 0
+                for ($i = 0; $i -lt $line.Length; $i++) {
+                    $char = $line[$i]
+                    # Check if character is visible (not part of ANSI sequence)
+                    if ($char -match '[^\x1b\[\dm]') {
+                        $visibleCount++
+                    }
+                    if ($visibleCount -ge $Width) {
+                        $breakPoint = $i
+                        break
+                    }
+                }
+                if ($breakPoint -eq 0) { $breakPoint = $Width }
+                $wrappedLines += $line.Substring(0, $breakPoint)
+                $line = $line.Substring($breakPoint)
             }
-            $wrappedLines += $line
+            if ($line.Length -gt 0 -or $wrappedLines.Count -eq 0) {
+                $wrappedLines += $line
+            }
         }
         return $wrappedLines
     }
 
     $consoleWidth = $Host.UI.RawUI.WindowSize.Width
     $effectiveMaxWidth = [math]::Min($MaxWidth, $consoleWidth - 2)
-    $wrappedText = Wrap-Text -Text $Text -Width ($effectiveMaxWidth - 4)
-    $textMaxWidth = ($wrappedText | Measure-Object -Maximum -Property Length).Maximum + 4
+    $availableWidth = $effectiveMaxWidth - 4  # Account for box borders and padding
+    
+    $wrappedText = Wrap-Text -Text $Text -Width $availableWidth
+    
+    # Calculate actual max width of wrapped text
+    $maxVisibleLength = 0
+    foreach ($line in $wrappedText) {
+        $visLen = Get-VisibleLength -Text $line
+        if ($visLen -gt $maxVisibleLength) {
+            $maxVisibleLength = $visLen
+        }
+    }
+    
+    $textMaxWidth = $maxVisibleLength + 4
     $titleMaxWidth = $Title.Length + 4
-    $boxWidth = [math]::Min([math]::Max($textMaxWidth, $titleMaxWidth), $effectiveMaxWidth)
+    $boxWidth = [math]::Max($textMaxWidth, $titleMaxWidth)
+    
+    # Ensure box width doesn't exceed console
+    if ($boxWidth -gt $effectiveMaxWidth) {
+        $boxWidth = $effectiveMaxWidth
+    }
+    
     $boxInnerWidth = $boxWidth - 4
 
     # Draw top border
@@ -80,9 +124,11 @@ function Out-BoxedText {
 
     # Draw text lines
     foreach ($line in $wrappedText) {
-        Write-Host "│" -NoNewline -ForegroundColor $BoxColor
-        Write-Host " $line" -NoNewline -ForegroundColor $TextColor
-        Write-Host (" " * ($boxInnerWidth - $line.Length)) -NoNewline -ForegroundColor $TextColor
+        Write-Host "│ " -NoNewline -ForegroundColor $BoxColor
+        Write-Host $line -NoNewline -ForegroundColor $TextColor
+        $visibleLineLength = Get-VisibleLength -Text $line
+        $padding = [math]::Max(0, $boxInnerWidth - $visibleLineLength)
+        Write-Host (" " * $padding) -NoNewline -ForegroundColor $TextColor
         Write-Host " │" -ForegroundColor $BoxColor
     }
 
