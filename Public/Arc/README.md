@@ -79,7 +79,13 @@ Arc -Type tool -Prompt "Execute some tool"
 
 ## Skills
 
-Skills are defined in `./skills/` subdirectories with `SKILL.md` files containing:
+Arc discovers skills by scanning the following paths in order:
+
+1. `$HOME/.powershell/skills/` - User-specific skills in the home directory
+2. `./.github/powershell/skills/` - Repository-specific skills under `.github`
+3. `./.powershell/skills/` - Local skills in the current directory
+
+Skills are defined in subdirectories containing `SKILL.md` files with:
 
 - YAML frontmatter with name, description, and allowed-tools
 - Markdown documentation
@@ -87,7 +93,7 @@ Skills are defined in `./skills/` subdirectories with `SKILL.md` files containin
 
 ### Creating a Skill
 
-1. Create a directory under `./skills/`
+1. Create a directory under one of the skill paths (e.g., `./.powershell/skills/`)
 2. Add a `SKILL.md` file with frontmatter and code blocks
 3. Define `allowed-tools` for any additional permissions needed
 
