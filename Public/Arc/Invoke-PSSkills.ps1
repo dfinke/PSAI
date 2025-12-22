@@ -11,20 +11,45 @@ $allowedToolsList = @{}
 function Get-SkillFrontmatter {
     [CmdletBinding()]
     param(
-        [string]$SkillsRoot = "./skills",
         [switch]$AsPSCustomObject,
         [switch]$Compress
     )
 
-    if (-not (Test-Path $SkillsRoot)) {
-        Write-Warning "[Get-SkillFrontmatter] SkillsRoot path '$SkillsRoot' does not exist"
+    $skillPaths = @(
+        "$HOME/.powershell/skills/",
+        "./.github/powershell/skills/",
+        "./.powershell/skills/"
+    )
+
+    $skillRegistry = @{}
+
+    foreach ($path in $skillPaths) {
+        if (Test-Path $path) {
+            Write-Verbose "[Get-SkillFrontmatter] Scanning path: $path"
+            $dirs = Get-ChildItem -Path $path -Directory
+            $skillsFound = 0
+            foreach ($dir in $dirs) {
+                $skillMd = Join-Path $dir.FullName "SKILL.md"
+                if (Test-Path $skillMd) {
+                    Write-Verbose "[Get-SkillFrontmatter] Found skill: $($dir.Name) at $($dir.FullName)"
+                    $skillRegistry[$dir.Name] = $dir.FullName
+                    $skillsFound++
+                }
+            }
+            if ($skillsFound -eq 0) {
+                Write-Verbose "[Get-SkillFrontmatter] No skills found in path: $path"
+            }
+        }
+        else {
+            Write-Verbose "[Get-SkillFrontmatter] Path does not exist: $path"
+        }
     }
 
-    Write-Verbose "[Get-SkillFrontmatter] Searching for SKILL.md files in $SkillsRoot"
-    $skillFiles = Get-ChildItem -Path $SkillsRoot -Recurse -Filter "SKILL.md"
     $results = @()
 
-    foreach ($file in $skillFiles) {
+    foreach ($skillDir in $skillRegistry.Values) {
+        $skillMdPath = Join-Path $skillDir "SKILL.md"
+        $file = Get-Item $skillMdPath
         Write-Verbose "[Get-SkillFrontmatter] Importing skill $($file.FullName)"
         $lines = Get-Content $file.FullName
         if ($lines) {
