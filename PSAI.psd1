@@ -37,6 +37,9 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Test-PrefixMatch'
         # PSSkills
         'Invoke-Skill'
+        'Find-Skill'
+        'Get-Skill'
+        'Install-Skill'
         # ToolboxAI
         'Invoke-PSToolBoxAI'
 
