@@ -1,6 +1,6 @@
 @{
     RootModule        = 'PSAI.psm1'
-    ModuleVersion     = '0.5.1'
+    ModuleVersion     = '0.5.2'
     GUID              = '68662d19-a8f1-484f-b1b7-3bf0e8a436df'
     Author            = 'Douglas Finke'
     CompanyName       = 'Doug Finke'
@@ -36,7 +36,7 @@ PSAI brings OpenAI ChatGPT to PowerShell, leveraging advanced AI capabilities in
         'Invoke-Arc'
         'Test-PrefixMatch'
         # PSSkills
-        'Invoke-PSSkills'
+        'Invoke-Skill'
         # ToolboxAI
         'Invoke-PSToolBoxAI'
 
