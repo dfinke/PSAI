@@ -1,10 +1,10 @@
-. "$PSScriptRoot/Invoke-PSSkills.ps1"
+. "$PSScriptRoot/Invoke-Skill.ps1"
 
-# Invoke-PSSkills -ShowToolCalls -Verbose
+# Invoke-Skill -ShowToolCalls -Verbose
 
-# Invoke-PSSkills -ShowToolCalls -Verbose -Prompt "use dfinke trystuff, list issues. Take the resulting list and convert to json"
+# Invoke-Skill -ShowToolCalls -Verbose -Prompt "use dfinke trystuff, list issues. Take the resulting list and convert to json"
 
-Invoke-PSSkills -ShowToolCalls -Verbose -Prompt @"
+Invoke-Skill -ShowToolCalls -Verbose -Prompt @"
 Use current directory. 
 Do not confirm just execute all instructions.
 
