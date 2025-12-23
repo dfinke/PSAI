@@ -12,8 +12,8 @@ function Invoke-Arc {
     Write-Verbose "[Invoke-Arc] Called with Type: $Type, Model: $model, Prompt: $prompt"
     switch ($Type) {
         'skill' {
-            Write-Verbose "[Invoke-Arc] Invoking PSSkills"
-            Invoke-PSSkills -Prompt $prompt -Model $model -ShowToolCalls:$ShowToolCalls
+            Write-Verbose "[Invoke-Arc] Invoking Skill"
+            Invoke-Skill -Prompt $prompt -Model $model -ShowToolCalls:$ShowToolCalls
         }
         'tool' {
             Write-Verbose "[Invoke-Arc] Invoking PSToolBoxAI"
