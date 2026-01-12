@@ -1,3 +1,9 @@
+## v0.5.2
+
+- Added `/rewind` slash command to InteractiveCLI for rewinding the conversation to before the last user message
+- Fixed `/listmsgs` slash command to correctly display user messages after using `/rewind`
+- Enhanced `/rewind` slash command to accept an optional number of messages to rewind (e.g., `/rewind 3` rewinds the last 3 user messages)
+
 ## v0.5.1
 
 - Added slash command support to InteractiveCLI

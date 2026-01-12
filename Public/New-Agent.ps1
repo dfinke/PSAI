@@ -56,9 +56,44 @@ $InteractiveCLI = {
             break            
         }
         elseif ($message.StartsWith("/")) {
-            switch ($message.ToLower()) {
-                "/clear" { Clear-Host }
-                default { Write-Host "Unknown command: $message" }
+            if ($message -eq "/clear") {
+                Clear-Host
+            }
+            elseif ($message -like "/rewind*") {
+                $parts = $message -split '\s+'
+                $n = if ($parts.Count -gt 1 -and $parts[1] -match '^\d+$') { [int]$parts[1] } else { 1 }
+                if ($n -le 0) {
+                    Write-Host "Invalid number of messages to rewind."
+                    continue
+                }
+                $userIndices = @()
+                for ($i = 0; $i -lt $script:messages.Count; $i++) {
+                    if ($script:messages[$i].role -eq 'user') {
+                        $userIndices += $i
+                    }
+                }
+                if ($userIndices.Count -eq 0) {
+                    Write-Host "No user messages to rewind."
+                    continue
+                }
+                $n = [math]::Min($n, $userIndices.Count)
+                $targetIndex = if ($n -eq $userIndices.Count) { $userIndices[0] } else { $userIndices[$userIndices.Count - $n] }
+                $script:messages = $script:messages[0..($targetIndex - 1)]
+                Write-Host "Rewound $n message(s)."
+            }
+            elseif ($message -eq "/listmsgs") {
+                $userMessages = @($script:messages | Where-Object { $_.role -eq 'user' })
+                if ($userMessages.Count -gt 0) {
+                    for ($i = 0; $i -lt $userMessages.Count; $i++) {
+                        Write-Host "$($i+1). $($userMessages[$i].content)"
+                    }
+                }
+                else {
+                    Write-Host "No user messages found."
+                }
+            }
+            else {
+                Write-Host "Unknown command: $message"
             }
         }
         else {

@@ -216,6 +216,8 @@ PSAI Agents now support slash commands in interactive sessions, allowing you to 
 ### Available Commands
 
 - **`/clear`**: Clears the console screen, providing a clean slate for your interaction.
+- **`/rewind [n]`**: Rewinds the conversation to before the last n user messages, deleting the last n user inputs and all subsequent messages. If n is not specified, defaults to 1.
+- **`/listmsgs`**: Lists all user messages in the current conversation.
 
 ### Usage
 
