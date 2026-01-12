@@ -24,19 +24,73 @@ function Find-Skill {
     foreach ($repo in $Repository) {
         Write-Host -ForegroundColor "Green" "Searching repository: $repo"
 
-        $owner, $repoName = $repo -split '/'
-        if (-not $repoName) {
-            Write-Warning "Invalid repository format: $repo. Expected owner/repo."
-            continue
+        # Parse repository input
+        $owner = $null
+        $repoName = $null
+        $branch = $null
+        $subPath = $null
+        if ($repo -match '^https://github\.com/(.+)$') {
+            # Full URL
+            $pathParts = $matches[1] -split '/'
+            if ($pathParts.Length -ge 2) {
+                $owner = $pathParts[0]
+                $repoName = $pathParts[1]
+                if ($pathParts.Length -ge 4 -and $pathParts[2] -eq 'tree') {
+                    $branch = $pathParts[3]
+                    if ($pathParts.Length -gt 4) {
+                        $subPath = $pathParts[4..($pathParts.Length - 1)] -join '/'
+                    }
+                }
+                else {
+                    Write-Warning "Invalid GitHub URL format: $repo. Expected https://github.com/owner/repo/tree/branch[/path]"
+                    continue
+                }
+            }
+            else {
+                Write-Warning "Invalid GitHub URL: $repo"
+                continue
+            }
+        }
+        else {
+            # Shorthand: owner/repo[/path]
+            $parts = $repo -split '/'
+            if ($parts.Length -ge 2) {
+                $owner = $parts[0]
+                $repoName = $parts[1]
+                if ($parts.Length -gt 2) {
+                    $subPath = $parts[2..($parts.Length - 1)] -join '/'
+                }
+            }
+            else {
+                Write-Warning "Invalid repository format: $repo. Expected owner/repo[/path] or full URL."
+                continue
+            }
+        }
+        # Get default branch if not specified
+        if (-not $branch) {
+            try {
+                $repoInfo = Invoke-RestMethod -Uri "https://api.github.com/repos/$owner/$repoName" -Headers $headers
+                $branch = $repoInfo.default_branch
+            }
+            catch {
+                Write-Warning "Failed to get default branch for $owner/$repoName : $_. Using 'main' as fallback."
+                $branch = 'main'
+            }
         }
         $url = "https://api.github.com/repos/$owner/$repoName/contents"
+        if ($subPath) {
+            $url += "/$subPath"
+        }
+        $url += "?ref=$branch"
         try {
             $contents = Invoke-RestMethod -Uri $url -Headers $headers
             $dirs = $contents | Where-Object { $_.type -eq 'dir' -and $_.name -like $Name }
             foreach ($dir in $dirs) {
                 # Get description from SKILL.md
                 $description = $null
-                $dirUrl = "https://api.github.com/repos/$owner/$repoName/contents/$($dir.name)"
+                $dirUrl = "https://api.github.com/repos/$owner/$repoName/contents"
+                if ($subPath) { $dirUrl += "/$subPath" }
+                $dirUrl += "/$($dir.name)?ref=$branch"
                 try {
                     $dirContents = Invoke-RestMethod -Uri $dirUrl -Headers $headers
                     $skillMd = $dirContents | Where-Object { $_.name -eq 'SKILL.md' -and $_.type -eq 'file' }
@@ -111,7 +165,48 @@ function Install-Skill {
     process {
         if (-not $Name -or -not $Repository) { return }
 
-        $repoUrl = "https://github.com/$Repository.git"
+        # Parse repository input
+        $owner = $null
+        $repoName = $null
+        $subPath = $null
+        if ($Repository -match '^https://github\.com/(.+)$') {
+            # Full URL
+            $pathParts = $matches[1] -split '/'
+            if ($pathParts.Length -ge 2) {
+                $owner = $pathParts[0]
+                $repoName = $pathParts[1]
+                if ($pathParts.Length -ge 4 -and $pathParts[2] -eq 'tree') {
+                    if ($pathParts.Length -gt 4) {
+                        $subPath = $pathParts[4..($pathParts.Length - 1)] -join '/'
+                    }
+                }
+                else {
+                    Write-Warning "Invalid GitHub URL format: $Repository. Expected https://github.com/owner/repo/tree/branch[/path]"
+                    return
+                }
+            }
+            else {
+                Write-Warning "Invalid GitHub URL: $Repository"
+                return
+            }
+        }
+        else {
+            # Shorthand: owner/repo[/path]
+            $parts = $Repository -split '/'
+            if ($parts.Length -ge 2) {
+                $owner = $parts[0]
+                $repoName = $parts[1]
+                if ($parts.Length -gt 2) {
+                    $subPath = $parts[2..($parts.Length - 1)] -join '/'
+                }
+            }
+            else {
+                Write-Warning "Invalid repository format: $Repository. Expected owner/repo[/path] or full URL."
+                return
+            }
+        }
+
+        $repoUrl = "https://github.com/$owner/$repoName.git"
 
         # Clone to temp
         & git clone --depth 1 $repoUrl $tempDir 2>$null
@@ -121,6 +216,9 @@ function Install-Skill {
         }
 
         $skillDir = Join-Path $tempDir $Name
+        if ($subPath) {
+            $skillDir = Join-Path $tempDir $subPath $Name
+        }
         if (-not (Test-Path $skillDir)) {
             Write-Error "Skill $Name not found in $Repository"
             Remove-Item -Recurse -Force $tempDir
