@@ -58,6 +58,22 @@ $InteractiveCLI = {
         elseif ($message.StartsWith("/")) {
             switch ($message.ToLower()) {
                 "/clear" { Clear-Host }
+                "/rewind" {
+                    $lastUserIndex = -1
+                    for ($i = $script:messages.Count - 1; $i -ge 0; $i--) {
+                        if ($script:messages[$i].role -eq 'user') {
+                            $lastUserIndex = $i
+                            break
+                        }
+                    }
+                    if ($lastUserIndex -ge 0) {
+                        $script:messages = $script:messages[0..($lastUserIndex - 1)]
+                        Write-Host "Rewound."
+                    }
+                    else {
+                        Write-Host "No user messages to rewind."
+                    }
+                }
                 default { Write-Host "Unknown command: $message" }
             }
         }
