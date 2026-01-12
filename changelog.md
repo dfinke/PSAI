@@ -1,3 +1,8 @@
+## v0.5.2
+
+- Added `/rewind` slash command to InteractiveCLI for rewinding the conversation to before the last user message
+- Bumped module version to 0.5.2
+
 ## v0.5.1
 
 - Added slash command support to InteractiveCLI
