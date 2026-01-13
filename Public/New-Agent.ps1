@@ -211,7 +211,9 @@ function New-Agent {
         LLM           = $LLM
     }
 
-    $script:messages += @(New-ChatRequestSystemMessage "You are a helpful agent. If you are configured with tools, you can use them to assist the user. They are also considered skills")
+    $script:messages += @(
+        New-ChatRequestSystemMessage "You are a helpful agent. Answer every request concisely and follow the style established earlier in the conversation. If you are configured with tools, you can use them to assist the user. They are also considered skills."
+    )
 
     if ($Instructions) {
         # $agent['Instructions'] = $Instructions
