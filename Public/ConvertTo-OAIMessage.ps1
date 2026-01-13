@@ -23,6 +23,33 @@ function ConvertTo-OAIMessage {
     )
 
     Process {
-        $Message | ConvertTo-Json -Depth 5 | ConvertFrom-Json -AsHashtable -Depth 5
+        $converted = $Message | ConvertTo-Json -Depth 10 | ConvertFrom-Json -AsHashtable -Depth 10
+
+        foreach ($key in @('refusal', 'annotations')) {
+            if ($converted.ContainsKey($key)) {
+                $converted.Remove($key)
+            }
+        }
+
+        if ($converted.ContainsKey('content') -and $converted['content'] -is [array]) {
+            foreach ($part in $converted['content']) {
+                if ($part -is [hashtable]) {
+                    foreach ($k in @('refusal', 'annotations')) {
+                        if ($part.ContainsKey($k)) {
+                            $part.Remove($k)
+                        }
+                    }
+                    if ($part.ContainsKey('text') -and $part['text'] -is [hashtable]) {
+                        foreach ($k in @('refusal', 'annotations')) {
+                            if ($part['text'].ContainsKey($k)) {
+                                $part['text'].Remove($k)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $converted
     }
 }

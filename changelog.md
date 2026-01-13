@@ -1,3 +1,9 @@
+## v0.5.3
+
+- Fixed assistant messages to not include `refusal` or `annotations` properties when converting for API input
+- Updated system prompt in New-Agent to keep responses concise and pattern-aligned without domain-specific rules
+- Simplified ConvertTo-OAIMessage function for better maintainability
+
 ## v0.5.2
 
 - Added `/rewind` slash command to InteractiveCLI for rewinding the conversation to before the last user message
