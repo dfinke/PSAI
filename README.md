@@ -22,7 +22,11 @@
 
 # PSAI
 
-Imagine empowering your PowerShell scripts with the intelligence of OpenAI. With PSAI, I’ve transformed how we interact with AI, making it as simple as running a command. PSAI bridges the gap between PowerShell and AI, enabling seamless integration for file searches, data analysis, and more. It's not just about automation; it's about revolutionizing what we can achieve with just a few lines of code. This module opens a world of possibilities, making AI accessible directly from your console and your scripts.
+PowerShell-Native AI Agents & Multi-Agent Orchestration
+
+PSAI is a high-agency framework designed to bridge the gap between robust systems engineering and Large Language Models. Built for developers and architects, it transforms AI from a "chatbot" into a functional engineering component within your existing PowerShell ecosystem.
+
+Leveraging multi-decade design patterns, PSAI provides the infrastructure to build, test, and deploy autonomous agents that interact directly with your console, file systems, and enterprise APIs.
 
 ## Autonomous Agents
 
@@ -32,11 +36,19 @@ Think of PSAI Agents as digital Swiss Army knives—each agent is a specialized 
 
 Check out [What Are Autonomous Agents](#what-are-autonomous-agents) in this README for more information.
 
-## Philosophy: Be the Automator, Not the Automated
+## Philosophy: Engineering over Prompting
 
-PSAI and Agents embody the principle of "be the automator, not the automated." By giving you the tools to create sophisticated agents, PSAI empowers you to automate repetitive, data-driven tasks and allows you to focus on strategy and creativity.
+PSAI embodies the principle of "**be the automator, not the automated**." 
+Modern Agentic Workflows are the latest convergence of long-standing engineering disciplines—TDD, Design Patterns, and System Hooks. PSAI is built by an elite coder for elite coders, focusing on high-agency tools that understand the rigors of professional software development.
 
-----
+## Technical Architecture
+High-Agency Orchestration: Move beyond simple RAG or chat loops into autonomous multi-step task execution.
+
+Extensible Tooling: Easily register PowerShell functions as "Tools" (Function Calling), allowing LLMs to interact with your local environment securely.
+
+State & Memory Management: Engineered for complex, long-running conversations with rewind and list capabilities.
+
+Provider Agnostic (via my [psaisuite](https://github.com/dfinke/psaisuite)): Architected to work across OpenAI, Azure, and Anthropic Claude.
 
 ## Installation
 
@@ -114,7 +126,7 @@ Run either of these commands in PowerShell to output all files in a directory.
 
 ## What Are Autonomous Agents?
 
-Autonomous agents are AI-driven entities capable of making decisions and completing tasks without continuous human guidance. PSAI Agents combine the scripting power of PowerShell with the intelligence of OpenAI’s models to automate workflows that require both information processing and decision-making capabilities.
+PSAI Agents combine the logic of PowerShell with the reasoning of LLMs. By implementing Model Context Protocol (MCP) style patterns and tool-calling, these agents can navigate codebases, perform data analysis, and execute multi-step workflows without constant human intervention.
 
 ### Features of PSAI Agents
 <!-- - **Modular Tools Integration**: Agents can leverage various specialized tools, such as:
@@ -282,3 +294,6 @@ We are continuously evolving PSAI Agents to meet more diverse automation needs:
 For questions or feedback, open an issue on GitHub or reach out via [Twitter](https://x.com/dfinke) or [LinkedIn](https://www.linkedin.com/in/douglasfinke/).
 
 Happy Automating!
+
+🤖 AI-Native Development
+This repository includes a CLAUDE.md file, optimized for use with Claude Code and other agentic developer environments.
