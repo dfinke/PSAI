@@ -27,4 +27,4 @@ jobs:
           # Install-Module -Name PwshSpectreConsole -Force
           
           cd ./__tests__
-          Invoke-Pester -Output Detailed
+          Invoke-Pester -Path ., ../Tests -Output Detailed -CI

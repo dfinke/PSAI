@@ -221,6 +221,40 @@ $agent = New-Agent -Tools $tools -ShowToolCalls
 $agent | Get-AgentResponse 'What did Microsoft close at and the latest news for them?'
 ``` -->
 
+## Parallel web search and fetch
+
+Register the optional Parallel tools with an agent:
+
+```powershell
+$agent = New-Agent -Tools 'Search-ParallelWeb', 'Get-ParallelWebContent'
+$agent | Get-AgentResponse 'Find the current stable PowerShell release and cite sources.'
+```
+
+These functions use [Parallel Search MCP](https://docs.parallel.ai/integrations/mcp/search-mcp)
+over Streamable HTTP at `https://search.parallel.ai/mcp`. Search and fetch need
+no Parallel API key and do not read saved credentials or environment keys.
+The anonymous tier is intended for exploration and light use, with rate limits.
+Your configured model still needs its own credentials and may incur inference costs.
+Existing agents and provider defaults are unchanged.
+
+You can also run the tools directly without a model:
+
+```powershell
+Search-ParallelWeb -Objective 'Find official PowerShell documentation' -SearchQueries 'Microsoft PowerShell documentation'
+Get-ParallelWebContent -Urls 'https://learn.microsoft.com/powershell/' -Objective 'What is PowerShell?'
+```
+
+Both return source excerpts as text, including any server warnings or partial fetch
+errors. HTTP and MCP failures raise errors that PSAI's agent loop adds to the tool
+response. Each HTTP request times out after 60 seconds by default; use `-TimeoutSec`
+to change it. Search and fetch share an anonymous conversation identifier until
+the module is reimported. Reimport with `-Force` to start a separate conversation.
+
+For a checkout, run `Import-Module ./PSAI.psd1 -Force` in PowerShell 7.1 or newer;
+no extra modules are needed. The [Parallel quickstart](examples/agent-quickstarts/06-ParallelWebSearch.ps1)
+uses the same agent path. Run its tests with Pester 5:
+`Invoke-Pester ./Tests/ParallelWeb.tests.ps1`.
+
 ## Slash Commands
 
 PSAI Agents now support slash commands in interactive sessions, allowing you to perform quick actions without leaving the conversation flow.

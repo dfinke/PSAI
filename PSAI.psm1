@@ -3,6 +3,7 @@
 . $PSScriptRoot/Private/Invoke-OAIBeta.ps1
 . $PSScriptRoot/Private/Get-MultipartFormData.ps1
 . $PSScriptRoot/Private/Get-ToolProperty.ps1
+. $PSScriptRoot/Private/Invoke-ParallelMcp.ps1
 
 # # Agent Tools 
 # Import-Module $PSScriptRoot/Public/Tools/CalculatorTool.psm1
@@ -14,6 +15,8 @@
 # Import-Module $PSScriptRoot/Public/Tools/YouTubeAssistant.psm1
 
 # Public Functions
+. $PSScriptRoot/Public/Search-ParallelWeb.ps1
+. $PSScriptRoot/Public/Get-ParallelWebContent.ps1
 . $PSScriptRoot/Public/Invoke-QuickPrompt.ps1
 . $PSScriptRoot/Public/New-Agent.ps1
 . $PSScriptRoot/Public/Get-AgentResponse.ps1
